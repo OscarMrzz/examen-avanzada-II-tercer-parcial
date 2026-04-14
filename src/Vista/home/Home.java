@@ -30,38 +30,38 @@ public class Home extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        botonIrAUsuarios = new javax.swing.JButton();
+        botonIrAClientes = new javax.swing.JButton();
+        botonIrAProveedores = new javax.swing.JButton();
+        botonirAColecciones = new javax.swing.JButton();
+        botonIrAProductos = new javax.swing.JButton();
+        botonirACompras = new javax.swing.JButton();
+        botonIrAInventario = new javax.swing.JButton();
+        botonIrAVentas = new javax.swing.JButton();
+        botonIrAReportes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jButton1.setText("Usuarios");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        botonIrAUsuarios.setText("Usuarios");
+        botonIrAUsuarios.addActionListener(this::botonIrAUsuariosActionPerformed);
 
-        jButton2.setText("Clientes");
+        botonIrAClientes.setText("Clientes");
 
-        jButton3.setText("Proveedores");
+        botonIrAProveedores.setText("Proveedores");
 
-        jButton4.setText("Coleccion");
+        botonirAColecciones.setText("Coleccion");
 
-        jButton5.setText("Producto");
+        botonIrAProductos.setText("Producto");
 
-        jButton6.setText("Compras");
+        botonirACompras.setText("Compras");
 
-        jButton7.setText("Inventario");
+        botonIrAInventario.setText("Inventario");
 
-        jButton8.setText("Ventas");
+        botonIrAVentas.setText("Ventas");
 
-        jButton9.setText("Reportes");
+        botonIrAReportes.setText("Reportes");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -72,41 +72,41 @@ public class Home extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(botonIrAUsuarios, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                            .addComponent(botonIrAClientes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(49, 49, 49)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(botonIrAProveedores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonirAColecciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonIrAProductos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonirACompras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonIrAInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonIrAVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonIrAReportes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap(67, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(45, 45, 45)
-                .addComponent(jButton1)
+                .addComponent(botonIrAUsuarios)
                 .addGap(18, 18, 18)
-                .addComponent(jButton2)
+                .addComponent(botonIrAClientes)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addComponent(botonIrAProveedores)
                 .addGap(18, 18, 18)
-                .addComponent(jButton4)
+                .addComponent(botonirAColecciones)
                 .addGap(18, 18, 18)
-                .addComponent(jButton5)
+                .addComponent(botonIrAProductos)
                 .addGap(18, 18, 18)
-                .addComponent(jButton6)
+                .addComponent(botonirACompras)
                 .addGap(18, 18, 18)
-                .addComponent(jButton7)
+                .addComponent(botonIrAInventario)
                 .addGap(18, 18, 18)
-                .addComponent(jButton8)
+                .addComponent(botonIrAVentas)
                 .addGap(18, 18, 18)
-                .addComponent(jButton9)
+                .addComponent(botonIrAReportes)
                 .addContainerGap(38, Short.MAX_VALUE))
         );
 
@@ -139,9 +139,9 @@ public class Home extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void botonIrAUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonIrAUsuariosActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_botonIrAUsuariosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -169,15 +169,15 @@ public class Home extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
+    public javax.swing.JButton botonIrAClientes;
+    public javax.swing.JButton botonIrAInventario;
+    public javax.swing.JButton botonIrAProductos;
+    public javax.swing.JButton botonIrAProveedores;
+    public javax.swing.JButton botonIrAReportes;
+    public javax.swing.JButton botonIrAUsuarios;
+    public javax.swing.JButton botonIrAVentas;
+    public javax.swing.JButton botonirAColecciones;
+    public javax.swing.JButton botonirACompras;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     // End of variables declaration//GEN-END:variables
