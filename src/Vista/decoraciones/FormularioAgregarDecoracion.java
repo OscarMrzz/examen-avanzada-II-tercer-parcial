@@ -55,6 +55,7 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                 jPanel3 = new javax.swing.JPanel();
                 botonGuardar = new javax.swing.JButton();
                 botonCancelar = new javax.swing.JButton();
+                botonBuscarImagen = new javax.swing.JButton();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -125,10 +126,17 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 300,
                                                                                                 Short.MAX_VALUE)
-                                                                                .addComponent(inputImagenDecoracion,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                300,
-                                                                                                Short.MAX_VALUE)
+                                                                                .addGroup(jPanel2Layout
+                                                                                                .createSequentialGroup()
+                                                                                                .addComponent(inputImagenDecoracion,
+                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                200,
+                                                                                                                Short.MAX_VALUE)
+                                                                                                .addGap(10, 10, 10)
+                                                                                                .addComponent(botonBuscarImagen,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                80,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                                 .addComponent(comboBoxColeccion,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 300,
@@ -184,7 +192,8 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                                                                                 .addComponent(inputImagenDecoracion,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(botonBuscarImagen))
                                                                 .addGap(8, 8, 8)
                                                                 .addGroup(jPanel2Layout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
@@ -208,6 +217,8 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                 botonGuardar.setText("Guardar");
 
                 botonCancelar.setText("Cancelar");
+
+                botonBuscarImagen.setText("Buscar");
 
                 javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
                 jPanel3.setLayout(jPanel3Layout);
@@ -334,6 +345,7 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
         public javax.swing.JComboBox<String> comboBoxColeccion;
         public javax.swing.JComboBox<String> comboBoxProveedor;
         public javax.swing.JTextField inputImagenDecoracion;
+        public javax.swing.JButton botonBuscarImagen;
         public javax.swing.JTextArea inputDescripcionDecoracion;
         public javax.swing.JTextField inputNombreDecoracion;
         public javax.swing.JTextField inputStockDecoracion;

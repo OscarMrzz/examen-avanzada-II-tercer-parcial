@@ -57,11 +57,14 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
                 jLabel12 = new javax.swing.JLabel();
                 inputAnio = new javax.swing.JTextField();
                 jLabel13 = new javax.swing.JLabel();
+                jLabel14 = new javax.swing.JLabel();
+                inputImagen = new javax.swing.JTextField();
                 jScrollPane1 = new javax.swing.JScrollPane();
                 inputDescripcion = new javax.swing.JTextArea();
                 jPanel3 = new javax.swing.JPanel();
                 botonGuardar = new javax.swing.JButton();
                 botonCancelar = new javax.swing.JButton();
+                botonBuscarImagen = new javax.swing.JButton();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -97,6 +100,8 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
 
                 jLabel13.setText("Descripción:");
 
+                jLabel14.setText("URL Imagen:");
+
                 inputDescripcion.setColumns(20);
                 inputDescripcion.setRows(5);
                 jScrollPane1.setViewportView(inputDescripcion);
@@ -104,6 +109,8 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
                 botonGuardar.setText("Guardar");
 
                 botonCancelar.setText("Cancelar");
+
+                botonBuscarImagen.setText("Buscar");
 
                 javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
                 jPanel3.setLayout(jPanel3Layout);
@@ -195,6 +202,11 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
                                                                                                 javax.swing.GroupLayout.Alignment.TRAILING,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 100,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(jLabel14,
+                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                100,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addPreferredGap(
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -244,7 +256,18 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
                                                                                                 .addComponent(inputAnio,
                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                                 200,
-                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                .addGroup(jPanel2Layout
+                                                                                                                .createSequentialGroup()
+                                                                                                                .addComponent(inputImagen,
+                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                                                200,
+                                                                                                                                Short.MAX_VALUE)
+                                                                                                                .addGap(10, 10, 10)
+                                                                                                                .addComponent(botonBuscarImagen,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                                80,
+                                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))))
                                                                 .addContainerGap(100, Short.MAX_VALUE)));
                 jPanel2Layout.setVerticalGroup(
                                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -352,6 +375,16 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                .addGroup(jPanel2Layout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(jLabel14)
+                                                                                .addComponent(inputImagen,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(botonBuscarImagen))
                                                                 .addContainerGap(20, Short.MAX_VALUE)));
 
                 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -453,11 +486,13 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
         // Variables declaration - do not modify//GEN-BEGIN:variables
         public javax.swing.JButton botonCancelar;
         public javax.swing.JButton botonGuardar;
+        public javax.swing.JButton botonBuscarImagen;
         public javax.swing.JCheckBox checkBoxEsColeccion;
         public javax.swing.JComboBox<String> comboBoxProveedor;
         public javax.swing.JTextField inputAnio;
         public javax.swing.JTextArea inputDescripcion;
         public javax.swing.JTextField inputDisenador;
+        public javax.swing.JTextField inputImagen;
         public javax.swing.JTextField inputNombre;
         public javax.swing.JTextField inputNumColeccion;
         public javax.swing.JTextField inputPrecioCosto;
@@ -470,6 +505,7 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
         public javax.swing.JLabel jLabel11;
         public javax.swing.JLabel jLabel12;
         public javax.swing.JLabel jLabel13;
+        public javax.swing.JLabel jLabel14;
         public javax.swing.JLabel jLabel2;
         public javax.swing.JLabel jLabel3;
         public javax.swing.JLabel jLabel4;
