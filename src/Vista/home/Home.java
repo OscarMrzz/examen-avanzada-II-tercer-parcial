@@ -11,12 +11,51 @@ package Vista.home;
 public class Home extends javax.swing.JFrame {
 
         private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Home.class.getName());
+        private javax.swing.ImageIcon logoOriginal;
 
         /**
          * Creates new form Home
          */
         public Home() {
                 initComponents();
+                cargarLogo();
+        }
+
+        private void cargarLogo() {
+                try {
+                        java.net.URL url = getClass().getResource("/img/logo.png");
+                        if (url == null) {
+                                return;
+                        }
+                        logoOriginal = new javax.swing.ImageIcon(url);
+                        labelLogo.setText(null);
+
+                        labelLogo.addComponentListener(new java.awt.event.ComponentAdapter() {
+                                @Override
+                                public void componentResized(java.awt.event.ComponentEvent e) {
+                                        ajustarLogoAlLabel();
+                                }
+                        });
+
+                        javax.swing.SwingUtilities.invokeLater(this::ajustarLogoAlLabel);
+                } catch (Exception ex) {
+                        logger.log(java.util.logging.Level.WARNING, "No se pudo cargar el logo", ex);
+                }
+        }
+
+        private void ajustarLogoAlLabel() {
+                if (logoOriginal == null) {
+                        return;
+                }
+                int w = labelLogo.getWidth();
+                int h = labelLogo.getHeight();
+                if (w <= 0 || h <= 0) {
+                        return;
+                }
+
+                java.awt.Image img = logoOriginal.getImage();
+                java.awt.Image scaled = img.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH);
+                labelLogo.setIcon(new javax.swing.ImageIcon(scaled));
         }
 
         /**
@@ -26,160 +65,142 @@ public class Home extends javax.swing.JFrame {
          */
         @SuppressWarnings("unchecked")
         // <editor-fold defaultstate="collapsed" desc="Generated
-        // Code">//GEN-BEGIN:initComponents
-        private void initComponents() {
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
-                jPanel1 = new javax.swing.JPanel();
-                jPanel2 = new javax.swing.JPanel();
-                botonIrAUsuarios = new javax.swing.JButton();
-                botonIrAClientes = new javax.swing.JButton();
-                botonIrAProveedores = new javax.swing.JButton();
-                botonirAColecciones = new javax.swing.JButton();
-                botonIrAProductos = new javax.swing.JButton();
-                botonirACompras = new javax.swing.JButton();
-                botonIrAInventario = new javax.swing.JButton();
-                botonIrAVentas = new javax.swing.JButton();
-                botonIrAReportes = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        botonIrAUsuarios = new javax.swing.JButton();
+        botonIrAClientes = new javax.swing.JButton();
+        botonIrAProveedores = new javax.swing.JButton();
+        botonirAColecciones = new javax.swing.JButton();
+        botonIrAProductos = new javax.swing.JButton();
+        botonirACompras = new javax.swing.JButton();
+        botonIrAInventario = new javax.swing.JButton();
+        botonIrAVentas = new javax.swing.JButton();
+        botonIrAReportes = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        labelLogo = new javax.swing.JLabel();
 
-                setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-                jPanel1.setOpaque(false);
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-                botonIrAUsuarios.setText("Usuarios");
-                botonIrAUsuarios.addActionListener(this::botonIrAUsuariosActionPerformed);
+        botonIrAUsuarios.setText("Usuarios");
+        botonIrAUsuarios.addActionListener(this::botonIrAUsuariosActionPerformed);
 
-                botonIrAClientes.setText("Clientes");
+        botonIrAClientes.setText("Clientes");
 
-                botonIrAProveedores.setText("Proveedores");
+        botonIrAProveedores.setText("Proveedores");
 
-                botonirAColecciones.setText("Coleccion");
+        botonirAColecciones.setText("Coleccion");
 
-                botonIrAProductos.setText("Producto");
+        botonIrAProductos.setText("Producto");
 
-                botonirACompras.setText("Compras");
+        botonirACompras.setText("Compras");
 
-                botonIrAInventario.setText("Inventario");
+        botonIrAInventario.setText("Inventario");
 
-                botonIrAVentas.setText("Ventas");
+        botonIrAVentas.setText("Ventas");
 
-                botonIrAReportes.setText("Reportes");
+        botonIrAReportes.setText("Reportes");
 
-                javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-                jPanel2.setLayout(jPanel2Layout);
-                jPanel2Layout.setHorizontalGroup(
-                                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                                                .addGroup(jPanel2Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                                .addGroup(jPanel2Layout
-                                                                                                .createSequentialGroup()
-                                                                                                .addContainerGap()
-                                                                                                .addGroup(jPanel2Layout
-                                                                                                                .createParallelGroup(
-                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                                                false)
-                                                                                                                .addComponent(botonIrAUsuarios,
-                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                100,
-                                                                                                                                Short.MAX_VALUE)
-                                                                                                                .addComponent(botonIrAClientes,
-                                                                                                                                javax.swing.GroupLayout.Alignment.TRAILING,
-                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                Short.MAX_VALUE)))
-                                                                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                jPanel2Layout
-                                                                                                                .createSequentialGroup()
-                                                                                                                .addGap(49, 49, 49)
-                                                                                                                .addGroup(jPanel2Layout
-                                                                                                                                .createParallelGroup(
-                                                                                                                                                javax.swing.GroupLayout.Alignment.LEADING,
-                                                                                                                                                false)
-                                                                                                                                .addComponent(botonIrAProveedores,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                Short.MAX_VALUE)
-                                                                                                                                .addComponent(botonirAColecciones,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                Short.MAX_VALUE)
-                                                                                                                                .addComponent(botonIrAProductos,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                Short.MAX_VALUE)
-                                                                                                                                .addComponent(botonirACompras,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                Short.MAX_VALUE)
-                                                                                                                                .addComponent(botonIrAInventario,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                Short.MAX_VALUE)
-                                                                                                                                .addComponent(botonIrAVentas,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                Short.MAX_VALUE)
-                                                                                                                                .addComponent(botonIrAReportes,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                                                                Short.MAX_VALUE))))
-                                                                .addContainerGap(67, Short.MAX_VALUE)));
-                jPanel2Layout.setVerticalGroup(
-                                jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                                                .addGap(45, 45, 45)
-                                                                .addComponent(botonIrAUsuarios)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(botonIrAClientes)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(botonIrAProveedores)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(botonirAColecciones)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(botonIrAProductos)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(botonirACompras)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(botonIrAInventario)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(botonIrAVentas)
-                                                                .addGap(18, 18, 18)
-                                                                .addComponent(botonIrAReportes)
-                                                                .addContainerGap(38, Short.MAX_VALUE)));
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(botonIrAUsuarios, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                            .addComponent(botonIrAClientes, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(botonIrAProveedores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonirAColecciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonIrAProductos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonirACompras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonIrAInventario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonIrAVentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(botonIrAReportes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(67, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(45, 45, 45)
+                .addComponent(botonIrAUsuarios)
+                .addGap(18, 18, 18)
+                .addComponent(botonIrAClientes)
+                .addGap(18, 18, 18)
+                .addComponent(botonIrAProveedores)
+                .addGap(18, 18, 18)
+                .addComponent(botonirAColecciones)
+                .addGap(18, 18, 18)
+                .addComponent(botonIrAProductos)
+                .addGap(18, 18, 18)
+                .addComponent(botonirACompras)
+                .addGap(18, 18, 18)
+                .addComponent(botonIrAInventario)
+                .addGap(18, 18, 18)
+                .addComponent(botonIrAVentas)
+                .addGap(18, 18, 18)
+                .addComponent(botonIrAReportes)
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
 
-                javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-                jPanel1.setLayout(jPanel1Layout);
-                jPanel1Layout.setHorizontalGroup(
-                                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                                                .addComponent(jPanel2,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(0, 426, Short.MAX_VALUE)));
-                jPanel1Layout.setVerticalGroup(
-                                jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                                                .addComponent(jPanel2,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addGap(0, 0, Short.MAX_VALUE)));
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(46, Short.MAX_VALUE)
+                .addComponent(labelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(94, 94, 94))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(62, 62, 62)
+                .addComponent(labelLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
-                javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-                getContentPane().setLayout(layout);
-                layout.setHorizontalGroup(
-                                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
-                layout.setVerticalGroup(
-                                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
 
-                pack();
-        }// </editor-fold>//GEN-END:initComponents
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
 
         private void botonIrAUsuariosActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_botonIrAUsuariosActionPerformed
                 // TODO add your handling code here:
@@ -215,17 +236,19 @@ public class Home extends javax.swing.JFrame {
                 java.awt.EventQueue.invokeLater(() -> new Home().setVisible(true));
         }
 
-        // Variables declaration - do not modify//GEN-BEGIN:variables
-        public javax.swing.JButton botonIrAClientes;
-        public javax.swing.JButton botonIrAInventario;
-        public javax.swing.JButton botonIrAProductos;
-        public javax.swing.JButton botonIrAProveedores;
-        public javax.swing.JButton botonIrAReportes;
-        public javax.swing.JButton botonIrAUsuarios;
-        public javax.swing.JButton botonIrAVentas;
-        public javax.swing.JButton botonirAColecciones;
-        public javax.swing.JButton botonirACompras;
-        private javax.swing.JPanel jPanel1;
-        private javax.swing.JPanel jPanel2;
-        // End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton botonIrAClientes;
+    public javax.swing.JButton botonIrAInventario;
+    public javax.swing.JButton botonIrAProductos;
+    public javax.swing.JButton botonIrAProveedores;
+    public javax.swing.JButton botonIrAReportes;
+    public javax.swing.JButton botonIrAUsuarios;
+    public javax.swing.JButton botonIrAVentas;
+    public javax.swing.JButton botonirAColecciones;
+    public javax.swing.JButton botonirACompras;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel labelLogo;
+    // End of variables declaration//GEN-END:variables
 }
