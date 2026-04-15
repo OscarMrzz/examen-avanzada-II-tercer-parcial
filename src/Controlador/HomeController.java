@@ -35,23 +35,31 @@ public class HomeController {
     ventasVista ventasVista;
     ventasController ventasController;
 
-    public HomeController(Home home, LoginVista login, UsuariosVista usuariosVista) {
+    public HomeController(Home home, LoginVista login, UsuariosVista usuariosVista,
+            clientesVista clientesVista, coleccionesVista coleccionesVista,
+            comprasVista comprasVista, decoracionesVista decoracionesVista,
+            inventarioVista inventarioVista, proveedoresVista proveedoresVista,
+            ventasVista ventasVista) {
         this.home = home;
         this.login = login;
         this.usuariosVista = usuariosVista;
-        this.proveedoresVista = new proveedoresVista(null, true);
-        this.proveedoresController = new proveedoresController(proveedoresVista, home);
-        this.clientesVista = new clientesVista(null, true);
-        this.clientesController = new clientesController(clientesVista, home);
-        this.decoracionesVista = new decoracionesVista(null, true);
-        this.decoracionesController = new decoracionesController(decoracionesVista, home);
-        this.coleccionesVista = new coleccionesVista(null, true);
-        this.coleccionesController = new coleccionesController(coleccionesVista, home);
-        this.comprasVista = new comprasVista(null, true);
-        this.comprasController = new comprasController(comprasVista, home);
-        this.inventarioVista = new inventarioVista(null, true);
-        this.ventasVista = new ventasVista(null, true);
-        this.ventasController = new ventasController(ventasVista, home);
+
+        // Recibir vistas (no crear nuevas)
+        this.clientesVista = clientesVista;
+        this.coleccionesVista = coleccionesVista;
+        this.comprasVista = comprasVista;
+        this.decoracionesVista = decoracionesVista;
+        this.inventarioVista = inventarioVista;
+        this.proveedoresVista = proveedoresVista;
+        this.ventasVista = ventasVista;
+
+        // Crear controladores específicos con sus vistas
+        this.proveedoresController = new proveedoresController(proveedoresVista);
+        this.clientesController = new clientesController(clientesVista);
+        this.decoracionesController = new decoracionesController(decoracionesVista);
+        this.coleccionesController = new coleccionesController(coleccionesVista);
+        this.comprasController = new comprasController(comprasVista);
+        this.ventasController = new ventasController(ventasVista);
     }
 
     public void iniciar() {

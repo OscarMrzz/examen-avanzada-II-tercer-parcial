@@ -5,7 +5,6 @@
 package Controlador.ventas;
 
 import Vista.ventas.ventasVista;
-import Vista.home.Home;
 import Vista.ventas.FormularioAgregarVenta;
 
 /**
@@ -15,19 +14,16 @@ import Vista.ventas.FormularioAgregarVenta;
 public class ventasController {
 
     private ventasVista vista;
-    private Home home;
 
     /**
      * Creates new form ventasController
      */
-    public ventasController(ventasVista vista, Home home) {
+    public ventasController(ventasVista vista) {
         this.vista = vista;
-        this.home = home;
     }
 
     public void iniciar() {
         vista.setVisible(true);
-        home.setVisible(false);
 
         // Agregar listener al botón de agregar
         vista.botonAgregar.addActionListener(e -> abrirFormularioAgregar());

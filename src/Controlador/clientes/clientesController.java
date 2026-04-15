@@ -4,22 +4,19 @@ import Vista.clientes.clientesVista;
 import Vista.clientes.FormularioAgregarCliente;
 import Vista.clientes.FormularioEditarCliente;
 import Vista.clientes.reportesClientes;
-import Vista.home.Home;
 
 public class clientesController {
     private clientesVista vista;
-    private Home home;
     private FormularioAgregarCliente formularioAgregar;
     private FormularioEditarCliente formularioEditar;
     private reportesClientes reportes;
 
-    public clientesController(clientesVista vista, Home home) {
+    public clientesController(clientesVista vista) {
         this.vista = vista;
-        this.home = home;
         this.formularioAgregar = new FormularioAgregarCliente(null, true);
         this.formularioEditar = new FormularioEditarCliente(null, true);
         this.reportes = new reportesClientes(null, true);
-        
+
         initController();
     }
 
@@ -27,17 +24,17 @@ public class clientesController {
         // Botones de navegación
         vista.botonAgregar.addActionListener(e -> abrirFormularioAgregar());
         vista.botonInforme.addActionListener(e -> abrirReportes());
-        
+
         // Botones de búsqueda
         vista.botonBuscar.addActionListener(e -> buscarClientes());
-        
+
         // Botones de los formularios
         formularioAgregar.botonGuardar.addActionListener(e -> guardarCliente());
         formularioAgregar.botonCancelar.addActionListener(e -> formularioAgregar.setVisible(false));
-        
+
         formularioEditar.botonGuardar.addActionListener(e -> actualizarCliente());
         formularioEditar.botonCancelar.addActionListener(e -> formularioEditar.setVisible(false));
-        
+
         // Botones de reportes
         reportes.botonGenerarReporte.addActionListener(e -> generarReporte());
         reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
@@ -45,9 +42,6 @@ public class clientesController {
 
     public void iniciar() {
         vista.setVisible(true);
-        if (home != null) {
-            home.setVisible(false);
-        }
         cargarClientes();
     }
 
@@ -64,10 +58,10 @@ public class clientesController {
             cargarDatosClienteEnFormulario(filaSeleccionada);
             formularioEditar.setVisible(true);
         } else {
-            javax.swing.JOptionPane.showMessageDialog(vista, 
-                "Por favor seleccione un cliente para editar", 
-                "Seleccione Cliente", 
-                javax.swing.JOptionPane.WARNING_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(vista,
+                    "Por favor seleccione un cliente para editar",
+                    "Seleccione Cliente",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -105,11 +99,11 @@ public class clientesController {
         String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
         String fechaInicio = reportes.inputFechaInicio.getText();
         String fechaFin = reportes.inputFechaFin.getText();
-        
+
         System.out.println("Generando reporte: " + tipoReporte);
         System.out.println("Fecha inicio: " + fechaInicio);
         System.out.println("Fecha fin: " + fechaFin);
-        
+
         // Implementar lógica de generación de reportes
     }
 
@@ -138,31 +132,31 @@ public class clientesController {
         String rtn = formularioAgregar.inputRTNCliente.getText().trim();
         String telefono = formularioAgregar.inputTelefonoCliente.getText().trim();
         String tipoCliente = (String) formularioAgregar.comboBoxTipoCliente.getSelectedItem();
-        
+
         if (nombre.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "El nombre del cliente es obligatorio", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "El nombre del cliente es obligatorio",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         if (telefono.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "El teléfono del cliente es obligatorio", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "El teléfono del cliente es obligatorio",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         if (tipoCliente == null || tipoCliente.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "Debe seleccionar un tipo de cliente", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "Debe seleccionar un tipo de cliente",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         return true;
     }
 
@@ -173,8 +167,5 @@ public class clientesController {
 
     public void volverAlHome() {
         vista.setVisible(false);
-        if (home != null) {
-            home.setVisible(true);
-        }
     }
 }

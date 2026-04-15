@@ -4,18 +4,15 @@ import Vista.decoraciones.decoracionesVista;
 import Vista.decoraciones.FormularioAgregarDecoracion;
 import Vista.decoraciones.FormularioEditarDecoracion;
 import Vista.decoraciones.reportesDecoraciones;
-import Vista.home.Home;
 
 public class decoracionesController {
     private decoracionesVista vista;
-    private Home home;
     private FormularioAgregarDecoracion formularioAgregar;
     private FormularioEditarDecoracion formularioEditar;
     private reportesDecoraciones reportes;
 
-    public decoracionesController(decoracionesVista vista, Home home) {
+    public decoracionesController(decoracionesVista vista) {
         this.vista = vista;
-        this.home = home;
         this.formularioAgregar = new FormularioAgregarDecoracion(null, true);
         this.formularioEditar = new FormularioEditarDecoracion(null, true);
         this.reportes = new reportesDecoraciones(null, true);
@@ -45,9 +42,6 @@ public class decoracionesController {
 
     public void iniciar() {
         vista.setVisible(true);
-        if (home != null) {
-            home.setVisible(false);
-        }
         cargarDecoraciones();
     }
 
@@ -221,8 +215,5 @@ public class decoracionesController {
 
     public void volverAlHome() {
         vista.setVisible(false);
-        if (home != null) {
-            home.setVisible(true);
-        }
     }
 }

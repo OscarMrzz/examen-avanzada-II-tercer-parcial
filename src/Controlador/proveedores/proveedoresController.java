@@ -4,22 +4,19 @@ import Vista.proveedores.proveedoresVista;
 import Vista.proveedores.FormularioAgregarProveedor;
 import Vista.proveedores.FormularioEditarProveedor;
 import Vista.proveedores.reportesProveedores;
-import Vista.home.Home;
 
 public class proveedoresController {
     private proveedoresVista vista;
-    private Home home;
     private FormularioAgregarProveedor formularioAgregar;
     private FormularioEditarProveedor formularioEditar;
     private reportesProveedores reportes;
 
-    public proveedoresController(proveedoresVista vista, Home home) {
+    public proveedoresController(proveedoresVista vista) {
         this.vista = vista;
-        this.home = home;
         this.formularioAgregar = new FormularioAgregarProveedor(null, true);
         this.formularioEditar = new FormularioEditarProveedor(null, true);
         this.reportes = new reportesProveedores(null, true);
-        
+
         initController();
     }
 
@@ -27,17 +24,17 @@ public class proveedoresController {
         // Botones de navegación
         vista.botonAgregar.addActionListener(e -> abrirFormularioAgregar());
         vista.botonInforme.addActionListener(e -> abrirReportes());
-        
+
         // Botones de búsqueda
         vista.botonBuscar.addActionListener(e -> buscarProveedores());
-        
+
         // Botones de los formularios
         formularioAgregar.botonGuardar.addActionListener(e -> guardarProveedor());
         formularioAgregar.botonCancelar.addActionListener(e -> formularioAgregar.setVisible(false));
-        
+
         formularioEditar.botonGuardar.addActionListener(e -> actualizarProveedor());
         formularioEditar.botonCancelar.addActionListener(e -> formularioEditar.setVisible(false));
-        
+
         // Botones de reportes
         reportes.botonGenerarReporte.addActionListener(e -> generarReporte());
         reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
@@ -45,9 +42,6 @@ public class proveedoresController {
 
     public void iniciar() {
         vista.setVisible(true);
-        if (home != null) {
-            home.setVisible(false);
-        }
         cargarProveedores();
     }
 
@@ -64,10 +58,10 @@ public class proveedoresController {
             cargarDatosProveedorEnFormulario(filaSeleccionada);
             formularioEditar.setVisible(true);
         } else {
-            javax.swing.JOptionPane.showMessageDialog(vista, 
-                "Por favor seleccione un proveedor para editar", 
-                "Seleccione Proveedor", 
-                javax.swing.JOptionPane.WARNING_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(vista,
+                    "Por favor seleccione un proveedor para editar",
+                    "Seleccione Proveedor",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -105,11 +99,11 @@ public class proveedoresController {
         String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
         String fechaInicio = reportes.inputFechaInicio.getText();
         String fechaFin = reportes.inputFechaFin.getText();
-        
+
         System.out.println("Generando reporte: " + tipoReporte);
         System.out.println("Fecha inicio: " + fechaInicio);
         System.out.println("Fecha fin: " + fechaFin);
-        
+
         // Implementar lógica de generación de reportes
     }
 
@@ -137,23 +131,23 @@ public class proveedoresController {
         String nombre = formularioAgregar.inputNombreProveedor.getText().trim();
         String rtn = formularioAgregar.inputRTNProveedor.getText().trim();
         String telefono = formularioAgregar.inputTelefonoProveedor.getText().trim();
-        
+
         if (nombre.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "El nombre del proveedor es obligatorio", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "El nombre del proveedor es obligatorio",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         if (telefono.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "El teléfono del proveedor es obligatorio", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "El teléfono del proveedor es obligatorio",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         return true;
     }
 
@@ -164,8 +158,5 @@ public class proveedoresController {
 
     public void volverAlHome() {
         vista.setVisible(false);
-        if (home != null) {
-            home.setVisible(true);
-        }
     }
 }

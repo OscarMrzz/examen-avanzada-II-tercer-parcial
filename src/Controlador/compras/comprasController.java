@@ -4,22 +4,19 @@ import Vista.compras.comprasVista;
 import Vista.compras.FormularioAgregarCompra;
 import Vista.compras.FormularioEditarCompra;
 import Vista.compras.reportesCompras;
-import Vista.home.Home;
 
 public class comprasController {
     private comprasVista vista;
-    private Home home;
     private FormularioAgregarCompra formularioAgregar;
     private FormularioEditarCompra formularioEditar;
     private reportesCompras reportes;
 
-    public comprasController(comprasVista vista, Home home) {
+    public comprasController(comprasVista vista) {
         this.vista = vista;
-        this.home = home;
         this.formularioAgregar = new FormularioAgregarCompra(null, true);
         this.formularioEditar = new FormularioEditarCompra(null, true);
         this.reportes = new reportesCompras(null, true);
-        
+
         initController();
     }
 
@@ -27,17 +24,17 @@ public class comprasController {
         // Botones de navegación
         vista.botonAgregar.addActionListener(e -> abrirFormularioAgregar());
         vista.botonInforme.addActionListener(e -> abrirReportes());
-        
+
         // Botones de búsqueda
         vista.botonBuscar.addActionListener(e -> buscarCompras());
-        
+
         // Botones de los formularios
         formularioAgregar.botonGuardar.addActionListener(e -> guardarCompra());
         formularioAgregar.botonCancelar.addActionListener(e -> formularioAgregar.setVisible(false));
-        
+
         formularioEditar.botonGuardar.addActionListener(e -> actualizarCompra());
         formularioEditar.botonCancelar.addActionListener(e -> formularioEditar.setVisible(false));
-        
+
         // Botones de reportes
         reportes.botonGenerarReporte.addActionListener(e -> generarReporte());
         reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
@@ -45,9 +42,6 @@ public class comprasController {
 
     public void iniciar() {
         vista.setVisible(true);
-        if (home != null) {
-            home.setVisible(false);
-        }
         cargarCompras();
     }
 
@@ -64,10 +58,10 @@ public class comprasController {
             cargarDatosCompraEnFormulario(filaSeleccionada);
             formularioEditar.setVisible(true);
         } else {
-            javax.swing.JOptionPane.showMessageDialog(vista, 
-                "Por favor seleccione una compra para editar", 
-                "Seleccione Compra", 
-                javax.swing.JOptionPane.WARNING_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(vista,
+                    "Por favor seleccione una compra para editar",
+                    "Seleccione Compra",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -105,11 +99,11 @@ public class comprasController {
         String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
         String fechaInicio = reportes.inputFechaInicio.getText();
         String fechaFin = reportes.inputFechaFin.getText();
-        
+
         System.out.println("Generando reporte: " + tipoReporte);
         System.out.println("Fecha inicio: " + fechaInicio);
         System.out.println("Fecha fin: " + fechaFin);
-        
+
         // Implementar lógica de generación de reportes
     }
 
@@ -137,57 +131,57 @@ public class comprasController {
         String fechaCompra = formularioAgregar.inputFechaCompra.getText().trim();
         String total = formularioAgregar.inputTotalCompra.getText().trim();
         String estado = (String) formularioAgregar.comboBoxEstado.getSelectedItem();
-        
+
         if (proveedor == null || proveedor.equals("Seleccione un proveedor")) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "Debe seleccionar un proveedor", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "Debe seleccionar un proveedor",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         if (fechaCompra.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "La fecha de compra es obligatoria", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "La fecha de compra es obligatoria",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         if (total.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "El total de la compra es obligatorio", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "El total de la compra es obligatorio",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         // Validar que el total sea un número válido
         try {
             double totalNum = Double.parseDouble(total);
             if (totalNum <= 0) {
-                javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                    "El total debe ser mayor que 0", 
-                    "Valor Inválido", 
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
+                javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                        "El total debe ser mayor que 0",
+                        "Valor Inválido",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         } catch (NumberFormatException e) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "El total debe ser un número válido", 
-                "Error de Formato", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "El total debe ser un número válido",
+                    "Error de Formato",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         if (estado == null) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar, 
-                "Debe seleccionar un estado", 
-                "Campo Requerido", 
-                javax.swing.JOptionPane.ERROR_MESSAGE);
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "Debe seleccionar un estado",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        
+
         return true;
     }
 
@@ -198,8 +192,5 @@ public class comprasController {
 
     public void volverAlHome() {
         vista.setVisible(false);
-        if (home != null) {
-            home.setVisible(true);
-        }
     }
 }
