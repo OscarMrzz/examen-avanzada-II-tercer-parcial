@@ -254,12 +254,12 @@ public class FormularioAgregarUsuario extends javax.swing.JDialog {
         }
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        private javax.swing.JButton botonAgregarImagen;
-        private javax.swing.JButton botonCancelar;
-        private javax.swing.JButton botonGuardar;
-        private javax.swing.JComboBox<String> comboBoxRol;
-        private javax.swing.JTextField inputNombre;
-        private javax.swing.JTextField inputPassword;
+        public javax.swing.JButton botonAgregarImagen;
+        public javax.swing.JButton botonCancelar;
+        public javax.swing.JButton botonGuardar;
+        public javax.swing.JComboBox<String> comboBoxRol;
+        public javax.swing.JTextField inputNombre;
+        public javax.swing.JTextField inputPassword;
         private javax.swing.JLabel jLabel1;
         private javax.swing.JLabel jLabel2;
         private javax.swing.JLabel jLabel3;

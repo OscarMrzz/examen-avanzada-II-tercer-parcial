@@ -54,7 +54,7 @@ CREATE TABLE colecciones (
     descripcion_coleccion TEXT,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     estado_coleccion BOOLEAN DEFAULT TRUE,
-    CONSTRAINT chk_anio_coleccion CHECK (anio_coleccion > 1900 AND anio_coleccion <= YEAR(CURDATE())),
+    CONSTRAINT chk_anio_coleccion CHECK (anio_coleccion > 1900 AND anio_coleccion <= 2025),
     CONSTRAINT chk_num_coleccion UNIQUE (num_coleccion_coleccion)
 );
 
