@@ -18,11 +18,11 @@ public class FormularioEditarUsuarioController {
 
     private FormularioEditarUsuario vista;
     private Connection conexion;
-    private int idUsuario;
+    private String idUsuario;
 
     public FormularioEditarUsuarioController(FormularioEditarUsuario vista, String idUsuario) {
         this.vista = vista;
-        this.idUsuario = Integer.parseInt(idUsuario);
+        this.idUsuario = idUsuario;
         Conexion conexionObj = new Conexion();
         this.conexion = conexionObj.getConxion();
         inicializarEventos();
@@ -41,16 +41,16 @@ public class FormularioEditarUsuarioController {
      * Carga los datos del usuario en el formulario
      */
     private void cargarDatosUsuario() {
-        String sql = "SELECT nombre, rol, estado FROM usuarios WHERE id_usuario = ?";
+        String sql = "SELECT nombre_usuario, privilegio_usuario, estado_usuario FROM usuarios WHERE id_usuario = ?";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setInt(1, idUsuario);
+            stmt.setString(1, idUsuario);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    vista.inputNombre.setText(rs.getString("nombre"));
-                    vista.comboBoxRol.setSelectedItem(rs.getString("rol"));
-                    vista.comboBoxEstado.setSelectedItem(rs.getString("estado"));
+                    vista.inputNombre.setText(rs.getString("nombre_usuario"));
+                    vista.comboBoxRol.setSelectedItem(rs.getString("privilegio_usuario"));
+                    vista.comboBoxEstado.setSelectedItem(rs.getBoolean("estado_usuario") ? "ACTIVO" : "INACTIVO");
                 } else {
                     JOptionPane.showMessageDialog(vista, "Usuario no encontrado",
                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -77,13 +77,16 @@ public class FormularioEditarUsuarioController {
         String rol = (String) vista.comboBoxRol.getSelectedItem();
         String estado = (String) vista.comboBoxEstado.getSelectedItem();
 
-        String sql = "UPDATE usuarios SET nombre = ?, rol = ?, estado = ? WHERE id_usuario = ?";
+        // Convertir "ACTIVO"/"INACTIVO" a boolean
+        boolean estadoUsuario = "ACTIVO".equals(estado);
+
+        String sql = "UPDATE usuarios SET nombre_usuario = ?, privilegio_usuario = ?, estado_usuario = ? WHERE id_usuario = ?";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, nombre);
             stmt.setString(2, rol);
-            stmt.setString(3, estado);
-            stmt.setInt(4, idUsuario);
+            stmt.setBoolean(3, estadoUsuario);
+            stmt.setString(4, idUsuario);
 
             int filasAfectadas = stmt.executeUpdate();
 

@@ -1,239 +1,237 @@
-# Índice de Estructura del Proyecto Java
+# Índice de Estructura del Proyecto Java - Guía para IA
 
-## Guía de Inicio Rápido
+## 🚀 Guía Rápida para Inteligencia Artificial
 
-### Antes de Empezar Cualquier Tarea
+### 📍 Antes de Cualquier Tarea - Lectura Obligatoria
 
-1. **Revisar Estructura de Carpetas**: Siempre consultar `EstructuraDeCarpetas.md`
-2. **Verificar Convenciones**: Seguir estrictamente las nomenclaturas establecidas
-3. **Validar Patrón MVC**: Mantener separación clara entre Modelo, Vista y Controlador
-
----
-
-## Flujo de Trabajo por Tipo de Tarea
-
-### Para Crear Vistas Principales
-
-**Referencia**: `EstructuraVistas.md`
-
-**Pasos a seguir**:
-
-1. Revisar `EstructuraDeCarpetas.md` para ubicación correcta
-2. Identificar tabla en `init.sql` y Type classes correspondientes
-3. Crear archivos `[Entidad]Vista.java` y `[Entidad]Vista.form`
-4. Aplicar estructura visual estándar (encabezado, tabla, buscador, botones)
-5. Seguir nomenclatura: `tabla`, `inputBusqueda`, `botonBuscar`, `botonAgregar`
-6. Asegurar todos los componentes sean públicos
-
-**Checklist final**:
-
-- [ ] Extiende de JDialog
-- [ ] Nombre sigue patrón `[Entidad]Vista`
-- [ ] Encabezado con nombre en mayúsculas
-- [ ] Tabla principal llamada `tabla`
-- [ ] Buscador con `inputBusqueda` y `botonBuscar`
-- [ ] Botón `botonAgregar` presente
-- [ ] Botón `botonInforme` si aplica
-- [ ] Todos los componentes son públicos
-- [ ] Sin lógica de negocio
-- [ ] Archivo .form correspondiente creado
-- [ ] Ubicación correcta según `EstructuraDeCarpetas.md`
-
-### Para Crear Formularios
-
-**Referencia**: `EstructuraFormularios.md`
-
-**Pasos a seguir**:
-
-1. Revisar `EstructuraDeCarpetas.md` para ubicación correcta
-2. Analizar tabla en `init.sql` para identificar campos manuales vs automáticos
-3. Revisar Type classes para confirmar estructura de datos
-4. Crear `FormularioAgregar[Entidad].java` y `.form`
-5. Diseñar visualmente con campos manuales únicamente
-6. Aplicar nomenclatura: `input[Campo]`, `comboBox[Entidad]`, `boton[Acción]`
-7. Duplicar para crear `FormularioEditar[Entidad]`
-8. Refactorizar nombre y título del formulario de edición
-
-**Checklist final**:
-
-- [ ] Extiende de JDialog
-- [ ] Nombre sigue patrón `FormularioAgregar[Entidad]` / `FormularioEditar[Entidad]`
-- [ ] Título indica "Agregar [Entidad]" o "Editar [Entidad]"
-- [ ] Campos manuales incluidos según init.sql
-- [ ] Campos automáticos excluidos (IDs, timestamps, estados)
-- [ ] Nomenclatura `input[Campo]` aplicada correctamente
-- [ ] Todos los componentes son públicos
-- [ ] Sin lógica de negocio ni validaciones
-- [ ] Archivo .form correspondiente creado
-- [ ] Ubicación correcta según `EstructuraDeCarpetas.md`
-
-### Para Crear Controladores
-
-**Referencia**: `EstructuraControlador.md`
-
-**Pasos a seguir**:
-
-1. Revisar `EstructuraPuntoDeEntrada.md` para entender inicialización
-2. Identificar vistas que gestionará el controlador
-3. Aplicar principio: **NO CREAR VISTAS**, solo recibirlas
-4. Definir constructor con inyección de dependencias
-5. Implementar métodos para manipular vistas recibidas
-6. Seguir responsabilidad única (solo vistas relacionadas)
-
-**Checklist final**:
-
-- [ ] Controlador recibe vistas por constructor
-- [ ] NO crea vistas con `new`
-- [ ] Gestiona solo sus vistas relacionadas
-- [ ] Constructor con inyección de dependencias
-- [ ] Métodos para manipular vistas existentes
-- [ ] Sin acoplamiento con creación de vistas
-- [ ] Seguir patrón MVC estrictamente
-
-### Para Configurar Punto de Entrada
-
-**Referencia**: `EstructuraPuntoDeEntrada.md`
-
-**Pasos a seguir**:
-
-1. Crear todas las vistas necesarias en main()
-2. Crear HomeController con vistas principales
-3. Crear controladores específicos con sus vistas
-4. Inyectar dependencias correctamente
-5. Iniciar aplicación a través de HomeController
-
-**Checklist final**:
-
-- [ ] Todas las vistas creadas en punto de entrada
-- [ ] HomeController recibe vistas principales
-- [ ] Controladores específicos reciben sus vistas
-- [ ] Sin creación de vistas en controladores
-- [ ] Inyección de dependencias implementada
-- [ ] Aplicación iniciada correctamente
-
-### Para Crear Reportes
-
-**Referencia**: `EstructuraReportes.md`
-
-**Pasos a seguir**:
-
-1. Buscar README.md o READMI.md para identificar requerimientos de reportes
-2. Analizar módulos del sistema para determinar reportes necesarios
-3. Identificar tablas y filtros requeridos (fechas, categorías, IDs)
-4. Construir query SQL según protocolo establecido
-5. Clasificar tipo de reporte (Listado, Agrupado, Maestro-Detalle, Estadístico)
-6. Generar archivo .jrxml sin comentarios
-7. Crear método Java para ejecución desde NetBeans
-
-**Checklist final**:
-
-- [ ] Requisitos identificados desde README.md
-- [ ] Query SQL construido correctamente
-- [ ] Tipo de reporte clasificado apropiadamente
-- [ ] Parámetros definidos según filtros
-- [ ] Código .jrxml sin comentarios
-- [ ] Método Java de integración creado
-- [ ] Tipos de datos coinciden con java.sql
+**Si te piden crear TABLAS →** `EstructuraDeTablas.md`
+**Si te piden crear VISTAS →** `EstructuraVistas.md`
+**Si te piden crear FORMULARIOS →** `EstructuraFormularios.md`
+**Si te piden crear CONTROLADORES →** `EstructuraControlador.md`
+**Si te piden crear REPORTES →** `EstructuraReportes.md`
+**Si te piden organizar CARPETAS →** `EstructuraDeCarpetas.md`
 
 ---
 
-## Validación General de Estructura
+## 🎯 Flujo de Decisión por Tipo de Petición
 
-### Checklist de Cumplimiento de Proyecto
+### 📊 Para TRABAJAR CON TABLAS
 
-**Al finalizar CUALQUIER tarea, verificar**:
+**Referencia principal**: `EstructuraDeTablas.md`
 
-#### Estructura de Carpetas
+**Cuándo usar**: Siempre que te mencionen tablas, JTable, listados de datos
 
-- [ ] Archivos organizados en subcarpetas temáticas
-- [ ] Ningún archivo .java o .form suelto en carpetas principales
-- [ ] Carpetas con nombres en minúsculas y singular
-- [ ] Archivos .java y .form juntos en misma carpeta
+**Elementos obligatorios que debes implementar**:
 
-#### Convenciones de Nomenclatura
+- Columna NO como índice
+- Resaltado de fila completa al seleccionar
+- Menú contextual (click derecho) con editar y eliminar
+- Métodos de refresco después de cada operación CRUD
+- Refresco al iniciar la vista
 
-- [ ] Modelos: `[Entidad]Model.java`
-- [ ] Vistas: `[entidad]Vista.java` y `.form`
-- [ ] Formularios: `Formulario[Acción][Entidad].java` y `.form`
-- [ ] Controladores: `[NombreFormulario]Controller.java`
-- [ ] Reportes: `reportes[Entidad].java` y `.form`
-- [ ] Types: `[Entidad][Propósito]Type.java`
-
-#### Principios MVC
-
-- [ ] Modelo: solo lógica de datos y negocio
-- [ ] Vista: solo interfaces gráficas, componentes públicos
-- [ ] Controlador: coordinación entre Modelo y Vista
-- [ ] Sin conexión directa a BD desde vistas
-- [ ] Sin lógica de negocio en vistas
-
-#### Archivos Especiales
-
-- [ ] `init.sql` y `Conexion.java` sueltos en Modelo/
-- [ ] Librerías .jar en `misLibrerias/` (fuera de src)
+**Redirección específica**: Ver `EstructuraDeTablas.md` para código completo
 
 ---
 
-## Documentación de Referencia
+### 🖼️ Para CREAR VISTAS PRINCIPALES
 
-| Archivo                       | Propósito                         | Cuándo consultar                    |
-| ----------------------------- | --------------------------------- | ----------------------------------- |
-| `EstructuraDeCarpetas.md`     | Organización física del proyecto  | **SIEMPRE** antes de crear archivos |
-| `EstructuraFormularios.md`    | Patrones para formularios JDialog | Al crear formularios Agregar/Editar |
-| `EstructuraVistas.md`         | Patrones para vistas principales  | Al crear vistas de listado          |
-| `EstructuraReportes.md`       | Guía para JasperReports           | Al crear reportes                   |
-| `EstructuraModelo.md`         | Skill CRUD y patrones del Modelo  | **SIEMPRE** al crear modelos CRUD   |
-| `EstructuraProyecto.md`       | Arquitectura general y datos      | Para entender contexto del sistema  |
-| `EstructuraPuntoDeEntrada.md` | Punto de entrada y inicialización | **SIEMPRE** al iniciar aplicación   |
-| `EstructuraControlador.md`    | Arquitectura de controladores     | **SIEMPRE** al crear controladores  |
+**Referencia principal**: `EstructuraVistas.md`
+
+**Cuándo usar**: Cuando te pidan ventanas principales con listados
+
+**Características obligatorias**:
+
+- Extender de JDialog
+- Nombre: `[Entidad]Vista.java`
+- Encabezado con nombre en mayúsculas
+- Tabla principal llamada `tabla`
+- Buscador con `inputBusqueda` y `botonBuscar`
+- Botón `botonAgregar`
+- Todos los componentes públicos
+
+**Redirección específica**: Ver `EstructuraVistas.md` para estructura visual completa
 
 ---
 
-## Advertencias Críticas
+### 📝 Para CREAR FORMULARIOS (Agregar/Editar)
 
-### Errores Comunes a Evitar
+**Referencia principal**: `EstructuraFormularios.md`
 
-1. **NO colocar archivos sueltos** en carpetas principales
+**Cuándo usar**: Cuando te pidan formularios de agregar o editar datos
+
+**Características obligatorias**:
+
+- Extender de JDialog
+- Nombres: `FormularioAgregar[Entidad].java` y `FormularioEditar[Entidad].java`
+- Títulos: "Agregar [Entidad]" o "Editar [Entidad]"
+- Campos manuales según init.sql (NO automáticos)
+- Nomenclatura: `input[Campo]`, `comboBox[Entidad]`, `boton[Acción]`
+- Todos los componentes públicos
+
+**Redirección específica**: Ver `EstructuraFormularios.md` para validaciones y estructura
+
+---
+
+### 🎮 Para CREAR CONTROLADORES
+
+**Referencia principal**: `EstructuraControlador.md`
+
+**Cuándo usar**: Cuando te pidan crear o modificar controladores
+
+**Reglas estrictas**:
+
+- NO CREAR VISTAS (solo recibirlas por constructor)
+- Inyección de dependencias obligatoria
+- Responsabilidad única (solo vistas relacionadas)
+- Constructor con vistas como parámetros
+
+**Redirección específica**: Ver `EstructuraControlador.md` para patrones arquitectónicos
+
+---
+
+### 📈 Para CREAR REPORTES
+
+**Referencia principal**: `EstructuraReportes.md`
+
+**Cuándo usar**: Cuando te pidan reportes, informes o JasperReports
+
+**Proceso obligatorio**:
+
+- Identificar requisitos desde README.md
+- Construir query SQL según protocolo
+- Clasificar tipo de reporte
+- Generar .jrxml sin comentarios
+- Crear método Java para ejecución
+
+**Redirección específica**: Ver `EstructuraReportes.md` para protocolo completo
+
+---
+
+### 🗂️ Para ORGANIZACIÓN DE CARPETAS
+
+**Referencia principal**: `EstructuraDeCarpetas.md`
+
+**Cuándo usar**: Siempre antes de crear cualquier archivo
+
+**Reglas estrictas**:
+
+- Subcarpetas temáticas obligatorias
+- Nombres en minúsculas y singular
+- Archivos .java y .form juntos
+- Ningún archivo suelto en carpetas principales
+
+**Redirección específica**: Ver `EstructuraDeCarpetas.md` para estructura física
+
+---
+
+### 🏠 Para PUNTO DE ENTRADA E INICIALIZACIÓN
+
+**Referencia principal**: `EstructuraPuntoDeEntrada.md`
+
+**Cuándo usar**: Cuando te pidan configurar el inicio de la aplicación
+
+**Proceso obligatorio**:
+
+- Crear todas las vistas en main()
+- Crear HomeController con vistas principales
+- Inyectar dependencias correctamente
+- Iniciar aplicación a través de HomeController
+
+**Redirección específica**: Ver `EstructuraPuntoDeEntrada.md` para inicialización
+
+---
+
+### 🗃️ Para MODELOS Y BASE DE DATOS
+
+**Referencia principal**: `EstructuraModelo.md`
+
+**Cuándo usar**: Cuando te pidan crear modelos, DAOs o trabajar con base de datos
+
+**Elementos clave**:
+
+- Skill CRUD para patrones del Modelo
+- Estructura de entidades
+- Conexión a base de datos
+- Operaciones CRUD estándar
+
+**Redirección específica**: Ver `EstructuraModelo.md` para patrones CRUD
+
+---
+
+## 🚨 ADVERTENCIAS CRÍTICAS - Errores a Evitar
+
+### ❌ NUNCA HAGAS ESTO:
+
+1. **NO crear archivos sueltos** en carpetas principales
 2. **NO incluir campos automáticos** en formularios (IDs, timestamps)
 3. **NO agregar lógica de negocio** en vistas
 4. **NO olvidar hacer públicos** los componentes
-5. **NO mezclar convenciones** de nomenclatura
-6. **NO crear archivos .form** separados del .java
-7. **NO crear vistas en controladores** (solo recibir por parámetro)
-8. **NO olvidar inyección de dependencias** en controladores
+5. **NO crear vistas en controladores** (solo recibir por parámetro)
+6. **NO mezclar convenciones** de nomenclatura
 
-### Recordatorios de Calidad
+### ✅ SIEMPRE HAZ ESTO:
 
-- **Siempre verificar estructura** antes de crear
-- **Mantener consistencia** en nombres y patrones
-- **Seguir MVC estrictamente** sin excepciones
-- **Documentar cambios** si se desvía del estándar
-- **Validar ubicación** según `EstructuraDeCarpetas.md`
+1. **SIEMPRE revisar `EstructuraDeCarpetas.md`** antes de crear
+2. **SIEMPRE seguir MVC estrictamente**
+3. **SIEMPRE mantener consistencia** en nombres
+4. **SIEMPLE validar ubicación** según estructura
+5. **SIEMPRE consultar el archivo guía específico** para cada tarea
 
 ---
 
-## Flujo de Trabajo Resumido
+## 📋 MAPA DE NAVEGACIÓN RÁPIDA
+
+| Petición del Usuario    | Archivo de Referencia         | Acción Inmediata                                              |
+| ----------------------- | ----------------------------- | ------------------------------------------------------------- |
+| "Crear tabla"           | `EstructuraDeTablas.md`       | Implementar columna NO, resaltado, menú contextual, refrescos |
+| "Crear vista principal" | `EstructuraVistas.md`         | Crear [Entidad]Vista con tabla, buscador, botones             |
+| "Crear formulario"      | `EstructuraFormularios.md`    | Crear FormularioAgregar/Editar con campos manuales            |
+| "Crear controlador"     | `EstructuraControlador.md`    | Recibir vistas por constructor, NO crear                      |
+| "Crear reporte"         | `EstructuraReportes.md`       | Query SQL → .jrxml → método Java                              |
+| "Organizar carpetas"    | `EstructuraDeCarpetas.md`     | Subcarpetas temáticas, archivos juntos                        |
+| "Iniciar aplicación"    | `EstructuraPuntoDeEntrada.md` | Crear vistas → HomeController → inyección                     |
+| "Crear modelo/DAO"      | `EstructuraModelo.md`         | Skill CRUD, patrones estándar                                 |
+
+---
+
+## 🔄 FLUJO DE TRABAJO AUTOMÁTICO
 
 ```
-INICIO TAREA
+RECIBIR PETICIÓN
     |
     v
-Revisar EstructuraDeCarpetas.md
+IDENTIFICAR TIPO DE TAREA (tabla/vista/formulario/controlador/reporte)
     |
     v
-Identificar archivo guía específico
+IR AL ARCHIVO GUÍA ESPECÍFICO (según tabla arriba)
     |
     v
-Seguir pasos según tipo de tarea
+SEGUIR PASOS OBLIGATORIOS DEL ARCHIVO GUÍA
     |
     v
-Aplicar checklist de validación
+APLICAR CHECKLIST DE VALIDACIÓN
     |
     v
-Verificar estructura general del proyecto
+VERIFICAR ESTRUCTURA GENERAL
     |
     v
 TAREA COMPLETADA
 ```
 
-**Recuerda**: La calidad y consistencia del proyecto dependen del seguimiento estricto de estas guías.
+---
+
+## 📚 ARCHIVOS DE REFERENCIA COMPLETA
+
+- `EstructuraDeTablas.md` - Guía completa para tablas con resaltado, menú contextual y refrescos
+- `EstructuraVistas.md` - Patrones para vistas principales con componentes estándar
+- `EstructuraFormularios.md` - Formularios Agregar/Editar con validaciones
+- `EstructuraControlador.md` - Arquitectura de controladores con inyección de dependencias
+- `EstructuraReportes.md` - Protocolo completo para JasperReports
+- `EstructuraDeCarpetas.md` - Organización física del proyecto
+- `EstructuraPuntoDeEntrada.md` - Inicialización y punto de entrada
+- `EstructuraModelo.md` - Patrones CRUD y modelos de datos
+- `EstructuraProyecto.md` - Contexto general y arquitectura del sistema
+
+---
+
+**🎯 OBJETIVO**: Este índice es tu mapa de navegación. Identifica el tipo de tarea y ve directamente al archivo guía correspondiente. No improvises, sigue las estructuras establecidas.

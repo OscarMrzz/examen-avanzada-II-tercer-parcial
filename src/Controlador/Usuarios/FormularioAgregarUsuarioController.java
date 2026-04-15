@@ -98,7 +98,7 @@ public class FormularioAgregarUsuarioController {
                 JOptionPane.showMessageDialog(vista, "No se pudo guardar el usuario",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
-
+            
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Error al guardar usuario: " + ex.getMessage(), ex);
             JOptionPane.showMessageDialog(vista, "Error al guardar usuario. Por favor, intente nuevamente.",

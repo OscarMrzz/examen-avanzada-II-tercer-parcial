@@ -15,21 +15,21 @@ public class FormularioAgregarEntidadController {
     private FormularioAgregarEntidad vista;
     private EntidadModel modelo;
     private String rutaImagen = "";
-    
+
     public FormularioAgregarEntidadController(FormularioAgregarEntidad vista) {
         this.vista = vista;
         this.modelo = new EntidadModel();
         inicializarEventos();
         cargarCombos();
     }
-    
+
     private void inicializarEventos() {
         // Botón Guardar
         vista.botonGuardar.addActionListener(this::guardar);
-        
+
         // Botón Cancelar
         vista.botonCancelar.addActionListener(this::cancelar);
-        
+
         // Botón Cargar Imagen (si existe)
         if (vista.botonCargarImagen != null) {
             vista.botonCargarImagen.addActionListener(this::cargarImagen);
@@ -46,7 +46,7 @@ public class FormularioEditarEntidadController {
     private EntidadModel modelo;
     private String idEntidad;
     private String rutaImagen = "";
-    
+
     public FormularioEditarEntidadController(FormularioEditarEntidad vista, String idEntidad) {
         this.vista = vista;
         this.modelo = new EntidadModel();
@@ -55,14 +55,14 @@ public class FormularioEditarEntidadController {
         cargarCombos();
         cargarDatosEntidad();
     }
-    
+
     private void inicializarEventos() {
         // Botón Actualizar
         vista.botonGuardar.addActionListener(this::actualizar);
-        
+
         // Botón Cancelar
         vista.botonCancelar.addActionListener(this::cancelar);
-        
+
         // Botón Cargar Imagen (si existe)
         if (vista.botonCargarImagen != null) {
             vista.botonCargarImagen.addActionListener(this::cargarImagen);
@@ -86,38 +86,38 @@ private void cargarCombos() {
         try {
             ProductoModel productoModel = new ProductoModel();
             ArrayList<ProductoType> productos = productoModel.getAll();
-            
+
             vista.comboBoxProductos.removeAllItems();
             vista.comboBoxProductos.addItem("Seleccionar...");
-            
+
             for (ProductoType producto : productos) {
                 // Formato: "ID - Nombre - Precio"
-                String item = producto.getIdProducto() + " - " + 
-                             producto.getNombreProducto() + " - $" + 
+                String item = producto.getIdProducto() + " - " +
+                             producto.getNombreProducto() + " - $" +
                              producto.getPrecioProducto();
                 vista.comboBoxProductos.addItem(item);
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(vista, "Error al cargar productos: " + ex.getMessage(), 
+            JOptionPane.showMessageDialog(vista, "Error al cargar productos: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     // Cargar ComboBox de Proveedores
     if (vista.comboBoxProveedores != null) {
         try {
             ProveedorModel proveedorModel = new ProveedorModel();
             ArrayList<ProveedorType> proveedores = proveedorModel.getAll();
-            
+
             vista.comboBoxProveedores.removeAllItems();
             vista.comboBoxProveedores.addItem("Seleccionar...");
-            
+
             for (ProveedorType proveedor : proveedores) {
                 String item = proveedor.getIdProveedor() + " - " + proveedor.getNombreProveedor();
                 vista.comboBoxProveedores.addItem(item);
             }
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(vista, "Error al cargar proveedores: " + ex.getMessage(), 
+            JOptionPane.showMessageDialog(vista, "Error al cargar proveedores: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -133,22 +133,22 @@ private void cargarCombos() {
  */
 private String obtenerIdSeleccionado(JComboBox<String> comboBox) {
     String seleccion = (String) comboBox.getSelectedItem();
-    
+
     if (seleccion == null || seleccion.equals("Seleccionar...")) {
         return null;
     }
-    
+
     // Extraer el ID (primera parte antes del " - ")
     return seleccion.split(" - ")[0];
 }
 
 private String obtenerNombreSeleccionado(JComboBox<String> comboBox) {
     String seleccion = (String) comboBox.getSelectedItem();
-    
+
     if (seleccion == null || seleccion.equals("Seleccionar...")) {
         return null;
     }
-    
+
     // Extraer el nombre (segunda parte entre " - ")
     String[] partes = seleccion.split(" - ");
     return partes.length > 1 ? partes[1] : "";
@@ -170,46 +170,46 @@ private void cargarImagen(ActionEvent e) {
     JFileChooser fileChooser = new JFileChooser();
     fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
             "Archivos de imagen", "jpg", "jpeg", "png", "gif"));
-    
+
     int resultado = fileChooser.showOpenDialog(vista);
-    
+
     if (resultado == JFileChooser.APPROVE_OPTION) {
         File archivoSeleccionado = fileChooser.getSelectedFile();
-        
+
         try {
             // Crear directorio img si no existe
             File directorioImg = new File("src/img");
             if (!directorioImg.exists()) {
                 directorioImg.mkdirs();
             }
-            
+
             // Generar nombre único para la imagen
             String extension = getFileExtension(archivoSeleccionado.getName());
             String nombreImagen = "img_" + System.currentTimeMillis() + "." + extension;
             File destinoImagen = new File(directorioImg, nombreImagen);
-            
+
             // Copiar archivo al directorio img
-            Files.copy(archivoSeleccionado.toPath(), destinoImagen.toPath(), 
+            Files.copy(archivoSeleccionado.toPath(), destinoImagen.toPath(),
                       StandardCopyOption.REPLACE_EXISTING);
-            
+
             // Actualizar ruta y vista previa
             this.rutaImagen = "src/img/" + nombreImagen;
-            
+
             if (vista.labelImagen != null) {
                 // Escalar imagen para vista previa
                 ImageIcon icono = new ImageIcon(destinoImagen.getPath());
                 Image imagenEscalada = icono.getImage().getScaledInstance(
-                    vista.labelImagen.getWidth(), 
-                    vista.labelImagen.getHeight(), 
+                    vista.labelImagen.getWidth(),
+                    vista.labelImagen.getHeight(),
                     Image.SCALE_SMOOTH);
                 vista.labelImagen.setIcon(new ImageIcon(imagenEscalada));
             }
-            
-            JOptionPane.showMessageDialog(vista, "Imagen cargada correctamente", 
+
+            JOptionPane.showMessageDialog(vista, "Imagen cargada correctamente",
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            
+
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(vista, "Error al cargar la imagen: " + ex.getMessage(), 
+            JOptionPane.showMessageDialog(vista, "Error al cargar la imagen: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -236,14 +236,14 @@ private String getFileExtension(String nombreArchivo) {
 private void cargarImagenExistente(String rutaImagen) {
     if (rutaImagen != null && !rutaImagen.isEmpty()) {
         this.rutaImagen = rutaImagen;
-        
+
         try {
             File archivoImagen = new File(rutaImagen);
             if (archivoImagen.exists() && vista.labelImagen != null) {
                 ImageIcon icono = new ImageIcon(archivoImagen.getPath());
                 Image imagenEscalada = icono.getImage().getScaledInstance(
-                    vista.labelImagen.getWidth(), 
-                    vista.labelImagen.getHeight(), 
+                    vista.labelImagen.getWidth(),
+                    vista.labelImagen.getHeight(),
                     Image.SCALE_SMOOTH);
                 vista.labelImagen.setIcon(new ImageIcon(imagenEscalada));
             }
@@ -264,16 +264,16 @@ private void cargarImagenExistente(String rutaImagen) {
  */
 private boolean validarCampos() {
     StringBuilder errores = new StringBuilder();
-    
+
     // Validar campos de texto obligatorios
     if (vista.inputNombre.getText().trim().isEmpty()) {
         errores.append("- El nombre es obligatorio\n");
     }
-    
+
     if (vista.inputDescripcion.getText().trim().isEmpty()) {
         errores.append("- La descripción es obligatoria\n");
     }
-    
+
     // Validar ComboBox
     if (vista.comboBoxCategoria != null) {
         String seleccion = (String) vista.comboBoxCategoria.getSelectedItem();
@@ -281,7 +281,7 @@ private boolean validarCampos() {
             errores.append("- Debe seleccionar una categoría\n");
         }
     }
-    
+
     // Validar campos numéricos
     if (vista.inputPrecio != null) {
         try {
@@ -293,7 +293,7 @@ private boolean validarCampos() {
             errores.append("- El precio debe ser un número válido\n");
         }
     }
-    
+
     // Validar email
     if (vista.inputEmail != null && !vista.inputEmail.getText().trim().isEmpty()) {
         String email = vista.inputEmail.getText().trim();
@@ -301,13 +301,13 @@ private boolean validarCampos() {
             errores.append("- El email no es válido\n");
         }
     }
-    
+
     if (errores.length() > 0) {
-        JOptionPane.showMessageDialog(vista, "Corrija los siguientes errores:\n\n" + errores.toString(), 
+        JOptionPane.showMessageDialog(vista, "Corrija los siguientes errores:\n\n" + errores.toString(),
                 "Errores de Validación", JOptionPane.ERROR_MESSAGE);
         return false;
     }
-    
+
     return true;
 }
 ```
@@ -324,7 +324,7 @@ private void guardar(ActionEvent e) {
     if (!validarCampos()) {
         return;
     }
-    
+
     try {
         // Crear objeto con los datos del formulario
         EntidadType nuevaEntidad = new EntidadType();
@@ -332,31 +332,31 @@ private void guardar(ActionEvent e) {
         nuevaEntidad.setNombre(vista.inputNombre.getText().trim());
         nuevaEntidad.setDescripcion(vista.inputDescripcion.getText().trim());
         nuevaEntidad.setImagen(rutaImagen);
-        
+
         // Setear campos de ComboBox
         if (vista.comboBoxCategoria != null) {
             String idCategoria = obtenerIdSeleccionado(vista.comboBoxCategoria);
             nuevaEntidad.setIdCategoria(idCategoria);
         }
-        
+
         // Setear campos numéricos
         if (vista.inputPrecio != null) {
             nuevaEntidad.setPrecio(Double.parseDouble(vista.inputPrecio.getText().trim()));
         }
-        
+
         // Guardar en base de datos
         if (modelo.create(nuevaEntidad)) {
-            JOptionPane.showMessageDialog(vista, "Registro guardado correctamente", 
+            JOptionPane.showMessageDialog(vista, "Registro guardado correctamente",
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
             limpiarCampos();
             vista.dispose(); // Cerrar formulario
         } else {
-            JOptionPane.showMessageDialog(vista, "No se pudo guardar el registro", 
+            JOptionPane.showMessageDialog(vista, "No se pudo guardar el registro",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
     } catch (Exception ex) {
-        JOptionPane.showMessageDialog(vista, "Error al guardar: " + ex.getMessage(), 
+        JOptionPane.showMessageDialog(vista, "Error al guardar: " + ex.getMessage(),
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
@@ -372,47 +372,47 @@ private void actualizar(ActionEvent e) {
     if (!validarCampos()) {
         return;
     }
-    
+
     try {
         // Obtener entidad existente
         EntidadType entidad = modelo.getById(idEntidad);
         if (entidad == null) {
-            JOptionPane.showMessageDialog(vista, "No se encontró el registro", 
+            JOptionPane.showMessageDialog(vista, "No se encontró el registro",
                     "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // Actualizar datos
         entidad.setNombre(vista.inputNombre.getText().trim());
         entidad.setDescripcion(vista.inputDescripcion.getText().trim());
-        
+
         // Actualizar imagen solo si se cargó una nueva
         if (!rutaImagen.isEmpty()) {
             entidad.setImagen(rutaImagen);
         }
-        
+
         // Actualizar otros campos
         if (vista.comboBoxCategoria != null) {
             String idCategoria = obtenerIdSeleccionado(vista.comboBoxCategoria);
             entidad.setIdCategoria(idCategoria);
         }
-        
+
         if (vista.inputPrecio != null) {
             entidad.setPrecio(Double.parseDouble(vista.inputPrecio.getText().trim()));
         }
-        
+
         // Guardar cambios
         if (modelo.update(entidad)) {
-            JOptionPane.showMessageDialog(vista, "Registro actualizado correctamente", 
+            JOptionPane.showMessageDialog(vista, "Registro actualizado correctamente",
                     "Éxito", JOptionPane.INFORMATION_MESSAGE);
             vista.dispose(); // Cerrar formulario
         } else {
-            JOptionPane.showMessageDialog(vista, "No se pudo actualizar el registro", 
+            JOptionPane.showMessageDialog(vista, "No se pudo actualizar el registro",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
-        
+
     } catch (Exception ex) {
-        JOptionPane.showMessageDialog(vista, "Error al actualizar: " + ex.getMessage(), 
+        JOptionPane.showMessageDialog(vista, "Error al actualizar: " + ex.getMessage(),
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
@@ -428,16 +428,16 @@ private void cargarDatosEntidad() {
     try {
         EntidadType entidad = modelo.getById(idEntidad);
         if (entidad == null) {
-            JOptionPane.showMessageDialog(vista, "No se encontró el registro", 
+            JOptionPane.showMessageDialog(vista, "No se encontró el registro",
                     "Error", JOptionPane.ERROR_MESSAGE);
             vista.dispose();
             return;
         }
-        
+
         // Cargar campos de texto
         vista.inputNombre.setText(entidad.getNombre());
         vista.inputDescripcion.setText(entidad.getDescripcion());
-        
+
         // Cargar ComboBox
         if (vista.comboBoxCategoria != null && entidad.getIdCategoria() != null) {
             // Buscar y seleccionar el item correcto en el ComboBox
@@ -449,17 +449,17 @@ private void cargarDatosEntidad() {
                 }
             }
         }
-        
+
         // Cargar campos numéricos
         if (vista.inputPrecio != null) {
             vista.inputPrecio.setText(String.valueOf(entidad.getPrecio()));
         }
-        
+
         // Cargar imagen
         cargarImagenExistente(entidad.getImagen());
-        
+
     } catch (Exception ex) {
-        JOptionPane.showMessageDialog(vista, "Error al cargar datos: " + ex.getMessage(), 
+        JOptionPane.showMessageDialog(vista, "Error al cargar datos: " + ex.getMessage(),
                 "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
@@ -476,19 +476,19 @@ private void cargarDatosEntidad() {
 private void limpiarCampos() {
     vista.inputNombre.setText("");
     vista.inputDescripcion.setText("");
-    
+
     if (vista.comboBoxCategoria != null) {
         vista.comboBoxCategoria.setSelectedIndex(0);
     }
-    
+
     if (vista.inputPrecio != null) {
         vista.inputPrecio.setText("");
     }
-    
+
     if (vista.labelImagen != null) {
         vista.labelImagen.setIcon(null);
     }
-    
+
     rutaImagen = "";
 }
 ```
@@ -507,7 +507,7 @@ private void cancelar(ActionEvent e) {
         JOptionPane.YES_NO_OPTION,
         JOptionPane.QUESTION_MESSAGE
     );
-    
+
     if (confirmacion == JOptionPane.YES_OPTION) {
         vista.dispose();
     }
@@ -525,7 +525,244 @@ private void cancelar(ActionEvent e) {
 7. **Manejo de Errores**: Captura y muestra excepciones amigablemente
 8. **Limpieza**: Limpia campos después de guardar correctamente
 
-## 8. Imports Necesarios
+## 8. Guía Específica para Formularios de Edición
+
+### 8.1 Captura del ID desde Tabla Principal
+
+\*_Desde el controlador principal (ej: UsuarioController):_/
+
+````java
+private void abrirFormularioEditar() {
+    int fila = vista.tabla.getSelectedRow();
+
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(vista, "Por favor seleccione un usuario para editar",
+                "Advertencia", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    try {
+        ArrayList<UsuarioType> usuarios = modelo.getAll();
+        if (fila < usuarios.size()) {
+            String idUsuario = usuarios.get(fila).getIdUsuario(); // Capturar ID real
+
+            Vista.usuarios.FormularioEditarUsuario formulario = new Vista.usuarios.FormularioEditarUsuario(
+                    new javax.swing.JFrame(), true);
+            new FormularioEditarUsuarioController(formulario, idUsuario); // Pasar ID
+            formulario.setVisible(true);
+
+            // Recargar la tabla después de editar
+            cargarTabla();
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(vista, "Error al obtener el usuario: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+### 8.2 Constructor del Controlador de Edición
+
+**Recibir y almacenar el ID (genérico para cualquier entidad):**
+```java
+public class FormularioEditarEntidadController {
+    private FormularioEditarEntidad vista;
+    private EntidadModel modelo; // Modelo específico: UsuarioModel, VentasModel, etc.
+    private String idEntidad; // ID como String (UUID)
+
+    public FormularioEditarEntidadController(FormularioEditarEntidad vista, String idEntidad) {
+        this.vista = vista;
+        this.modelo = new EntidadModel(); // Crear instancia del modelo específico
+        this.idEntidad = idEntidad; // Almacenar ID recibido
+        inicializarEventos();
+        cargarDatosEntidad(); // Cargar datos inmediatamente
+    }
+}
+
+### 8.3 Carga de Datos desde Base de Datos
+
+**Usar método getById() del modelo específico:**
+```java
+private void cargarDatosEntidad() {
+    try {
+        // Obtener entidad usando el método get del modelo específico
+        EntidadType entidad = modelo.getById(idEntidad);
+
+        if (entidad == null) {
+            JOptionPane.showMessageDialog(vista, "Registro no encontrado",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            vista.dispose();
+            return;
+        }
+
+        // Cargar campos de texto usando getters de la entidad
+        vista.inputNombre.setText(entidad.getNombre());
+        vista.inputDescripcion.setText(entidad.getDescripcion());
+
+        // Cargar ComboBox de relaciones (si existen)
+        if (vista.comboBoxCategoria != null && entidad.getIdCategoria() != null) {
+            // Buscar y seleccionar el item correcto en el ComboBox
+            for (int i = 0; i < vista.comboBoxCategoria.getItemCount(); i++) {
+                String item = vista.comboBoxCategoria.getItemAt(i);
+                if (item.startsWith(entidad.getIdCategoria() + " - ")) {
+                    vista.comboBoxCategoria.setSelectedIndex(i);
+                    break;
+                }
+            }
+        }
+
+        // Cargar ComboBox de valores directos (ENUMs)
+        if (vista.comboBoxEstado != null) {
+            // Convertir boolean a texto según la entidad
+            String estadoTexto = entidad.isEstado() ? "ACTIVO" : "INACTIVO";
+            vista.comboBoxEstado.setSelectedItem(estadoTexto);
+        }
+
+        if (vista.comboBoxRol != null && entidad.getRol() != null) {
+            vista.comboBoxRol.setSelectedItem(entidad.getRol());
+        }
+
+        // Cargar campos numéricos
+        if (vista.inputPrecio != null) {
+            vista.inputPrecio.setText(String.valueOf(entidad.getPrecio()));
+        }
+
+        // Cargar imagen si existe
+        if (vista.labelImagen != null && entidad.getImagen() != null) {
+            cargarImagenExistente(entidad.getImagen());
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(vista, "Error al cargar datos: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+### 8.4 Configuración de ComboBox (en la Vista)
+
+**Valores deben coincidir exactamente con la base de datos:**
+```java
+// En FormularioEditarUsuario.java - método initComponents()
+comboBoxRol.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+    "Seleccionar...", "ADMIN", "VENTAS", "INVENTARIO"
+}));
+
+comboBoxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+    "Seleccionar...", "ACTIVO", "INACTIVO"
+}));
+````
+
+### 8.5 Actualización de Datos
+
+**Usar método update() del modelo específico:**
+
+````java
+private void actualizarEntidad(ActionEvent e) {
+    if (!validarCampos()) {
+        return;
+    }
+
+    try {
+        // Obtener la entidad existente usando el modelo
+        EntidadType entidad = modelo.getById(idEntidad);
+
+        if (entidad == null) {
+            JOptionPane.showMessageDialog(vista, "No se encontró el registro",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Actualizar campos de texto usando setters
+        entidad.setNombre(vista.inputNombre.getText().trim());
+        entidad.setDescripcion(vista.inputDescripcion.getText().trim());
+
+        // Actualizar campos de ComboBox
+        if (vista.comboBoxCategoria != null) {
+            String idCategoria = obtenerIdSeleccionado(vista.comboBoxCategoria);
+            entidad.setIdCategoria(idCategoria);
+        }
+
+        if (vista.comboBoxRol != null) {
+            String rol = (String) vista.comboBoxRol.getSelectedItem();
+            entidad.setRol(rol);
+        }
+
+        if (vista.comboBoxEstado != null) {
+            // Convertir "ACTIVO"/"INACTIVO" a boolean
+            String estado = (String) vista.comboBoxEstado.getSelectedItem();
+            entidad.setEstado("ACTIVO".equals(estado));
+        }
+
+        // Actualizar campos numéricos
+        if (vista.inputPrecio != null) {
+            entidad.setPrecio(Double.parseDouble(vista.inputPrecio.getText().trim()));
+        }
+
+        // Actualizar imagen si se cargó una nueva
+        if (!rutaImagen.isEmpty()) {
+            entidad.setImagen(rutaImagen);
+        }
+
+        // Usar el método update del modelo específico
+        if (modelo.update(entidad)) {
+            JOptionPane.showMessageDialog(vista, "Registro actualizado correctamente",
+                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            vista.dispose();
+        } else {
+            JOptionPane.showMessageDialog(vista, "No se pudo actualizar el registro",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(vista, "Error al actualizar: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+### 8.6 Puntos Críticos para Formularios de Edición
+
+#### 8.6.1 Manejo de IDs
+- **ID como String**: Los UUIDs son cadenas, no números
+- **No convertir a int**: Usar `String idUsuario` siempre
+- **PreparedStatement**: Usar `stmt.setString()` para IDs
+
+#### 8.6.2 Nombres de Columnas
+- **Verificar esquema**: Revisar `init.sql` para nombres exactos
+- **Ejemplo usuarios**: `nombre_usuario`, `privilegio_usuario`, `estado_usuario`
+- **No inventar**: Usar exactamente los nombres de la BD
+
+#### 8.6.3 Tipos de Datos
+- **Boolean**: `estado_usuario` es `BOOLEAN` en BD
+- **Conversión**: "ACTIVO"/"INACTIVO" `boolean`
+- **PreparedStatement**: Usar `setBoolean()` y `getBoolean()`
+
+#### 8.6.4 ComboBox
+- **Valores exactos**: Deben coincidir con `ENUM` de BD
+- **Ejemplo roles**: "ADMIN", "VENTAS", "INVENTARIO"
+- **No usar sinónimos**: "CAJERO" no existe en BD
+
+### 8.7 Flujo Completo de Edición
+
+1. **Seleccionar fila** en tabla principal
+2. **Capturar ID** desde `modelo.getAll().get(fila).getId()`
+3. **Crear formulario** con `new FormularioEditar(..., id)`
+4. **Constructor recibe ID** y lo almacena
+5. **Cargar datos** con `SELECT WHERE id_usuario = ?`
+6. **Mostrar datos** en inputs y combobox
+7. **Usuario edita** y presiona "Guardar"
+8. **Actualizar con** `UPDATE SET ... WHERE id_usuario = ?`
+9. **Cerrar formulario** y recargar tabla principal
+
+### 8.8 Errores Comunes y Soluciones
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| `Unknown column 'nombre'` | Nombre incorrecto de columna | Usar `nombre_usuario` |
+| `For input string: "UUID"` | Convertir UUID a int | Usar `String idUsuario` |
+| `setInt(int, String)` | Tipo incorrecto en PreparedStatement | Usar `setString()` |
+| ComboBox vacío | Valores no coinciden con BD | Verificar valores del ENUM |
+| `setBoolean()` con String | Tipo incorrecto para estado | Convertir "ACTIVO" a boolean |
+
+## 9. Imports Necesarios
 
 ```java
 import java.awt.Image;
@@ -534,8 +771,12 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-```
+````
