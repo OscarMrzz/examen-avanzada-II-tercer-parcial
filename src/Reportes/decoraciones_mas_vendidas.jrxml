@@ -45,27 +45,6 @@ ORDER BY total_unidades_vendidas DESC
         </band>
     </title>
 
-    <summary>
-        <band height="260">
-            <barChart>
-                <chart>
-                    <reportElement x="0" y="0" width="555" height="240"/>
-                    <chartTitle>
-                        <titleExpression><![CDATA["Top - Unidades vendidas"]]></titleExpression>
-                    </chartTitle>
-                </chart>
-                <categoryDataset>
-                    <categorySeries>
-                        <seriesExpression><![CDATA["Unidades"]]></seriesExpression>
-                        <categoryExpression><![CDATA[$F{nombre_decoracion}]]></categoryExpression>
-                        <valueExpression><![CDATA[$F{total_unidades_vendidas}]]></valueExpression>
-                    </categorySeries>
-                </categoryDataset>
-                <barPlot/>
-            </barChart>
-        </band>
-    </summary>
-
     <columnHeader>
         <band height="18">
             <staticText><reportElement x="0" y="0" width="200" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Decoración]]></text></staticText>
@@ -89,4 +68,27 @@ ORDER BY total_unidades_vendidas DESC
             </textField>
         </band>
     </detail>
+
+    <summary>
+        <band height="260">
+            <barChart>
+                <chart>
+                    <reportElement x="0" y="0" width="555" height="240"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA["Top - Unidades vendidas"]]></titleExpression>
+                    </chartTitle>
+                </chart>
+                <categoryDataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Unidades"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{nombre_decoracion}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{total_unidades_vendidas}]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                </barPlot>
+            </barChart>
+        </band>
+    </summary>
 </jasperReport>

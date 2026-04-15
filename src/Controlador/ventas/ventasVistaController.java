@@ -5,6 +5,8 @@ import Vista.ventas.FormularioAgregarVenta;
 import Vista.ventas.FormularioEditarVenta;
 import Vista.ventas.reportesVentas;
 import Modelo.reportes.JasperService;
+import Modelo.clientes.ClienteModel;
+import Type.clientes.ClienteType;
 import Modelo.ventas.VentaModel;
 import Type.ventas.VentaType;
 import java.awt.event.ActionEvent;
@@ -53,7 +55,7 @@ public class ventasVistaController {
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
 
         // Evento del botón informe
-        vista.botonInforme.addActionListener(e -> reportes.setVisible(true));
+        vista.botonInforme.addActionListener(e -> abrirDialogoReportes());
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -94,6 +96,43 @@ public class ventasVistaController {
         reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
     }
 
+    private void abrirDialogoReportes() {
+        try {
+            cargarClientesEnComboReporte();
+        } catch (Exception ignored) {
+        }
+        try {
+            reportes.pack();
+            reportes.setLocationRelativeTo(vista);
+            reportes.setAlwaysOnTop(true);
+            reportes.setVisible(true);
+            reportes.toFront();
+            reportes.requestFocus();
+        } finally {
+            reportes.setAlwaysOnTop(false);
+        }
+    }
+
+    private void cargarClientesEnComboReporte() {
+        if (reportes.comboBoxCliente == null) {
+            return;
+        }
+        reportes.comboBoxCliente.removeAllItems();
+        reportes.comboBoxCliente.addItem("Todos");
+
+        ClienteModel clienteModel = new ClienteModel();
+        ArrayList<ClienteType> clientes = clienteModel.getAll();
+        for (ClienteType c : clientes) {
+            if (c != null && c.isEstadoCliente()) {
+                String nombre = c.getNombreCliente() != null ? c.getNombreCliente().trim() : "";
+                if (!nombre.isEmpty()) {
+                    reportes.comboBoxCliente.addItem(nombre);
+                }
+            }
+        }
+        reportes.comboBoxCliente.setSelectedIndex(0);
+    }
+
     private void generarReporte() {
         String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
         if (tipoReporte == null) {
@@ -105,6 +144,9 @@ public class ventasVistaController {
         Date ff = JasperService.parseSqlDateOrNull(reportes.inputFechaFin.getText());
 
         try {
+            // Ocultar el diálogo de filtros para que no tape el visor del reporte
+            reportes.setVisible(false);
+
             switch (tipoReporte) {
                 case "Ventas por Fecha": {
                     if (fi == null || ff == null) {
@@ -122,7 +164,9 @@ public class ventasVistaController {
                 }
                 case "Ventas Generales": {
                     Map<String, Object> p = JasperService.params(
-                            "titulo", "Ventas diarias (incluye gráfica)");
+                            "titulo", "Ventas diarias (incluye gráfica)",
+                            "fechaInicio", fi,
+                            "fechaFin", ff);
                     jasper.verReporte("/reportes/ventas_diarias.jrxml", p);
                     break;
                 }
@@ -132,11 +176,46 @@ public class ventasVistaController {
                     jasper.verReporte("/reportes/decoraciones_mas_vendidas.jrxml", p);
                     break;
                 }
-                case "Ventas por Cliente":
+                case "Ventas por Cliente": {
+                    String nombreCliente = null;
+                    if (reportes.comboBoxCliente != null && reportes.comboBoxCliente.getSelectedItem() != null) {
+                        String v = String.valueOf(reportes.comboBoxCliente.getSelectedItem()).trim();
+                        if (!v.isEmpty() && !v.equalsIgnoreCase("Seleccione") && !v.equalsIgnoreCase("Todos")) {
+                            nombreCliente = v;
+                        }
+                    }
+                    if (nombreCliente == null) {
+                        String v = JOptionPane.showInputDialog(reportes,
+                                "Ingrese el nombre del cliente (exacto) o deje vacío para todos:",
+                                "Cliente", JOptionPane.QUESTION_MESSAGE);
+                        if (v == null) {
+                            return;
+                        }
+                        v = v.trim();
+                        nombreCliente = v.isEmpty() ? null : v;
+                    }
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Ventas por cliente",
+                            "nombreCliente", nombreCliente,
+                            "fechaInicio", fi,
+                            "fechaFin", ff);
+                    jasper.verReporte("/reportes/ventas_por_cliente.jrxml", p);
+                    break;
+                }
                 case "Ventas por Vendedor": {
-                    JOptionPane.showMessageDialog(reportes,
-                            "Este reporte requiere parametrización (cliente/vendedor).\nPor ahora use 'Ventas por Fecha' o 'Ventas Generales'.",
-                            "Reporte", JOptionPane.INFORMATION_MESSAGE);
+                    String vendedor = JOptionPane.showInputDialog(reportes,
+                            "Ingrese el vendedor (exacto) o deje vacío para todos:",
+                            "Vendedor", JOptionPane.QUESTION_MESSAGE);
+                    if (vendedor == null) {
+                        return;
+                    }
+                    vendedor = vendedor.trim();
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Ventas por vendedor",
+                            "vendedor", vendedor.isEmpty() ? null : vendedor,
+                            "fechaInicio", fi,
+                            "fechaFin", ff);
+                    jasper.verReporte("/reportes/ventas_por_vendedor.jrxml", p);
                     break;
                 }
                 default:

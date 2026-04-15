@@ -6,6 +6,8 @@
     <property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQL"/>
 
     <parameter name="titulo" class="java.lang.String"/>
+    <parameter name="fechaInicio" class="java.sql.Date"/>
+    <parameter name="fechaFin" class="java.sql.Date"/>
 
     <queryString>
         <![CDATA[
@@ -17,6 +19,8 @@ SELECT
   total_impuestos_dia,
   total_descuentos_dia
 FROM vista_ventas_diarias
+WHERE ($P{fechaInicio} IS NULL OR fecha_venta >= $P{fechaInicio})
+  AND ($P{fechaFin} IS NULL OR fecha_venta <= $P{fechaFin})
 ORDER BY fecha_venta DESC
         ]]>
     </queryString>
@@ -43,27 +47,6 @@ ORDER BY fecha_venta DESC
         </band>
     </title>
 
-    <summary>
-        <band height="260">
-            <barChart>
-                <chart>
-                    <reportElement x="0" y="0" width="555" height="240"/>
-                    <chartTitle>
-                        <titleExpression><![CDATA["Total de ventas por día"]]></titleExpression>
-                    </chartTitle>
-                </chart>
-                <categoryDataset>
-                    <categorySeries>
-                        <seriesExpression><![CDATA["Total"]]></seriesExpression>
-                        <categoryExpression><![CDATA[$F{fecha_venta}]]></categoryExpression>
-                        <valueExpression><![CDATA[$F{total_ventas_dia}]]></valueExpression>
-                    </categorySeries>
-                </categoryDataset>
-                <barPlot/>
-            </barChart>
-        </band>
-    </summary>
-
     <columnHeader>
         <band height="18">
             <staticText><reportElement x="0" y="0" width="85" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Fecha]]></text></staticText>
@@ -85,4 +68,27 @@ ORDER BY fecha_venta DESC
             <textField pattern="#,##0.00"><reportElement x="410" y="0" width="145" height="16"/><textElement textAlignment="Right"><font size="9"/></textElement><textFieldExpression><![CDATA[$F{total_ventas_dia}]]></textFieldExpression></textField>
         </band>
     </detail>
+
+    <summary>
+        <band height="260">
+            <barChart>
+                <chart>
+                    <reportElement x="0" y="0" width="555" height="240"/>
+                    <chartTitle>
+                        <titleExpression><![CDATA["Total de ventas por día"]]></titleExpression>
+                    </chartTitle>
+                </chart>
+                <categoryDataset>
+                    <categorySeries>
+                        <seriesExpression><![CDATA["Total"]]></seriesExpression>
+                        <categoryExpression><![CDATA[$F{fecha_venta}]]></categoryExpression>
+                        <valueExpression><![CDATA[$F{total_ventas_dia}]]></valueExpression>
+                    </categorySeries>
+                </categoryDataset>
+                <barPlot>
+                    <plot/>
+                </barPlot>
+            </barChart>
+        </band>
+    </summary>
 </jasperReport>

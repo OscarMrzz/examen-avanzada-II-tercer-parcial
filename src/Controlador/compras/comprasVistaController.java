@@ -106,6 +106,44 @@ public class comprasVistaController {
 
         try {
             switch (tipoReporte) {
+                case "Listado General": {
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Listado general de compras");
+                    jasper.verReporte("/reportes/compras_listado_general.jrxml", p);
+                    break;
+                }
+                case "Compras por Proveedor": {
+                    String proveedor = JOptionPane.showInputDialog(reportes,
+                            "Ingrese el nombre del proveedor (exacto) o deje vacío para todos:",
+                            "Proveedor", JOptionPane.QUESTION_MESSAGE);
+                    if (proveedor == null) {
+                        return;
+                    }
+                    proveedor = proveedor.trim();
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Compras por proveedor",
+                            "nombreProveedor", proveedor.isEmpty() ? null : proveedor,
+                            "fechaInicio", fi,
+                            "fechaFin", ff);
+                    jasper.verReporte("/reportes/compras_por_proveedor.jrxml", p);
+                    break;
+                }
+                case "Compras por Estado": {
+                    String estado = JOptionPane.showInputDialog(reportes,
+                            "Ingrese el estado (ej: PAGADA, PENDIENTE) o deje vacío para todos:",
+                            "Estado", JOptionPane.QUESTION_MESSAGE);
+                    if (estado == null) {
+                        return;
+                    }
+                    estado = estado.trim();
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Compras por estado",
+                            "estado", estado.isEmpty() ? null : estado,
+                            "fechaInicio", fi,
+                            "fechaFin", ff);
+                    jasper.verReporte("/reportes/compras_por_estado.jrxml", p);
+                    break;
+                }
                 case "Compras por Fecha": {
                     if (fi == null || ff == null) {
                         JOptionPane.showMessageDialog(reportes,
@@ -120,10 +158,35 @@ public class comprasVistaController {
                     jasper.verReporte("/reportes/compras_por_fechas.jrxml", p);
                     break;
                 }
+                case "Resumen Mensual": {
+                    String anioStr = JOptionPane.showInputDialog(reportes,
+                            "Ingrese el año (ej: 2026) o deje vacío para todos:",
+                            "Año", JOptionPane.QUESTION_MESSAGE);
+                    if (anioStr == null) {
+                        return;
+                    }
+                    anioStr = anioStr.trim();
+                    Integer anio = null;
+                    if (!anioStr.isEmpty()) {
+                        try {
+                            anio = Integer.valueOf(anioStr);
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(reportes,
+                                    "Año inválido. Ejemplo: 2026",
+                                    "Validación", JOptionPane.WARNING_MESSAGE);
+                            return;
+                        }
+                    }
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Resumen mensual de compras",
+                            "anio", anio);
+                    jasper.verReporte("/reportes/compras_resumen_mensual.jrxml", p);
+                    break;
+                }
                 default:
                     JOptionPane.showMessageDialog(reportes,
-                            "Este tipo de reporte aún no tiene plantilla Jasper específica.\nUse 'Compras por Fecha' por ahora.",
-                            "Reporte", JOptionPane.INFORMATION_MESSAGE);
+                            "Tipo de reporte no soportado: " + tipoReporte,
+                            "Reporte", JOptionPane.WARNING_MESSAGE);
             }
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(reportes,

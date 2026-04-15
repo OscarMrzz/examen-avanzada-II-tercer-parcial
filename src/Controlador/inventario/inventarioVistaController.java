@@ -108,17 +108,41 @@ public class inventarioVistaController {
                     jasper.verReporte("/reportes/inventario_general.jrxml", p);
                     break;
                 }
+                case "Stock Bajo": {
+                    Map<String, Object> p = JasperService.params("titulo", "Inventario - stock bajo");
+                    jasper.verReporte("/reportes/inventario_stock_bajo.jrxml", p);
+                    break;
+                }
+                case "Inventario por Proveedor": {
+                    String proveedor = JOptionPane.showInputDialog(reportes,
+                            "Ingrese el nombre del proveedor (exacto) o deje vacío para todos:",
+                            "Proveedor", JOptionPane.QUESTION_MESSAGE);
+                    if (proveedor == null) {
+                        return;
+                    }
+                    proveedor = proveedor.trim();
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Inventario por proveedor",
+                            "nombreProveedor", proveedor.isEmpty() ? null : proveedor);
+                    jasper.verReporte("/reportes/inventario_por_proveedor.jrxml", p);
+                    break;
+                }
+                case "Valor Total Inventario": {
+                    Map<String, Object> p = JasperService.params("titulo", "Valor total del inventario");
+                    jasper.verReporte("/reportes/inventario_valor_total.jrxml", p);
+                    break;
+                }
                 default: {
                     if (fi != null && ff != null) {
                         Map<String, Object> p = JasperService.params(
-                                "titulo", "Inventario (referencia por fechas: compras en rango)",
+                                "titulo", "Compras por rango de fechas (referencia)",
                                 "fechaInicio", fi,
                                 "fechaFin", ff);
                         jasper.verReporte("/reportes/compras_por_fechas.jrxml", p);
                     } else {
                         JOptionPane.showMessageDialog(reportes,
-                                "Use 'Inventario General' o ingrese fechas AAAA-MM-DD para ver compras del rango.",
-                                "Reporte", JOptionPane.INFORMATION_MESSAGE);
+                                "Tipo de reporte no soportado: " + tipoReporte,
+                                "Reporte", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }

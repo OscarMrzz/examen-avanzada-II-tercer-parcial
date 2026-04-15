@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -51,7 +52,12 @@ public class JasperService {
                     conn);
 
             JasperViewer viewer = new JasperViewer(print, false);
-            viewer.setVisible(true);
+            SwingUtilities.invokeLater(() -> {
+                viewer.setAlwaysOnTop(true);
+                viewer.setVisible(true);
+                viewer.toFront();
+                viewer.requestFocus();
+            });
         } catch (JRException ex) {
             JOptionPane.showMessageDialog(null,
                     "Error al generar reporte Jasper.\n" + ex.getMessage(),

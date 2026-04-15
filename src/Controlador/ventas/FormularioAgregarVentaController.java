@@ -4,9 +4,11 @@ import Vista.ventas.FormularioAgregarVenta;
 import Modelo.ventas.VentaModel;
 import Modelo.ventas.DetalleVentaModel;
 import Modelo.inventario.InventarioModel;
+import Modelo.clientes.ClienteModel;
 import Type.ventas.VentaType;
 import Type.ventas.DetalleVentaType;
 import Type.decoraciones.DecoracionType;
+import Type.clientes.ClienteType;
 import Type.generales.TipoPagoVenta;
 import Type.generales.EstadoVenta;
 import java.util.UUID;
@@ -65,8 +67,16 @@ public class FormularioAgregarVentaController {
                 vista.comboBoxCliente.removeAllItems();
                 vista.comboBoxCliente.addItem("Seleccionar...");
 
-                // Aquí deberías cargar los clientes desde su modelo
-                // Por ahora, dejamos el placeholder
+                ClienteModel clienteModel = new ClienteModel();
+                ArrayList<ClienteType> clientes = clienteModel.getAll();
+                for (ClienteType c : clientes) {
+                    if (c != null && c.isEstadoCliente()) {
+                        String nombre = c.getNombreCliente() != null ? c.getNombreCliente().trim() : "";
+                        if (!nombre.isEmpty()) {
+                            vista.comboBoxCliente.addItem(nombre);
+                        }
+                    }
+                }
             }
 
             // Cargar tipos de pago
