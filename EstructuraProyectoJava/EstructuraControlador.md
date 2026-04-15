@@ -31,13 +31,6 @@ public class HomeController {
     inventarioVista inventarioVista;
     ventasVista ventasVista;
 
-    // Controladores específicos
-    proveedoresController proveedoresController;
-    clientesController clientesController;
-    decoracionesController decoracionesController;
-    coleccionesController coleccionesController;
-    comprasController comprasController;
-    ventasController ventasController;
 
     public HomeController(Home home, LoginVista login, UsuariosVista usuariosVista) {
         this.home = home;
@@ -52,14 +45,6 @@ public class HomeController {
         this.comprasVista = new comprasVista(null, true);
         this.inventarioVista = new inventarioVista(null, true);
         this.ventasVista = new ventasVista(null, true);
-
-        // Crear controladores específicos con sus vistas
-        this.proveedoresController = new proveedoresController(proveedoresVista, home);
-        this.clientesController = new clientesController(clientesVista, home);
-        this.decoracionesController = new decoracionesController(decoracionesVista, home);
-        this.coleccionesController = new coleccionesController(coleccionesVista, home);
-        this.comprasController = new comprasController(comprasVista, home);
-        this.ventasController = new ventasController(ventasVista, home);
     }
 }
 ```
@@ -216,7 +201,176 @@ public class UsuariosController {
 }
 ```
 
-## 6. Ventajas de esta Arquitectura
+## 6. Guía de Implementación - Controladores Genéricos
+
+### Carga de Tabla con Modelo MVC
+
+```java
+/**
+ * Carga todos los registros en la tabla usando el Modelo
+ * - Usa modelo.getAll() para obtener datos del Modelo
+ * - Muestra índice secuencial en primera columna (NO, NO ID)
+ * - Adaptable a cualquier entidad (Usuarios, Clientes, Productos, etc.)
+ */
+public void cargarTabla() {
+    DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+    modeloTabla.setRowCount(0);
+
+    try {
+        ArrayList<TipoEntidad> entidades = modelo.getAll();
+        int index = 1; // Índice secuencial para columna NO
+
+        for (TipoEntidad entidad : entidades) {
+            Object[] fila = {
+                index++, // Columna NO: número de registro
+                entidad.getCampo1(), // Campo principal (nombre, descripción, etc.)
+                entidad.getCampo2(), // Campo secundario (rol, tipo, precio, etc.)
+                entidad.getCampoN()  // Campos adicionales según la entidad
+            };
+            modeloTabla.addRow(fila);
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(vista, "Error al cargar los datos: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+```
+
+### Implementación del Buscador Genérico
+
+```java
+/**
+ * Busca registros según el texto ingresado
+ * - Filtra sobre los datos obtenidos del modelo.getAll()
+ * - Búsqueda case-insensitive en campos relevantes
+ * - Mantiene índice secuencial en resultados
+ */
+private void buscar(ActionEvent e) {
+    String textoBusqueda = vista.campoBusqueda.getText().trim();
+
+    if (textoBusqueda.isEmpty() || textoBusqueda.equals("Buscar...")) {
+        cargarTabla(); // Mostrar todos si está vacío
+        return;
+    }
+
+    DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+    modeloTabla.setRowCount(0);
+
+    try {
+        ArrayList<TipoEntidad> entidades = modelo.getAll();
+        int index = 1;
+
+        for (TipoEntidad entidad : entidades) {
+            // Búsqueda en múltiples campos (case-insensitive)
+            if (entidad.getCampo1().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                entidad.getCampo2().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                entidad.getCampoN().toLowerCase().contains(textoBusqueda.toLowerCase())) {
+
+                Object[] fila = {
+                    index++, // Mantener índice secuencial
+                    entidad.getCampo1(),
+                    entidad.getCampo2(),
+                    entidad.getCampoN()
+                };
+                modeloTabla.addRow(fila);
+            }
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(vista, "Error al buscar datos: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+```
+
+### Obtener ID Real para Editar/Eliminar
+
+```java
+/**
+ * Importante: La primera columna es solo índice visual
+ * Para obtener el ID real del registro, usar el Modelo
+ */
+private void abrirFormularioEditar() {
+    int fila = vista.tabla.getSelectedRow();
+
+    if (fila == -1) {
+        JOptionPane.showMessageDialog(vista, "Por favor seleccione un registro para editar",
+                "Advertencia", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    try {
+        ArrayList<TipoEntidad> entidades = modelo.getAll();
+        if (fila < entidades.size()) {
+            // Obtener ID real usando el índice de la fila
+            String idEntidad = entidades.get(fila).getId();
+
+            // Abrir formulario de edición con el ID real
+            Vista.entidad.FormularioEditarEntidad formulario = new Vista.entidad.FormularioEditarEntidad(new javax.swing.JFrame(), true);
+            new FormularioEditarEntidadController(formulario, idEntidad);
+            formulario.setVisible(true);
+
+            cargarTabla(); // Recargar después de editar
+        }
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(vista, "Error al obtener el registro: " + ex.getMessage(),
+                "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
+```
+
+### Estructura Base de cualquier Controlador
+
+```java
+public class EntidadController {
+    private EntidadVista vista;
+    private EntidadModel modelo;
+
+    public EntidadController(EntidadVista vista) {
+        this.vista = vista;
+        this.modelo = new EntidadModel();
+        inicializarEventos();
+        cargarTabla();
+    }
+
+    private void inicializarEventos() {
+        // Botón buscar
+        vista.botonBuscar.addActionListener(this::buscar);
+
+        // Botón agregar
+        vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
+
+        // Menú contextual en tabla
+        vista.tabla.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    mostrarMenuContextual(e);
+                }
+            }
+        });
+    }
+
+    // Métodos obligatorios:
+    // - cargarTabla()
+    // - buscar(ActionEvent e)
+    // - mostrarMenuContextual(MouseEvent e)
+    // - abrirFormularioAgregar(ActionEvent e)
+    // - abrirFormularioEditar()
+    // - eliminar()
+}
+```
+
+### Puntos Clave para cualquier Controlador
+
+1. **Separación MVC**: Usa `modelo.getAll()` para obtener datos, nunca SQL directo
+2. **Índice Visual**: Primera columna es secuencial (1, 2, 3...), NO es ID
+3. **ID Real**: Se obtiene del Modelo usando `entidades.get(fila).getId()`
+4. **Búsqueda**: Filtra sobre datos del Modelo, no en base de datos
+5. **Tipado**: Usa `TipoEntidad` específico para cada controlador
+6. **Formularios**: Abrir formularios con `new javax.swing.JFrame(), true`
+7. **Recarga**: Llamar `cargarTabla()` después de operaciones CRUD
+
+## 7. Ventajas de esta Arquitectura
 
 - **Desacoplamiento**: Controladores no dependen de creación de vistas
 - **Testabilidad**: Fácil inyectar mocks para testing

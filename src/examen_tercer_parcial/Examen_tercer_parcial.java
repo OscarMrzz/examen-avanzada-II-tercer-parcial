@@ -5,7 +5,7 @@
 package examen_tercer_parcial;
 
 import Controlador.HomeController;
-import Controlador.Usuarios.UsuariosController;
+import Controlador.Usuarios.UsuarioController;
 import Controlador.clientes.clientesController;
 import Controlador.colecciones.coleccionesController;
 import Controlador.compras.comprasController;
@@ -69,7 +69,7 @@ public class Examen_tercer_parcial {
                 inventarioVista, proveedoresVista, ventasVista);
 
         // Crear controladores específicos con sus vistas
-        UsuariosController usuariosController = new UsuariosController(usuariosVista, formularioAgregarUsuario);
+        UsuarioController usuarioController = new UsuarioController(usuariosVista);
         clientesController clientesController = new clientesController(clientesVista);
         coleccionesController coleccionesController = new coleccionesController(coleccionesVista);
         comprasController comprasController = new comprasController(comprasVista);

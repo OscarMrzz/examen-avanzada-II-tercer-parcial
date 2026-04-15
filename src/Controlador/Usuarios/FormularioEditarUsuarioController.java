@@ -20,9 +20,9 @@ public class FormularioEditarUsuarioController {
     private Connection conexion;
     private int idUsuario;
 
-    public FormularioEditarUsuarioController(FormularioEditarUsuario vista, int idUsuario) {
+    public FormularioEditarUsuarioController(FormularioEditarUsuario vista, String idUsuario) {
         this.vista = vista;
-        this.idUsuario = idUsuario;
+        this.idUsuario = Integer.parseInt(idUsuario);
         Conexion conexionObj = new Conexion();
         this.conexion = conexionObj.getConxion();
         inicializarEventos();
