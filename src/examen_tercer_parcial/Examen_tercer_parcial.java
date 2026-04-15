@@ -14,6 +14,7 @@ import Controlador.proveedores.proveedoresController;
 import Controlador.ventas.ventasController;
 import Vista.home.Home;
 import Vista.login.LoginVista;
+import Vista.usuarios.FormularioAgregarUsuario;
 import Vista.usuarios.UsuariosVista;
 import Vista.clientes.clientesVista;
 import Vista.colecciones.coleccionesVista;
@@ -51,6 +52,7 @@ public class Examen_tercer_parcial {
         inventarioVista inventarioVista = new inventarioVista(null, true);
         proveedoresVista proveedoresVista = new proveedoresVista(null, true);
         ventasVista ventasVista = new ventasVista(null, true);
+        FormularioAgregarUsuario formularioAgregarUsuario = new FormularioAgregarUsuario(null, true);
 
         // Crear HomeController con todas las vistas principales
         HomeController homeController = new HomeController(home, loginVista, usuariosVista,
@@ -58,7 +60,7 @@ public class Examen_tercer_parcial {
                 inventarioVista, proveedoresVista, ventasVista);
 
         // Crear controladores específicos con sus vistas
-        UsuariosController usuariosController = new UsuariosController(usuariosVista);
+        UsuariosController usuariosController = new UsuariosController(usuariosVista, formularioAgregarUsuario);
         clientesController clientesController = new clientesController(clientesVista);
         coleccionesController coleccionesController = new coleccionesController(coleccionesVista);
         comprasController comprasController = new comprasController(comprasVista);
