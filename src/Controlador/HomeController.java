@@ -4,36 +4,24 @@ import Vista.home.Home;
 import Vista.login.LoginVista;
 import Vista.usuarios.UsuariosVista;
 import Vista.proveedores.proveedoresVista;
-import Controlador.proveedores.proveedoresController;
 import Vista.clientes.clientesVista;
-import Controlador.clientes.clientesController;
 import Vista.decoraciones.decoracionesVista;
-import Controlador.decoraciones.decoracionesController;
 import Vista.colecciones.coleccionesVista;
-import Controlador.colecciones.coleccionesController;
 import Vista.compras.comprasVista;
-import Controlador.compras.comprasController;
 import Vista.inventario.inventarioVista;
 import Vista.ventas.ventasVista;
-import Controlador.ventas.ventasController;
 
 public class HomeController {
     Home home;
     LoginVista login;
     UsuariosVista usuariosVista;
     proveedoresVista proveedoresVista;
-    proveedoresController proveedoresController;
     clientesVista clientesVista;
-    clientesController clientesController;
     decoracionesVista decoracionesVista;
-    decoracionesController decoracionesController;
     coleccionesVista coleccionesVista;
-    coleccionesController coleccionesController;
     comprasVista comprasVista;
-    comprasController comprasController;
     inventarioVista inventarioVista;
     ventasVista ventasVista;
-    ventasController ventasController;
 
     public HomeController(Home home, LoginVista login, UsuariosVista usuariosVista,
             clientesVista clientesVista, coleccionesVista coleccionesVista,
@@ -53,13 +41,7 @@ public class HomeController {
         this.proveedoresVista = proveedoresVista;
         this.ventasVista = ventasVista;
 
-        // Crear controladores específicos con sus vistas
-        this.proveedoresController = new proveedoresController(proveedoresVista);
-        this.clientesController = new clientesController(clientesVista);
-        this.decoracionesController = new decoracionesController(decoracionesVista);
-        this.coleccionesController = new coleccionesController(coleccionesVista);
-        this.comprasController = new comprasController(comprasVista);
-        this.ventasController = new ventasController(ventasVista);
+        // Los controladores específicos se crean en el punto de entrada
     }
 
     public void iniciar() {
@@ -83,23 +65,28 @@ public class HomeController {
     }
 
     public void irAProveedores() {
-        proveedoresController.iniciar();
+        proveedoresVista.setVisible(true);
+        home.setVisible(false);
     }
 
     public void irAClientes() {
-        clientesController.iniciar();
+        clientesVista.setVisible(true);
+        home.setVisible(false);
     }
 
     public void irADecoraciones() {
-        decoracionesController.iniciar();
+        decoracionesVista.setVisible(true);
+        home.setVisible(false);
     }
 
     public void irAColecciones() {
-        coleccionesController.iniciar();
+        coleccionesVista.setVisible(true);
+        home.setVisible(false);
     }
 
     public void irACompras() {
-        comprasController.iniciar();
+        comprasVista.setVisible(true);
+        home.setVisible(false);
     }
 
     public void irAInventario() {
@@ -108,7 +95,8 @@ public class HomeController {
     }
 
     public void irAVentas() {
-        ventasController.iniciar();
+        ventasVista.setVisible(true);
+        home.setVisible(false);
     }
 
 }

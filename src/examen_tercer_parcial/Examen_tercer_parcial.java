@@ -22,6 +22,13 @@ import Vista.decoraciones.decoracionesVista;
 import Vista.inventario.inventarioVista;
 import Vista.proveedores.proveedoresVista;
 import Vista.ventas.ventasVista;
+import Vista.clientes.clientesVista;
+import Vista.colecciones.coleccionesVista;
+import Vista.compras.comprasVista;
+import Vista.decoraciones.decoracionesVista;
+import Vista.inventario.inventarioVista;
+import Vista.proveedores.proveedoresVista;
+import Vista.ventas.ventasVista;
 
 /**
  *
