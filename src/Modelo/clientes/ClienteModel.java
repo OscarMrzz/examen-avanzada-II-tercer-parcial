@@ -85,7 +85,7 @@ public class ClienteModel extends Conexion {
                 clienteBuscado.setIdCliente(id_cliente);
                 clienteBuscado.setNombreCliente(nombre_cliente);
                 clienteBuscado.setRtnCliente(rtn_cliente);
-                clienteBuscado.setTipoCliente(TipoCliente.valueOf(tipo_cliente));
+                clienteBuscado.setTipoCliente(TipoCliente.fromDb(tipo_cliente));
                 clienteBuscado.setTelefonoCliente(telefono_cliente);
                 clienteBuscado.setEmailCliente(email_cliente);
                 clienteBuscado.setDireccionCliente(direccion_cliente);
@@ -139,7 +139,7 @@ public class ClienteModel extends Conexion {
                 cliente.setIdCliente(id_cliente);
                 cliente.setNombreCliente(nombre_cliente);
                 cliente.setRtnCliente(rtn_cliente);
-                cliente.setTipoCliente(TipoCliente.valueOf(tipo_cliente));
+                cliente.setTipoCliente(TipoCliente.fromDb(tipo_cliente));
                 cliente.setTelefonoCliente(telefono_cliente);
                 cliente.setEmailCliente(email_cliente);
                 cliente.setDireccionCliente(direccion_cliente);

@@ -4,6 +4,8 @@ import Vista.colecciones.coleccionesVista;
 import Vista.colecciones.FormularioAgregarColeccion;
 import Vista.colecciones.FormularioEditarColeccion;
 import Vista.colecciones.reportesColecciones;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class coleccionesController {
     private coleccionesVista vista;
@@ -28,6 +30,23 @@ public class coleccionesController {
 
         // Botones de búsqueda
         vista.botonBuscar.addActionListener(e -> buscarColecciones());
+
+        // Menú contextual
+        vista.tabla.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    mostrarMenuContextual(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    mostrarMenuContextual(e);
+                }
+            }
+        });
 
         // Botones de los formularios
         formularioAgregar.botonGuardar.addActionListener(e -> guardarColeccion());
@@ -228,6 +247,43 @@ public class coleccionesController {
     private boolean validarFormularioEditar() {
         // Misma validación que el formulario agregar
         return validarFormularioAgregar();
+    }
+
+    private void mostrarMenuContextual(MouseEvent e) {
+        int fila = vista.tabla.rowAtPoint(e.getPoint());
+        if (fila >= 0) {
+            vista.tabla.setRowSelectionInterval(fila, fila);
+            javax.swing.JPopupMenu menu = new javax.swing.JPopupMenu();
+
+            javax.swing.JMenuItem menuItemEditar = new javax.swing.JMenuItem("Editar");
+            menuItemEditar.addActionListener(evt -> abrirFormularioEditar());
+
+            javax.swing.JMenuItem menuItemEliminar = new javax.swing.JMenuItem("Eliminar");
+            menuItemEliminar.addActionListener(evt -> eliminar());
+
+            menu.add(menuItemEditar);
+            menu.add(menuItemEliminar);
+            menu.show(vista.tabla, e.getX(), e.getY());
+        }
+    }
+
+    private void eliminar() {
+        int filaSeleccionada = vista.tabla.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            int confirmacion = javax.swing.JOptionPane.showConfirmDialog(vista,
+                    "¿Está seguro de que desea eliminar esta colección?",
+                    "Confirmar Eliminación",
+                    javax.swing.JOptionPane.YES_NO_OPTION);
+            if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+                System.out.println("Eliminando colección en la fila: " + filaSeleccionada);
+                cargarColecciones();
+            }
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(vista,
+                    "Por favor seleccione una colección para eliminar",
+                    "Seleccione Colección",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public void volverAlHome() {

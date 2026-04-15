@@ -55,7 +55,8 @@ public class comprasVista extends javax.swing.JDialog {
 
                                 },
                                 new String[] {
-                                                "NO", "Proveedor", "Fecha Compra", "Total", "Estado", "Usuario"
+                                                "NO", "Número Factura", "Proveedor", "Fecha Factura", "Fecha Vencimiento", "Total",
+                                                "Tipo Pago", "Estado", "Condición"
                                 }));
                 jScrollPane1.setViewportView(tabla);
 

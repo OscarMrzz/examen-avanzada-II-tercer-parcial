@@ -13,4 +13,17 @@ public enum TipoPago {
     public String getDisplayName() {
         return displayName;
     }
+
+    public static TipoPago fromDb(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        for (TipoPago tipo : values()) {
+            if (tipo.name().equalsIgnoreCase(trimmed) || tipo.displayName.equalsIgnoreCase(trimmed)) {
+                return tipo;
+            }
+        }
+        throw new IllegalArgumentException("TipoPago inválido desde DB: " + value);
+    }
 }

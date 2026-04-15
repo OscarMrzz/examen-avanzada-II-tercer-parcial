@@ -5,15 +5,15 @@
 package examen_tercer_parcial;
 
 import Controlador.HomeController;
-import Controlador.home.HomeVistaController;
 import Controlador.login.LoginVistaController;
 import Controlador.Usuarios.UsuarioController;
-import Controlador.clientes.clientesController;
-import Controlador.colecciones.coleccionesController;
-import Controlador.compras.comprasController;
-import Controlador.decoraciones.decoracionesController;
-import Controlador.proveedores.proveedoresController;
-import Controlador.ventas.ventasController;
+import Controlador.clientes.clientesVistaController;
+import Controlador.colecciones.coleccionesVistaController;
+import Controlador.compras.comprasVistaController;
+import Controlador.decoraciones.decoracionesVistaController;
+import Controlador.inventario.inventarioVistaController;
+import Controlador.proveedores.proveedoresVistaController;
+import Controlador.ventas.ventasVistaController;
 import Vista.home.Home;
 import Vista.login.LoginVista;
 import Vista.usuarios.FormularioAgregarUsuario;
@@ -36,6 +36,7 @@ import Vista.decoraciones.FormularioAgregarDecoracion;
 import Vista.decoraciones.FormularioEditarDecoracion;
 import Vista.decoraciones.reportesDecoraciones;
 import Vista.inventario.inventarioVista;
+import Vista.inventario.FormularioAgregarInventario;
 import Vista.proveedores.proveedoresVista;
 import Vista.proveedores.FormularioAgregarProveedor;
 import Vista.proveedores.FormularioEditarProveedor;
@@ -86,6 +87,7 @@ public class Examen_tercer_parcial {
         FormularioEditarDecoracion formularioEditarDecoracion = new FormularioEditarDecoracion(null, true);
         reportesDecoraciones reportesDecoraciones = new reportesDecoraciones(null, true);
         inventarioVista inventarioVista = new inventarioVista(null, true);
+        FormularioAgregarInventario formularioAgregarInventario = new FormularioAgregarInventario(null, true);
         proveedoresVista proveedoresVista = new proveedoresVista(null, true);
         FormularioAgregarProveedor formularioAgregarProveedor = new FormularioAgregarProveedor(null, true);
         FormularioEditarProveedor formularioEditarProveedor = new FormularioEditarProveedor(null, true);
@@ -109,22 +111,21 @@ public class Examen_tercer_parcial {
         // Crear controladores específicos con sus vistas y formularios
         UsuarioController usuarioController = new UsuarioController(usuariosVista, formularioAgregarUsuario,
                 formularioEditarUsuario);
-        clientesController clientesController = new clientesController(clientesVista, formularioAgregarCliente,
-                formularioEditarCliente, reportesClientes);
-        coleccionesController coleccionesController = new coleccionesController(coleccionesVista, formularioAgregarColeccion,
-                formularioEditarColeccion, reportesColecciones);
-        comprasController comprasController = new comprasController(comprasVista, formularioAgregarCompra,
-                formularioEditarCompra, reportesCompras);
-        decoracionesController decoracionesController = new decoracionesController(decoracionesVista, formularioAgregarDecoracion,
-                formularioEditarDecoracion, reportesDecoraciones);
-        proveedoresController proveedoresController = new proveedoresController(proveedoresVista, formularioAgregarProveedor,
-                formularioEditarProveedor, reportesProveedores);
-        ventasController ventasController = new ventasController(ventasVista, formularioAgregarVenta,
-                formularioEditarVenta, reportesVentas);
+        clientesVistaController clientesVistaController = new clientesVistaController(clientesVista, formularioAgregarCliente,
+                formularioEditarCliente);
+        coleccionesVistaController coleccionesVistaController = new coleccionesVistaController(coleccionesVista,
+                formularioAgregarColeccion, formularioEditarColeccion);
+        comprasVistaController comprasVistaController = new comprasVistaController(comprasVista, formularioAgregarCompra,
+                formularioEditarCompra);
+        decoracionesVistaController decoracionesVistaController = new decoracionesVistaController(decoracionesVista,
+                formularioAgregarDecoracion, formularioEditarDecoracion);
+        inventarioVistaController inventarioVistaController = new inventarioVistaController(inventarioVista,
+                formularioAgregarInventario);
+        proveedoresVistaController proveedoresVistaController = new proveedoresVistaController(proveedoresVista,
+                formularioAgregarProveedor, formularioEditarProveedor);
+        ventasVistaController ventasVistaController = new ventasVistaController(ventasVista, formularioAgregarVenta,
+                formularioEditarVenta);
 
-        // Crear controladores de vistas principales
-        HomeVistaController homeVistaController = new HomeVistaController(home, usuariosVista, clientesVista,
-                proveedoresVista, coleccionesVista, decoracionesVista, comprasVista, inventarioVista, ventasVista);
         LoginVistaController loginVistaController = new LoginVistaController(loginVista, home);
 
         // Iniciar aplicación

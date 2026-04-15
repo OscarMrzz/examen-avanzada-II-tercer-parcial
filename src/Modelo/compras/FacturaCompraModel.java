@@ -89,8 +89,8 @@ public class FacturaCompraModel extends Conexion {
                 facturaBuscada.setIdProveedorFacturaCompra(id_proveedor_factura_compra);
                 facturaBuscada.setNumeroFactura(numero_factura);
                 facturaBuscada.setTotalFacturaCompra(total_factura_compra);
-                facturaBuscada.setTipoPagoFacturaCompra(TipoPago.valueOf(tipo_pago_factura_compra));
-                facturaBuscada.setEstadoFacturaCompra(EstadoFactura.valueOf(estado_factura_compra));
+                facturaBuscada.setTipoPagoFacturaCompra(TipoPago.fromDb(tipo_pago_factura_compra));
+                facturaBuscada.setEstadoFacturaCompra(EstadoFactura.fromDb(estado_factura_compra));
                 facturaBuscada.setFechaFacturaCompra(fecha_factura_compra);
                 facturaBuscada.setFechaVencimientoFactura(fecha_vencimiento_factura);
                 facturaBuscada.setCondicionFactura(condicion_factura);
@@ -145,8 +145,8 @@ public class FacturaCompraModel extends Conexion {
                 factura.setIdProveedorFacturaCompra(id_proveedor_factura_compra);
                 factura.setNumeroFactura(numero_factura);
                 factura.setTotalFacturaCompra(total_factura_compra);
-                factura.setTipoPagoFacturaCompra(TipoPago.valueOf(tipo_pago_factura_compra));
-                factura.setEstadoFacturaCompra(EstadoFactura.valueOf(estado_factura_compra));
+                factura.setTipoPagoFacturaCompra(TipoPago.fromDb(tipo_pago_factura_compra));
+                factura.setEstadoFacturaCompra(EstadoFactura.fromDb(estado_factura_compra));
                 factura.setFechaFacturaCompra(fecha_factura_compra);
                 factura.setFechaVencimientoFactura(fecha_vencimiento_factura);
                 factura.setCondicionFactura(condicion_factura);
@@ -259,8 +259,8 @@ public class FacturaCompraModel extends Conexion {
                 factura.setFechaVencimientoFactura(fecha_vencimiento_factura);
                 factura.setIdProveedorFacturaCompra(id_proveedor_factura_compra);
                 factura.setTotalFacturaCompra(total_factura_compra);
-                factura.setTipoPagoFacturaCompra(TipoPago.valueOf(tipo_pago_factura_compra));
-                factura.setEstadoFacturaCompra(EstadoFactura.valueOf(estado_factura_compra));
+                factura.setTipoPagoFacturaCompra(TipoPago.fromDb(tipo_pago_factura_compra));
+                factura.setEstadoFacturaCompra(EstadoFactura.fromDb(estado_factura_compra));
                 factura.setCondicionFactura(condicion_factura);
                 lista.add(factura);
             }

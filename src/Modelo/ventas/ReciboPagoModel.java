@@ -87,7 +87,7 @@ public class ReciboPagoModel extends Conexion {
                 reciboBuscado.setIdProveedorPago(id_proveedor_pago);
                 reciboBuscado.setMontoPago(monto_pago);
                 reciboBuscado.setFechaPago(fecha_pago);
-                reciboBuscado.setMetodoPago(MetodoPago.valueOf(metodo_pago));
+                reciboBuscado.setMetodoPago(MetodoPago.fromDb(metodo_pago));
                 reciboBuscado.setReferenciaPago(referencia_pago);
                 reciboBuscado.setObservacionesPago(observaciones_pago);
                 reciboBuscado.setCreatedAt(created_at);
@@ -141,7 +141,7 @@ public class ReciboPagoModel extends Conexion {
                 recibo.setIdProveedorPago(id_proveedor_pago);
                 recibo.setMontoPago(monto_pago);
                 recibo.setFechaPago(fecha_pago);
-                recibo.setMetodoPago(MetodoPago.valueOf(metodo_pago));
+                recibo.setMetodoPago(MetodoPago.fromDb(metodo_pago));
                 recibo.setReferenciaPago(referencia_pago);
                 recibo.setObservacionesPago(observaciones_pago);
                 recibo.setCreatedAt(created_at);
@@ -253,7 +253,7 @@ public class ReciboPagoModel extends Conexion {
                 recibo.setIdProveedorPago(id_proveedor_pago);
                 recibo.setMontoPago(monto_pago);
                 recibo.setFechaPago(fecha_pago);
-                recibo.setMetodoPago(MetodoPago.valueOf(metodo_pago));
+                recibo.setMetodoPago(MetodoPago.fromDb(metodo_pago));
                 recibo.setReferenciaPago(referencia_pago);
                 recibo.setObservacionesPago(observaciones_pago);
                 recibo.setCreatedAt(created_at);
@@ -299,7 +299,7 @@ public class ReciboPagoModel extends Conexion {
                 recibo.setIdProveedorPago(id_proveedor_pago);
                 recibo.setMontoPago(monto_pago);
                 recibo.setFechaPago(fecha_pago);
-                recibo.setMetodoPago(MetodoPago.valueOf(metodo_pago));
+                recibo.setMetodoPago(MetodoPago.fromDb(metodo_pago));
                 recibo.setReferenciaPago(referencia_pago);
                 recibo.setObservacionesPago(observaciones_pago);
                 recibo.setCreatedAt(created_at);

@@ -13,4 +13,17 @@ public enum TipoCliente {
     public String getDisplayName() {
         return displayName;
     }
+
+    public static TipoCliente fromDb(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        for (TipoCliente tipo : values()) {
+            if (tipo.name().equalsIgnoreCase(trimmed) || tipo.displayName.equalsIgnoreCase(trimmed)) {
+                return tipo;
+            }
+        }
+        throw new IllegalArgumentException("TipoCliente inválido desde DB: " + value);
+    }
 }

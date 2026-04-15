@@ -102,12 +102,12 @@ public class VentaModel extends Conexion {
                 ventaBuscada.setImpuestoVenta(impuesto_venta);
                 ventaBuscada.setDescuentoVenta(descuento_venta);
                 ventaBuscada.setTotalVenta(total_venta);
-                ventaBuscada.setTipoPagoVenta(TipoPagoVenta.valueOf(tipo_pago_venta));
+                ventaBuscada.setTipoPagoVenta(TipoPagoVenta.fromDb(tipo_pago_venta));
                 ventaBuscada.setMontoEfectivo(monto_efectivo);
                 ventaBuscada.setMontoTarjeta(monto_tarjeta);
                 ventaBuscada.setCambioVenta(cambio_venta);
                 ventaBuscada.setFechaVenta(fecha_venta);
-                ventaBuscada.setEstadoVenta(EstadoVenta.valueOf(estado_venta));
+                ventaBuscada.setEstadoVenta(EstadoVenta.fromDb(estado_venta));
                 ventaBuscada.setIdUsuarioVendedor(id_usuario_vendedor);
                 return ventaBuscada;
             }
@@ -167,12 +167,12 @@ public class VentaModel extends Conexion {
                 venta.setImpuestoVenta(impuesto_venta);
                 venta.setDescuentoVenta(descuento_venta);
                 venta.setTotalVenta(total_venta);
-                venta.setTipoPagoVenta(TipoPagoVenta.valueOf(tipo_pago_venta));
+                venta.setTipoPagoVenta(TipoPagoVenta.fromDb(tipo_pago_venta));
                 venta.setMontoEfectivo(monto_efectivo);
                 venta.setMontoTarjeta(monto_tarjeta);
                 venta.setCambioVenta(cambio_venta);
                 venta.setFechaVenta(fecha_venta);
-                venta.setEstadoVenta(EstadoVenta.valueOf(estado_venta));
+                venta.setEstadoVenta(EstadoVenta.fromDb(estado_venta));
                 venta.setIdUsuarioVendedor(id_usuario_vendedor);
                 lista.add(venta);
 
@@ -296,11 +296,11 @@ public class VentaModel extends Conexion {
                 venta.setImpuestoVenta(impuesto_venta);
                 venta.setDescuentoVenta(descuento_venta);
                 venta.setTotalVenta(total_venta);
-                venta.setTipoPagoVenta(TipoPagoVenta.valueOf(tipo_pago_venta));
+                venta.setTipoPagoVenta(TipoPagoVenta.fromDb(tipo_pago_venta));
                 venta.setMontoEfectivo(monto_efectivo);
                 venta.setMontoTarjeta(monto_tarjeta);
                 venta.setCambioVenta(cambio_venta);
-                venta.setEstadoVenta(EstadoVenta.valueOf("Activa")); // Las vistas solo muestran activas
+                venta.setEstadoVenta(EstadoVenta.fromDb("Activa")); // Las vistas solo muestran activas
                 lista.add(venta);
             }
             connection.close();

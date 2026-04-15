@@ -55,7 +55,7 @@ public class proveedoresVista extends javax.swing.JDialog {
 
                                 },
                                 new String[] {
-                                                "NO", "Nombre", "RTN", "Teléfono", "Contacto", "Estado"
+                                                "NO", "Nombre", "RTN", "Teléfono", "Email", "Contacto", "Estado"
                                 }));
                 jScrollPane1.setViewportView(tabla);
 

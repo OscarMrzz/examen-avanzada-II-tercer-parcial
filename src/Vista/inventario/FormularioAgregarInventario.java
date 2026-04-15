@@ -215,7 +215,7 @@ public class FormularioAgregarInventario extends javax.swing.JDialog {
                                                                                 .addComponent(jScrollPane1)
                                                                                 .addGroup(jPanel2Layout
                                                                                                 .createParallelGroup(
-                                                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
                                                                                                 .addComponent(inputNombre,
                                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                                 200,

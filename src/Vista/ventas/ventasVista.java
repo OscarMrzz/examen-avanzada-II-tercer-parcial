@@ -55,7 +55,9 @@ public class ventasVista extends javax.swing.JDialog {
 
                                 },
                                 new String[] {
-                                                "NO", "Factura", "Fecha", "Cliente", "Total", "Tipo Pago", "Estado"
+                                                "NO", "Factura", "Fecha", "Cliente", "Vendedor", "Subtotal", "Impuesto",
+                                                "Descuento", "Total", "Tipo Pago", "Monto Efectivo", "Monto Tarjeta", "Cambio",
+                                                "Estado"
                                 }));
                 jScrollPane1.setViewportView(tabla);
 

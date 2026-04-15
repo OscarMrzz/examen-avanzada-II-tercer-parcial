@@ -36,7 +36,7 @@ public class UsuarioController {
 
     private void inicializarEventos() {
         // Evento del botón buscar
-        vista.jButton1.addActionListener(this::buscar);
+        vista.botonBuscar.addActionListener(this::buscar);
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
@@ -59,24 +59,24 @@ public class UsuarioController {
         });
 
         // Evento focus en el campo de búsqueda
-        vista.jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+        vista.inputBusqueda.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
             public void focusGained(java.awt.event.FocusEvent evt) {
-                if (vista.jTextField1.getText().equals("Buscar usuario...")) {
-                    vista.jTextField1.setText("");
+                if (vista.inputBusqueda.getText().equals("Buscar usuario...")) {
+                    vista.inputBusqueda.setText("");
                 }
             }
 
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
-                if (vista.jTextField1.getText().isEmpty()) {
-                    vista.jTextField1.setText("Buscar usuario...");
+                if (vista.inputBusqueda.getText().isEmpty()) {
+                    vista.inputBusqueda.setText("Buscar usuario...");
                 }
             }
         });
 
         // Inicializar el campo de búsqueda
-        vista.jTextField1.setText("Buscar usuario...");
+        vista.inputBusqueda.setText("Buscar usuario...");
     }
 
     /**
@@ -110,7 +110,7 @@ public class UsuarioController {
      * Busca usuarios según el texto ingresado
      */
     private void buscar(ActionEvent e) {
-        String textoBusqueda = vista.jTextField1.getText().trim();
+        String textoBusqueda = vista.inputBusqueda.getText().trim();
 
         if (textoBusqueda.isEmpty() || textoBusqueda.equals("Buscar usuario...")) {
             cargarTabla();

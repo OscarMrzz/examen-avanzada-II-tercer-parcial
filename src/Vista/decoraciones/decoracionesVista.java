@@ -55,7 +55,8 @@ public class decoracionesVista extends javax.swing.JDialog {
 
                                 },
                                 new String[] {
-                                                "NO", "Nombre", "Stock", "Precio Venta", "Proveedor", "Estado"
+                                                "NO", "Nombre", "Stock", "Stock Mínimo", "Stock Máximo", "Proveedor", "Colección",
+                                                "Descripción", "Estado"
                                 }));
                 jScrollPane1.setViewportView(tabla);
 

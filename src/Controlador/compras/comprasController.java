@@ -4,6 +4,8 @@ import Vista.compras.comprasVista;
 import Vista.compras.FormularioAgregarCompra;
 import Vista.compras.FormularioEditarCompra;
 import Vista.compras.reportesCompras;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class comprasController {
     private comprasVista vista;
@@ -28,6 +30,23 @@ public class comprasController {
 
         // Botones de búsqueda
         vista.botonBuscar.addActionListener(e -> buscarCompras());
+
+        // Menú contextual
+        vista.tabla.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    mostrarMenuContextual(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    mostrarMenuContextual(e);
+                }
+            }
+        });
 
         // Botones de los formularios
         formularioAgregar.botonGuardar.addActionListener(e -> guardarCompra());
@@ -255,6 +274,43 @@ public class comprasController {
     private boolean validarFormularioEditar() {
         // Misma validación que el formulario agregar
         return validarFormularioAgregar();
+    }
+
+    private void mostrarMenuContextual(MouseEvent e) {
+        int fila = vista.tabla.rowAtPoint(e.getPoint());
+        if (fila >= 0) {
+            vista.tabla.setRowSelectionInterval(fila, fila);
+            javax.swing.JPopupMenu menu = new javax.swing.JPopupMenu();
+
+            javax.swing.JMenuItem menuItemEditar = new javax.swing.JMenuItem("Editar");
+            menuItemEditar.addActionListener(evt -> abrirFormularioEditar());
+
+            javax.swing.JMenuItem menuItemEliminar = new javax.swing.JMenuItem("Eliminar");
+            menuItemEliminar.addActionListener(evt -> eliminar());
+
+            menu.add(menuItemEditar);
+            menu.add(menuItemEliminar);
+            menu.show(vista.tabla, e.getX(), e.getY());
+        }
+    }
+
+    private void eliminar() {
+        int filaSeleccionada = vista.tabla.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            int confirmacion = javax.swing.JOptionPane.showConfirmDialog(vista,
+                    "¿Está seguro de que desea eliminar esta compra?",
+                    "Confirmar Eliminación",
+                    javax.swing.JOptionPane.YES_NO_OPTION);
+            if (confirmacion == javax.swing.JOptionPane.YES_OPTION) {
+                System.out.println("Eliminando compra en la fila: " + filaSeleccionada);
+                cargarCompras();
+            }
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(vista,
+                    "Por favor seleccione una compra para eliminar",
+                    "Seleccione Compra",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public void volverAlHome() {

@@ -55,7 +55,7 @@ public class clientesVista extends javax.swing.JDialog {
 
                                 },
                                 new String[] {
-                                                "NO", "Nombre", "RTN", "Tipo", "Teléfono", "Estado"
+                                                "NO", "Nombre", "RTN", "Tipo", "Teléfono", "Email", "Estado"
                                 }));
                 jScrollPane1.setViewportView(tabla);
 

@@ -55,8 +55,7 @@ public class coleccionesVista extends javax.swing.JDialog {
 
                                 },
                                 new String[] {
-                                                "NO", "Nombre", "Diseñador", "Número Colección", "Año", "Proveedor",
-                                                "Stock", "Precio Venta"
+                                                "NO", "Nombre", "Diseñador", "Número Colección", "Año", "Descripción", "Estado"
                                 }));
                 jScrollPane1.setViewportView(tabla);
 

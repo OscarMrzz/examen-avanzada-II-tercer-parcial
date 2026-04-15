@@ -55,8 +55,8 @@ public class inventarioVista extends javax.swing.JDialog {
 
                                 },
                                 new String[] {
-                                                "NO", "Nombre", "Stock", "Stock Mínimo", "Precio Venta", "Proveedor",
-                                                "Estado Stock"
+                                                "NO", "Nombre", "Stock", "Stock Mínimo", "Stock Máximo", "Proveedor", "Colección",
+                                                "Descripción", "Estado Stock", "Estado"
                                 }));
                 jScrollPane1.setViewportView(tabla);
 
