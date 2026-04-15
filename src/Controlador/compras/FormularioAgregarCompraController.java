@@ -49,6 +49,39 @@ public class FormularioAgregarCompraController {
 
         // Botón Cancelar
         vista.botonCancelar.addActionListener(this::cancelar);
+
+        // Calcular precio venta automáticamente cuando cambia el costo
+        if (vista.inputPrecioCosto != null && vista.inputPrecioVenta != null) {
+            vista.inputPrecioVenta.setEditable(false);
+            vista.inputPrecioCosto.addKeyListener(new java.awt.event.KeyAdapter() {
+                @Override
+                public void keyReleased(java.awt.event.KeyEvent e) {
+                    recalcularPrecioVenta();
+                }
+            });
+        }
+    }
+
+    private void recalcularPrecioVenta() {
+        try {
+            if (vista.inputPrecioCosto == null || vista.inputPrecioVenta == null) {
+                return;
+            }
+            String costoStr = vista.inputPrecioCosto.getText().trim();
+            if (costoStr.isEmpty()) {
+                vista.inputPrecioVenta.setText("");
+                return;
+            }
+            double costo = Double.parseDouble(costoStr);
+            if (costo <= 0) {
+                vista.inputPrecioVenta.setText("");
+                return;
+            }
+            double precioVenta = costo * 1.48;
+            vista.inputPrecioVenta.setText(String.format("%.2f", precioVenta));
+        } catch (Exception ex) {
+            // Si el usuario está escribiendo y aún no es número válido, no bloquear
+        }
     }
 
     /**
@@ -343,20 +376,8 @@ public class FormularioAgregarCompraController {
             }
         }
 
-        // Validar precio venta
-        String precioVenta = vista.inputPrecioVenta.getText().trim();
-        if (precioVenta.isEmpty()) {
-            errores.append("- El precio venta es obligatorio\n");
-        } else {
-            try {
-                double precioVentaDouble = Double.parseDouble(precioVenta);
-                if (precioVentaDouble <= 0) {
-                    errores.append("- El precio venta debe ser mayor a cero\n");
-                }
-            } catch (NumberFormatException e) {
-                errores.append("- El precio venta debe ser un número válido\n");
-            }
-        }
+        // Precio venta se calcula automáticamente (costo * 1.48).
+        // No se valida como campo obligatorio de entrada.
 
         // Validar ComboBox de proveedor
         String proveedorSeleccionado = (String) vista.comboBoxProveedor.getSelectedItem();
@@ -417,7 +438,7 @@ public class FormularioAgregarCompraController {
             // Configurar tabla de detalles si existe
             // Nota: La vista actual no tiene tabla de detalles, solo campos individuales
             // Este método queda preparado para futuras mejoras
-            logger.log(Level.INFO, "Inicialización de tabla de detalles - no implementada en vista actual");
+            // (Sin log para no confundir como "error" en consola)
         } catch (Exception ex) {
             logger.log(Level.WARNING, "No se pudo inicializar tabla de detalles: " + ex.getMessage());
         }
