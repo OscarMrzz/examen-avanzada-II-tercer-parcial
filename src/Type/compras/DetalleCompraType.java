@@ -5,19 +5,22 @@ public class DetalleCompraType {
     private String idFacturaCompraDetalle;
     private String idDecoracionDetalle;
     private int cantidadDetalleCompra;
-    private double precioUnitarioCompra;
+    private double precioCostoCompra;
+    private double precioVentaCompra;
     private double subtotalDetalleCompra;
 
     public DetalleCompraType() {
     }
 
     public DetalleCompraType(String idDetalleCompra, String idFacturaCompraDetalle, String idDecoracionDetalle,
-            int cantidadDetalleCompra, double precioUnitarioCompra, double subtotalDetalleCompra) {
+            int cantidadDetalleCompra, double precioCostoCompra, double precioVentaCompra,
+            double subtotalDetalleCompra) {
         this.idDetalleCompra = idDetalleCompra;
         this.idFacturaCompraDetalle = idFacturaCompraDetalle;
         this.idDecoracionDetalle = idDecoracionDetalle;
         this.cantidadDetalleCompra = cantidadDetalleCompra;
-        this.precioUnitarioCompra = precioUnitarioCompra;
+        this.precioCostoCompra = precioCostoCompra;
+        this.precioVentaCompra = precioVentaCompra;
         this.subtotalDetalleCompra = subtotalDetalleCompra;
     }
 
@@ -54,12 +57,20 @@ public class DetalleCompraType {
         this.cantidadDetalleCompra = cantidadDetalleCompra;
     }
 
-    public double getPrecioUnitarioCompra() {
-        return precioUnitarioCompra;
+    public double getPrecioCostoCompra() {
+        return precioCostoCompra;
     }
 
-    public void setPrecioUnitarioCompra(double precioUnitarioCompra) {
-        this.precioUnitarioCompra = precioUnitarioCompra;
+    public void setPrecioCostoCompra(double precioCostoCompra) {
+        this.precioCostoCompra = precioCostoCompra;
+    }
+
+    public double getPrecioVentaCompra() {
+        return precioVentaCompra;
+    }
+
+    public void setPrecioVentaCompra(double precioVentaCompra) {
+        this.precioVentaCompra = precioVentaCompra;
     }
 
     public double getSubtotalDetalleCompra() {
@@ -77,7 +88,8 @@ public class DetalleCompraType {
                 ", idFacturaCompraDetalle='" + idFacturaCompraDetalle + '\'' +
                 ", idDecoracionDetalle='" + idDecoracionDetalle + '\'' +
                 ", cantidadDetalleCompra=" + cantidadDetalleCompra +
-                ", precioUnitarioCompra=" + precioUnitarioCompra +
+                ", precioCostoCompra=" + precioCostoCompra +
+                ", precioVentaCompra=" + precioVentaCompra +
                 ", subtotalDetalleCompra=" + subtotalDetalleCompra +
                 '}';
     }

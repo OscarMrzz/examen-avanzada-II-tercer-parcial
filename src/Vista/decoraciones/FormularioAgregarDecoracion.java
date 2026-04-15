@@ -43,22 +43,12 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                 inputStockMinimoDecoracion = new javax.swing.JTextField();
                 jLabel5 = new javax.swing.JLabel();
                 inputStockMaximoDecoracion = new javax.swing.JTextField();
-                jLabel6 = new javax.swing.JLabel();
-                inputPrecioCostoDecoracion = new javax.swing.JTextField();
-                jLabel7 = new javax.swing.JLabel();
-                inputPrecioVentaDecoracion = new javax.swing.JTextField();
                 jLabel8 = new javax.swing.JLabel();
                 comboBoxProveedor = new javax.swing.JComboBox<>();
                 jLabel9 = new javax.swing.JLabel();
                 inputImagenDecoracion = new javax.swing.JTextField();
                 jLabel10 = new javax.swing.JLabel();
-                checkBoxEsColeccion = new javax.swing.JCheckBox();
-                jLabel11 = new javax.swing.JLabel();
-                inputDisenadorDecoracion = new javax.swing.JTextField();
-                jLabel12 = new javax.swing.JLabel();
-                inputNumColeccionDecoracion = new javax.swing.JTextField();
-                jLabel13 = new javax.swing.JLabel();
-                inputAnioDecoracion = new javax.swing.JTextField();
+                comboBoxColeccion = new javax.swing.JComboBox<>();
                 jLabel14 = new javax.swing.JLabel();
                 jScrollPane2 = new javax.swing.JScrollPane();
                 inputDescripcionDecoracion = new javax.swing.JTextArea();
@@ -82,23 +72,11 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
 
                 jLabel5.setText("Stock Máximo:");
 
-                jLabel6.setText("Precio Costo:");
-
-                jLabel7.setText("Precio Venta:");
-
                 jLabel8.setText("Proveedor:");
 
                 jLabel9.setText("URL Imagen:");
 
-                jLabel10.setText("Es Colección:");
-
-                checkBoxEsColeccion.setText("");
-
-                jLabel11.setText("Diseñador:");
-
-                jLabel12.setText("Número Colección:");
-
-                jLabel13.setText("Año:");
+                jLabel10.setText("Colección:");
 
                 jLabel14.setText("Descripción:");
 
@@ -118,14 +96,9 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                                                                                 .addComponent(jLabel3)
                                                                                 .addComponent(jLabel4)
                                                                                 .addComponent(jLabel5)
-                                                                                .addComponent(jLabel6)
-                                                                                .addComponent(jLabel7)
                                                                                 .addComponent(jLabel8)
                                                                                 .addComponent(jLabel9)
                                                                                 .addComponent(jLabel10)
-                                                                                .addComponent(jLabel11)
-                                                                                .addComponent(jLabel12)
-                                                                                .addComponent(jLabel13)
                                                                                 .addComponent(jLabel14))
                                                                 .addGap(30, 30, 30)
                                                                 .addGroup(jPanel2Layout.createParallelGroup(
@@ -148,12 +121,6 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                                                                                 .addComponent(inputStockMaximoDecoracion,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 300, Short.MAX_VALUE)
-                                                                                .addComponent(inputPrecioCostoDecoracion,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                300, Short.MAX_VALUE)
-                                                                                .addComponent(inputPrecioVentaDecoracion,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                300, Short.MAX_VALUE)
                                                                                 .addComponent(comboBoxProveedor,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 300,
@@ -162,17 +129,7 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 300,
                                                                                                 Short.MAX_VALUE)
-                                                                                .addComponent(checkBoxEsColeccion,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                Short.MAX_VALUE)
-                                                                                .addComponent(inputDisenadorDecoracion,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                300, Short.MAX_VALUE)
-                                                                                .addComponent(inputNumColeccionDecoracion,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                300, Short.MAX_VALUE)
-                                                                                .addComponent(inputAnioDecoracion,
+                                                                                .addComponent(comboBoxColeccion,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 300,
                                                                                                 Short.MAX_VALUE))
@@ -215,22 +172,6 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                                                                 .addGap(8, 8, 8)
                                                                 .addGroup(jPanel2Layout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jLabel6)
-                                                                                .addComponent(inputPrecioCostoDecoracion,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(8, 8, 8)
-                                                                .addGroup(jPanel2Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jLabel7)
-                                                                                .addComponent(inputPrecioVentaDecoracion,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(8, 8, 8)
-                                                                .addGroup(jPanel2Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                 .addComponent(jLabel8)
                                                                                 .addComponent(comboBoxProveedor,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
@@ -248,28 +189,7 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
                                                                 .addGroup(jPanel2Layout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                 .addComponent(jLabel10)
-                                                                                .addComponent(checkBoxEsColeccion))
-                                                                .addGap(8, 8, 8)
-                                                                .addGroup(jPanel2Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jLabel11)
-                                                                                .addComponent(inputDisenadorDecoracion,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(8, 8, 8)
-                                                                .addGroup(jPanel2Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jLabel12)
-                                                                                .addComponent(inputNumColeccionDecoracion,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
-                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                .addGap(8, 8, 8)
-                                                                .addGroup(jPanel2Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                                .addComponent(jLabel13)
-                                                                                .addComponent(inputAnioDecoracion,
+                                                                                .addComponent(comboBoxColeccion,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -411,31 +331,21 @@ public class FormularioAgregarDecoracion extends javax.swing.JDialog {
         // Variables declaration - do not modify//GEN-BEGIN:variables
         public javax.swing.JButton botonCancelar;
         public javax.swing.JButton botonGuardar;
-        public javax.swing.JCheckBox checkBoxEsColeccion;
+        public javax.swing.JComboBox<String> comboBoxColeccion;
         public javax.swing.JComboBox<String> comboBoxProveedor;
-        public javax.swing.JTextField inputAnioDecoracion;
-        public javax.swing.JTextField inputDisenadorDecoracion;
         public javax.swing.JTextField inputImagenDecoracion;
         public javax.swing.JTextArea inputDescripcionDecoracion;
         public javax.swing.JTextField inputNombreDecoracion;
-        public javax.swing.JTextField inputPrecioCostoDecoracion;
-        public javax.swing.JTextField inputPrecioVentaDecoracion;
-        public javax.swing.JTextField inputNumColeccionDecoracion;
         public javax.swing.JTextField inputStockDecoracion;
         public javax.swing.JTextField inputStockMaximoDecoracion;
         public javax.swing.JTextField inputStockMinimoDecoracion;
         public javax.swing.JLabel jLabel1;
         public javax.swing.JLabel jLabel10;
-        public javax.swing.JLabel jLabel11;
-        public javax.swing.JLabel jLabel12;
-        public javax.swing.JLabel jLabel13;
         public javax.swing.JLabel jLabel14;
         public javax.swing.JLabel jLabel2;
         public javax.swing.JLabel jLabel3;
         public javax.swing.JLabel jLabel4;
         public javax.swing.JLabel jLabel5;
-        public javax.swing.JLabel jLabel6;
-        public javax.swing.JLabel jLabel7;
         public javax.swing.JLabel jLabel8;
         public javax.swing.JLabel jLabel9;
         public javax.swing.JPanel jPanel1;

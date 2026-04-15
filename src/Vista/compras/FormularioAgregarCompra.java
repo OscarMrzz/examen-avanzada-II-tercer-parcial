@@ -39,7 +39,7 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
                 jLabel3 = new javax.swing.JLabel();
                 inputFechaCompra = new javax.swing.JTextField();
                 jLabel4 = new javax.swing.JLabel();
-                inputTotalCompra = new javax.swing.JTextField();
+                inputCantidad = new javax.swing.JTextField();
                 jLabel5 = new javax.swing.JLabel();
                 comboBoxEstado = new javax.swing.JComboBox<>();
                 jLabel6 = new javax.swing.JLabel();
@@ -64,7 +64,7 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
 
                 jLabel3.setText("Fecha Compra:");
 
-                jLabel4.setText("Total Compra:");
+                jLabel4.setText("Cantidad:");
 
                 jLabel5.setText("Estado:");
 
@@ -77,6 +77,23 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
                 jScrollPane1.setViewportView(inputObservaciones);
                 inputObservaciones.setColumns(20);
                 inputObservaciones.setRows(3);
+                jPanel3 = new javax.swing.JPanel();
+                jLabel7 = new javax.swing.JLabel();
+                comboBoxDecoracion = new javax.swing.JComboBox<>();
+                jLabel8 = new javax.swing.JLabel();
+                inputPrecioCosto = new javax.swing.JTextField();
+                jLabel9 = new javax.swing.JLabel();
+                inputPrecioVenta = new javax.swing.JTextField();
+                botonGuardar = new javax.swing.JButton();
+                botonCancelar = new javax.swing.JButton();
+
+                jLabel7.setText("Decoración:");
+                comboBoxDecoracion.setModel(
+                                new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccione una decoración" }));
+                jLabel8.setText("Precio Costo:");
+                jLabel9.setText("Precio Venta:");
+                botonGuardar.setText("Guardar");
+                botonCancelar.setText("Cancelar");
 
                 javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
                 jPanel2.setLayout(jPanel2Layout);
@@ -90,7 +107,10 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
                                                                                 .addComponent(jLabel3)
                                                                                 .addComponent(jLabel4)
                                                                                 .addComponent(jLabel5)
-                                                                                .addComponent(jLabel6))
+                                                                                .addComponent(jLabel6)
+                                                                                .addComponent(jLabel7)
+                                                                                .addComponent(jLabel8)
+                                                                                .addComponent(jLabel9))
                                                                 .addGap(30, 30, 30)
                                                                 .addGroup(jPanel2Layout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,7 +122,19 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 300,
                                                                                                 Short.MAX_VALUE)
-                                                                                .addComponent(inputTotalCompra,
+                                                                                .addComponent(inputCantidad,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                300,
+                                                                                                Short.MAX_VALUE)
+                                                                                .addComponent(comboBoxDecoracion,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                300,
+                                                                                                Short.MAX_VALUE)
+                                                                                .addComponent(inputPrecioCosto,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                300,
+                                                                                                Short.MAX_VALUE)
+                                                                                .addComponent(inputPrecioVenta,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 300,
                                                                                                 Short.MAX_VALUE)
@@ -138,7 +170,7 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
                                                                 .addGroup(jPanel2Layout.createParallelGroup(
                                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                 .addComponent(jLabel4)
-                                                                                .addComponent(inputTotalCompra,
+                                                                                .addComponent(inputCantidad,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -152,17 +184,37 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addGap(10, 10, 10)
                                                                 .addGroup(jPanel2Layout.createParallelGroup(
-                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                 .addComponent(jLabel6)
                                                                                 .addComponent(jScrollPane1,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGap(10, 10, 10)
+                                                                .addGroup(jPanel2Layout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(jLabel7)
+                                                                                .addComponent(comboBoxDecoracion,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGap(8, 8, 8)
+                                                                .addGroup(jPanel2Layout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(jLabel8)
+                                                                                .addComponent(inputPrecioCosto,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addGap(8, 8, 8)
+                                                                .addGroup(jPanel2Layout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(jLabel9)
+                                                                                .addComponent(inputPrecioVenta,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE))
                                                                 .addContainerGap(15, Short.MAX_VALUE)));
-
-                botonGuardar.setText("Guardar");
-
-                botonCancelar.setText("Cancelar");
 
                 javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
                 jPanel3.setLayout(jPanel3Layout);
@@ -286,10 +338,13 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
         // Variables declaration - do not modify//GEN-BEGIN:variables
         public javax.swing.JButton botonCancelar;
         public javax.swing.JButton botonGuardar;
+        public javax.swing.JComboBox<String> comboBoxDecoracion;
         public javax.swing.JComboBox<String> comboBoxEstado;
         public javax.swing.JComboBox<String> comboBoxProveedor;
+        public javax.swing.JTextField inputCantidad;
         public javax.swing.JTextField inputFechaCompra;
-        public javax.swing.JTextField inputTotalCompra;
+        public javax.swing.JTextField inputPrecioCosto;
+        public javax.swing.JTextField inputPrecioVenta;
         public javax.swing.JTextArea inputObservaciones;
         public javax.swing.JLabel jLabel1;
         public javax.swing.JLabel jLabel2;
@@ -297,6 +352,9 @@ public class FormularioAgregarCompra extends javax.swing.JDialog {
         public javax.swing.JLabel jLabel4;
         public javax.swing.JLabel jLabel5;
         public javax.swing.JLabel jLabel6;
+        public javax.swing.JLabel jLabel7;
+        public javax.swing.JLabel jLabel8;
+        public javax.swing.JLabel jLabel9;
         public javax.swing.JPanel jPanel1;
         public javax.swing.JPanel jPanel2;
         public javax.swing.JPanel jPanel3;

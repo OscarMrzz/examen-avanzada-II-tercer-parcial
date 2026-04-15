@@ -117,17 +117,16 @@ public class decoracionesController {
         formularioAgregar.inputStockDecoracion.setText("");
         formularioAgregar.inputStockMinimoDecoracion.setText("");
         formularioAgregar.inputStockMaximoDecoracion.setText("");
-        formularioAgregar.inputPrecioCostoDecoracion.setText("");
-        formularioAgregar.inputPrecioVentaDecoracion.setText("");
         // No establecer índice en ComboBox vacío - se cargará con datos reales
         if (formularioAgregar.comboBoxProveedor.getItemCount() > 0) {
             formularioAgregar.comboBoxProveedor.setSelectedIndex(0);
         }
         formularioAgregar.inputImagenDecoracion.setText("");
-        formularioAgregar.checkBoxEsColeccion.setSelected(false);
-        formularioAgregar.inputDisenadorDecoracion.setText("");
-        formularioAgregar.inputNumColeccionDecoracion.setText("");
-        formularioAgregar.inputAnioDecoracion.setText("");
+        // No establecer índice en ComboBox de colecciones vacío - se cargará con datos
+        // reales
+        if (formularioAgregar.comboBoxColeccion.getItemCount() > 0) {
+            formularioAgregar.comboBoxColeccion.setSelectedIndex(0);
+        }
         formularioAgregar.inputDescripcionDecoracion.setText("");
     }
 
@@ -142,8 +141,6 @@ public class decoracionesController {
         String stock = formularioAgregar.inputStockDecoracion.getText().trim();
         String stockMinimo = formularioAgregar.inputStockMinimoDecoracion.getText().trim();
         String stockMaximo = formularioAgregar.inputStockMaximoDecoracion.getText().trim();
-        String precioCosto = formularioAgregar.inputPrecioCostoDecoracion.getText().trim();
-        String precioVenta = formularioAgregar.inputPrecioVentaDecoracion.getText().trim();
         String proveedor = (String) formularioAgregar.comboBoxProveedor.getSelectedItem();
 
         if (nombre.isEmpty()) {
@@ -162,22 +159,6 @@ public class decoracionesController {
             return false;
         }
 
-        if (precioCosto.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
-                    "El precio de costo es obligatorio",
-                    "Campo Requerido",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (precioVenta.isEmpty()) {
-            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
-                    "El precio de venta es obligatorio",
-                    "Campo Requerido",
-                    javax.swing.JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
         if (proveedor == null || proveedor.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
                     "Debe seleccionar un proveedor",
@@ -186,20 +167,28 @@ public class decoracionesController {
             return false;
         }
 
-        // Validar que precio venta sea mayor que precio costo
+        // Validar que stock máximo sea mayor que stock mínimo
         try {
-            double pc = Double.parseDouble(precioCosto);
-            double pv = Double.parseDouble(precioVenta);
-            if (pv <= pc) {
+            int stockActual = Integer.parseInt(stock);
+            int min = Integer.parseInt(stockMinimo);
+            int max = Integer.parseInt(stockMaximo);
+            if (max <= min) {
                 javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
-                        "El precio de venta debe ser mayor que el precio de costo",
-                        "Validación de Precio",
+                        "El stock máximo debe ser mayor que el stock mínimo",
+                        "Validación de Stock",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            if (stockActual < 0) {
+                javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                        "El stock actual no puede ser negativo",
+                        "Validación de Stock",
                         javax.swing.JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         } catch (NumberFormatException e) {
             javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
-                    "Los precios deben ser números válidos",
+                    "Los valores de stock deben ser números válidos",
                     "Error de Formato",
                     javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;

@@ -115,9 +115,12 @@ public class comprasController {
     private void limpiarFormularioAgregar() {
         formularioAgregar.comboBoxProveedor.setSelectedIndex(0);
         formularioAgregar.inputFechaCompra.setText("");
-        formularioAgregar.inputTotalCompra.setText("");
+        formularioAgregar.inputCantidad.setText("");
         formularioAgregar.comboBoxEstado.setSelectedIndex(0);
         formularioAgregar.inputObservaciones.setText("");
+        formularioAgregar.comboBoxDecoracion.setSelectedIndex(0);
+        formularioAgregar.inputPrecioCosto.setText("");
+        formularioAgregar.inputPrecioVenta.setText("");
     }
 
     private void cargarDatosCompraEnFormulario(int fila) {
@@ -129,8 +132,11 @@ public class comprasController {
     private boolean validarFormularioAgregar() {
         String proveedor = (String) formularioAgregar.comboBoxProveedor.getSelectedItem();
         String fechaCompra = formularioAgregar.inputFechaCompra.getText().trim();
-        String total = formularioAgregar.inputTotalCompra.getText().trim();
+        String cantidad = formularioAgregar.inputCantidad.getText().trim();
         String estado = (String) formularioAgregar.comboBoxEstado.getSelectedItem();
+        String decoracion = (String) formularioAgregar.comboBoxDecoracion.getSelectedItem();
+        String precioCosto = formularioAgregar.inputPrecioCosto.getText().trim();
+        String precioVenta = formularioAgregar.inputPrecioVenta.getText().trim();
 
         if (proveedor == null || proveedor.equals("Seleccione un proveedor")) {
             javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
@@ -148,33 +154,93 @@ public class comprasController {
             return false;
         }
 
-        if (total.isEmpty()) {
+        if (cantidad.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
-                    "El total de la compra es obligatorio",
+                    "La cantidad es obligatoria",
                     "Campo Requerido",
                     javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        // Validar que el total sea un número válido
+        if (decoracion == null || decoracion.equals("Seleccione una decoración")) {
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "Debe seleccionar una decoración",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (precioCosto.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "El precio de costo es obligatorio",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (precioVenta.isEmpty()) {
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "El precio de venta es obligatorio",
+                    "Campo Requerido",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        // Validar que la cantidad sea un número válido
         try {
-            double totalNum = Double.parseDouble(total);
-            if (totalNum <= 0) {
+            int cantidadNum = Integer.parseInt(cantidad);
+            if (cantidadNum <= 0) {
                 javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
-                        "El total debe ser mayor que 0",
+                        "La cantidad debe ser mayor que 0",
                         "Valor Inválido",
                         javax.swing.JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         } catch (NumberFormatException e) {
             javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
-                    "El total debe ser un número válido",
+                    "La cantidad debe ser un número válido",
                     "Error de Formato",
                     javax.swing.JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        if (estado == null) {
+        // Validar que los precios sean números válidos
+        try {
+            double precioCostoNum = Double.parseDouble(precioCosto);
+            double precioVentaNum = Double.parseDouble(precioVenta);
+
+            if (precioCostoNum <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                        "El precio de costo debe ser mayor que 0",
+                        "Valor Inválido",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (precioVentaNum <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                        "El precio de venta debe ser mayor que 0",
+                        "Valor Inválido",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (precioVentaNum <= precioCostoNum) {
+                javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                        "El precio de venta debe ser mayor que el precio de costo",
+                        "Validación de Precio",
+                        javax.swing.JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
+                    "Los precios deben ser números válidos",
+                    "Error de Formato",
+                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (estado == null || estado.isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(formularioAgregar,
                     "Debe seleccionar un estado",
                     "Campo Requerido",

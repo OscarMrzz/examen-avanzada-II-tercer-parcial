@@ -8,14 +8,9 @@ public class DecoracionType {
     private int stockDecoracion;
     private int stockMinimoDecoracion;
     private int stockMaximoDecoracion;
-    private double precioCostoDecoracion;
-    private double precioVentaDecoracion;
     private String idProveedorDecoracion;
     private String imagenDecoracion;
-    private boolean esColeccionDecoracion;
-    private String disenadorDecoracion;
-    private String numColeccionDecoracion;
-    private Integer anioDecoracion;
+    private String idColeccionDecoracion;
     private String descripcionDecoracion;
     private Timestamp fechaCreacion;
     private boolean estadoDecoracion;
@@ -24,24 +19,17 @@ public class DecoracionType {
     }
 
     public DecoracionType(String idDecoracion, String nombreDecoracion, int stockDecoracion,
-            int stockMinimoDecoracion, int stockMaximoDecoracion, double precioCostoDecoracion,
-            double precioVentaDecoracion, String idProveedorDecoracion, String imagenDecoracion,
-            boolean esColeccionDecoracion, String disenadorDecoracion, String numColeccionDecoracion,
-            Integer anioDecoracion, String descripcionDecoracion, Timestamp fechaCreacion,
+            int stockMinimoDecoracion, int stockMaximoDecoracion, String idProveedorDecoracion, String imagenDecoracion,
+            String idColeccionDecoracion, String descripcionDecoracion, Timestamp fechaCreacion,
             boolean estadoDecoracion) {
         this.idDecoracion = idDecoracion;
         this.nombreDecoracion = nombreDecoracion;
         this.stockDecoracion = stockDecoracion;
         this.stockMinimoDecoracion = stockMinimoDecoracion;
         this.stockMaximoDecoracion = stockMaximoDecoracion;
-        this.precioCostoDecoracion = precioCostoDecoracion;
-        this.precioVentaDecoracion = precioVentaDecoracion;
         this.idProveedorDecoracion = idProveedorDecoracion;
         this.imagenDecoracion = imagenDecoracion;
-        this.esColeccionDecoracion = esColeccionDecoracion;
-        this.disenadorDecoracion = disenadorDecoracion;
-        this.numColeccionDecoracion = numColeccionDecoracion;
-        this.anioDecoracion = anioDecoracion;
+        this.idColeccionDecoracion = idColeccionDecoracion;
         this.descripcionDecoracion = descripcionDecoracion;
         this.fechaCreacion = fechaCreacion;
         this.estadoDecoracion = estadoDecoracion;
@@ -88,22 +76,6 @@ public class DecoracionType {
         this.stockMaximoDecoracion = stockMaximoDecoracion;
     }
 
-    public double getPrecioCostoDecoracion() {
-        return precioCostoDecoracion;
-    }
-
-    public void setPrecioCostoDecoracion(double precioCostoDecoracion) {
-        this.precioCostoDecoracion = precioCostoDecoracion;
-    }
-
-    public double getPrecioVentaDecoracion() {
-        return precioVentaDecoracion;
-    }
-
-    public void setPrecioVentaDecoracion(double precioVentaDecoracion) {
-        this.precioVentaDecoracion = precioVentaDecoracion;
-    }
-
     public String getIdProveedorDecoracion() {
         return idProveedorDecoracion;
     }
@@ -120,36 +92,12 @@ public class DecoracionType {
         this.imagenDecoracion = imagenDecoracion;
     }
 
-    public boolean isEsColeccionDecoracion() {
-        return esColeccionDecoracion;
+    public String getIdColeccionDecoracion() {
+        return idColeccionDecoracion;
     }
 
-    public void setEsColeccionDecoracion(boolean esColeccionDecoracion) {
-        this.esColeccionDecoracion = esColeccionDecoracion;
-    }
-
-    public String getDisenadorDecoracion() {
-        return disenadorDecoracion;
-    }
-
-    public void setDisenadorDecoracion(String disenadorDecoracion) {
-        this.disenadorDecoracion = disenadorDecoracion;
-    }
-
-    public String getNumColeccionDecoracion() {
-        return numColeccionDecoracion;
-    }
-
-    public void setNumColeccionDecoracion(String numColeccionDecoracion) {
-        this.numColeccionDecoracion = numColeccionDecoracion;
-    }
-
-    public Integer getAnioDecoracion() {
-        return anioDecoracion;
-    }
-
-    public void setAnioDecoracion(Integer anioDecoracion) {
-        this.anioDecoracion = anioDecoracion;
+    public void setIdColeccionDecoracion(String idColeccionDecoracion) {
+        this.idColeccionDecoracion = idColeccionDecoracion;
     }
 
     public String getDescripcionDecoracion() {
@@ -184,14 +132,9 @@ public class DecoracionType {
                 ", stockDecoracion=" + stockDecoracion +
                 ", stockMinimoDecoracion=" + stockMinimoDecoracion +
                 ", stockMaximoDecoracion=" + stockMaximoDecoracion +
-                ", precioCostoDecoracion=" + precioCostoDecoracion +
-                ", precioVentaDecoracion=" + precioVentaDecoracion +
                 ", idProveedorDecoracion='" + idProveedorDecoracion + '\'' +
-                ", imagenDecoracion='" + imagenDecoracion + '\'' +
-                ", esColeccionDecoracion=" + esColeccionDecoracion +
-                ", disenadorDecoracion='" + disenadorDecoracion + '\'' +
-                ", numColeccionDecoracion='" + numColeccionDecoracion + '\'' +
-                ", anioDecoracion=" + anioDecoracion +
+                ", imagenDecoracion='" + imagenDecoracion +
+                "', idColeccionDecoracion='" + idColeccionDecoracion + '\'' +
                 ", descripcionDecoracion='" + descripcionDecoracion + '\'' +
                 ", fechaCreacion=" + fechaCreacion +
                 ", estadoDecoracion=" + estadoDecoracion +

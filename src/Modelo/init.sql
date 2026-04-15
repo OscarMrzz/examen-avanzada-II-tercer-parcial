@@ -44,6 +44,20 @@ CREATE TABLE proveedores (
     estado_proveedor BOOLEAN DEFAULT TRUE
 );
 
+-- Tabla Colecciones
+CREATE TABLE colecciones (
+    id_coleccion VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    nombre_coleccion VARCHAR(150) NOT NULL,
+    disenador_coleccion VARCHAR(100) NOT NULL,
+    num_coleccion_coleccion VARCHAR(50) NOT NULL,
+    anio_coleccion INT NOT NULL,
+    descripcion_coleccion TEXT,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    estado_coleccion BOOLEAN DEFAULT TRUE,
+    CONSTRAINT chk_anio_coleccion CHECK (anio_coleccion > 1900 AND anio_coleccion <= YEAR(CURDATE())),
+    CONSTRAINT chk_num_coleccion UNIQUE (num_coleccion_coleccion)
+);
+
 -- Tabla Decoraciones
 CREATE TABLE decoraciones (
     id_decoracion VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
@@ -51,19 +65,14 @@ CREATE TABLE decoraciones (
     stock_decoracion INT NOT NULL DEFAULT 0,
     stock_minimo_decoracion INT NOT NULL DEFAULT 5,
     stock_maximo_decoracion INT NOT NULL DEFAULT 100,
-    precio_costo_decoracion DECIMAL(10,2) NOT NULL,
-    precio_venta_decoracion DECIMAL(10,2) NOT NULL,
     id_proveedor_decoracion VARCHAR(36) NOT NULL,
     imagen_decoracion VARCHAR(255),
-    es_coleccion_decoracion BOOLEAN DEFAULT FALSE,
-    disenador_decoracion VARCHAR(100),
-    num_coleccion_decoracion VARCHAR(50),
-    anio_decoracion INT,
+    id_coleccion_decoracion VARCHAR(36),
     descripcion_decoracion TEXT,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     estado_decoracion BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (id_proveedor_decoracion) REFERENCES proveedores(id_proveedor),
-    CONSTRAINT chk_precio_venta CHECK (precio_venta_decoracion > precio_costo_decoracion),
+    FOREIGN KEY (id_coleccion_decoracion) REFERENCES colecciones(id_coleccion),
     CONSTRAINT chk_stock CHECK (stock_decoracion >= 0)
 );
 
@@ -88,11 +97,13 @@ CREATE TABLE detalle_compra (
     id_factura_compra_detalle VARCHAR(36) NOT NULL,
     id_decoracion_detalle VARCHAR(36) NOT NULL,
     cantidad_detalle_compra INT NOT NULL,
-    precio_unitario_compra DECIMAL(10,2) NOT NULL,
+    precio_costo_compra DECIMAL(10,2) NOT NULL,
+    precio_venta_compra DECIMAL(10,2) NOT NULL,
     subtotal_detalle_compra DECIMAL(10,2) NOT NULL,
     FOREIGN KEY (id_factura_compra_detalle) REFERENCES facturas_compra(id_factura_compra),
     FOREIGN KEY (id_decoracion_detalle) REFERENCES decoraciones(id_decoracion),
-    CONSTRAINT chk_cantidad_compra CHECK (cantidad_detalle_compra > 0)
+    CONSTRAINT chk_cantidad_compra CHECK (cantidad_detalle_compra > 0),
+    CONSTRAINT chk_precio_venta_compra CHECK (precio_venta_compra > precio_costo_compra)
 );
 
 -- Tabla Ventas
@@ -189,10 +200,14 @@ SELECT
     c.nombre_cliente,
     d.id_decoracion,
     d.nombre_decoracion,
-    d.es_coleccion_decoracion,
-    d.disenador_decoracion,
-    d.num_coleccion_decoracion,
-    d.anio_decoracion,
+    CASE 
+        WHEN d.id_coleccion_decoracion IS NOT NULL THEN TRUE
+        ELSE FALSE
+    END AS es_coleccion_decoracion,
+    co.nombre_coleccion,
+    co.disenador_coleccion,
+    co.num_coleccion_coleccion,
+    co.anio_coleccion,
     p.nombre_proveedor,
     dv.cantidad_detalle_venta,
     dv.precio_unitario_venta,
@@ -205,6 +220,7 @@ INNER JOIN ventas v ON dv.id_venta_detalle = v.id_venta
 INNER JOIN clientes c ON v.id_cliente_venta = c.id_cliente
 INNER JOIN decoraciones d ON dv.id_decoracion_detalle = d.id_decoracion
 INNER JOIN proveedores p ON d.id_proveedor_decoracion = p.id_proveedor
+LEFT JOIN colecciones co ON d.id_coleccion_decoracion = co.id_coleccion
 WHERE v.estado_venta = 'Activa';
 
 -- Vista detallada de Compras
@@ -245,21 +261,29 @@ SELECT
     d.stock_decoracion,
     d.stock_minimo_decoracion,
     d.stock_maximo_decoracion,
-    d.precio_costo_decoracion,
-    d.precio_venta_decoracion,
-    d.es_coleccion_decoracion,
-    d.disenador_decoracion,
-    d.num_coleccion_decoracion,
-    d.anio_decoracion,
+    -- Obtener precios de la última compra
+    COALESCE(dc.precio_costo_compra, 0) AS precio_costo_decoracion,
+    COALESCE(dc.precio_venta_compra, 0) AS precio_venta_decoracion,
+    CASE 
+        WHEN d.id_coleccion_decoracion IS NOT NULL THEN TRUE
+        ELSE FALSE
+    END AS es_coleccion_decoracion,
+    co.nombre_coleccion,
+    co.disenador_coleccion,
+    co.num_coleccion_coleccion,
+    co.anio_coleccion,
     d.descripcion_decoracion,
     d.estado_decoracion,
     p.id_proveedor,
     p.nombre_proveedor,
     p.telefono_proveedor,
     -- Margen de utilidad
-    ((d.precio_venta_decoracion - d.precio_costo_decoracion) / d.precio_costo_decoracion * 100) AS margen_utilidad_porcentaje,
+    CASE 
+        WHEN dc.precio_costo_compra > 0 THEN ((dc.precio_venta_compra - dc.precio_costo_compra) / dc.precio_costo_compra * 100)
+        ELSE 0
+    END AS margen_utilidad_porcentaje,
     -- Valor total del inventario
-    (d.stock_decoracion * d.precio_costo_decoracion) AS valor_total_inventario,
+    (d.stock_decoracion * COALESCE(dc.precio_costo_compra, 0)) AS valor_total_inventario,
     -- Estado de stock
     CASE 
         WHEN d.stock_decoracion = 0 THEN 'Agotado'
@@ -269,6 +293,16 @@ SELECT
     END AS estado_stock
 FROM decoraciones d
 INNER JOIN proveedores p ON d.id_proveedor_decoracion = p.id_proveedor
+LEFT JOIN colecciones co ON d.id_coleccion_decoracion = co.id_coleccion
+LEFT JOIN (
+    SELECT 
+        id_decoracion_detalle,
+        precio_costo_compra,
+        precio_venta_compra,
+        ROW_NUMBER() OVER (PARTITION BY id_decoracion_detalle ORDER BY fc.fecha_factura_compra DESC) as rn
+    FROM detalle_compra dc
+    INNER JOIN facturas_compra fc ON dc.id_factura_compra_detalle = fc.id_factura_compra
+) dc ON d.id_decoracion = dc.id_decoracion_detalle AND dc.rn = 1
 WHERE d.estado_decoracion = TRUE;
 
 -- Vista de decoraciones más vendidas
@@ -276,16 +310,21 @@ CREATE VIEW vista_decoraciones_mas_vendidas AS
 SELECT 
     d.id_decoracion,
     d.nombre_decoracion,
-    d.es_coleccion_decoracion,
-    d.disenador_decoracion,
-    d.num_coleccion_decoracion,
-    d.anio_decoracion,
+    CASE 
+        WHEN d.id_coleccion_decoracion IS NOT NULL THEN TRUE
+        ELSE FALSE
+    END AS es_coleccion_decoracion,
+    co.nombre_coleccion,
+    co.disenador_coleccion,
+    co.num_coleccion_coleccion,
+    co.anio_coleccion,
     p.nombre_proveedor,
     COALESCE(SUM(dv.cantidad_detalle_venta), 0) AS total_unidades_vendidas,
     COALESCE(SUM(dv.subtotal_detalle_venta), 0) AS total_ventas_generadas,
     COALESCE(COUNT(DISTINCT dv.id_venta_detalle), 0) AS cantidad_ventas
 FROM decoraciones d
 INNER JOIN proveedores p ON d.id_proveedor_decoracion = p.id_proveedor
+LEFT JOIN colecciones co ON d.id_coleccion_decoracion = co.id_coleccion
 LEFT JOIN detalle_venta dv ON d.id_decoracion = dv.id_decoracion_detalle
 LEFT JOIN ventas v ON dv.id_venta_detalle = v.id_venta AND v.estado_venta = 'Activa'
 WHERE d.estado_decoracion = TRUE
@@ -334,16 +373,23 @@ INSERT INTO clientes (nombre_cliente, rtn_cliente, tipo_cliente, telefono_client
 ('Distribuidora XYZ', '08011999000999', 'Empresa', '2255-4444', 'compras@xyz.hn', 'Parque Industrial, San Pedro Sula'),
 ('Pedro Antonio Martínez', '', 'Consumidor Final', '7777-6666', 'pmartinez@email.com', 'Barrio El Centro, Comayagua');
 
+-- Insertar colecciones de ejemplo
+INSERT INTO colecciones (nombre_coleccion, disenador_coleccion, num_coleccion_coleccion, anio_coleccion, descripcion_coleccion) VALUES
+('Colección Dorada 2024', 'Roberto Silva', 'COL-2024-001', 2024, 'Colección exclusiva de espejos con marcos dorados de 24k'),
+('Colección Artística', 'Luis Gómez', 'ART-2024-002', 2024, 'Muebles de madera maciza con diseños tallados a mano'),
+('Colección Persica', 'Carmen Rodríguez', 'PER-2024-003', 2024, 'Alfombras tradicionales persicas 100% lana'),
+('Colección Plateada', 'Ana Martínez', 'ESP-2024-001', 2024, 'Espejos modernos con marcos plateados');
+
 -- Insertar decoraciones de ejemplo
-INSERT INTO decoraciones (nombre_decoracion, stock_decoracion, stock_minimo_decoracion, stock_maximo_decoracion, precio_costo_decoracion, precio_venta_decoracion, id_proveedor_decoracion, es_coleccion_decoracion, disenador_decoracion, num_coleccion_decoracion, anio_decoracion, descripcion_decoracion) VALUES
-('Espejo Circular Dorado', 15, 5, 50, 1200.00, 1776.00, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Decoraciones S.A.'), TRUE, 'Roberto Silva', 'COL-2024-001', 2024, 'Espejo circular con marco dorado de 24k'),
-('Lámpara de Cristal Moderna', 8, 3, 30, 2500.00, 3700.00, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Espejos y Lámparas HN'), FALSE, NULL, NULL, NULL, 'Lámpara de techo con cristales colgantes'),
-('Mesa de Centro Madera', 12, 4, 40, 1800.00, 2664.00, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Muebles del Arte'), TRUE, 'Luis Gómez', 'ART-2024-002', 2024, 'Mesa de centro de madera maciza con diseños tallados'),
-('Cuadro Abstracto Grande', 20, 6, 60, 800.00, 1184.00, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Decoraciones S.A.'), FALSE, NULL, NULL, NULL, 'Cuadro abstracto con colores vibrantes'),
-('Alfombra Persica', 6, 2, 25, 3500.00, 5180.00, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Alfombras Elegantes'), TRUE, 'Carmen Rodríguez', 'PER-2024-003', 2024, 'Alfombra persica tradicional 100% lana'),
-('Sofá de Cuero Negro', 4, 2, 15, 4500.00, 6660.00, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Muebles del Arte'), FALSE, NULL, NULL, NULL, 'Sofá de tres plazas en cuero genuino'),
-('Jarrón Cerámica Azul', 25, 8, 80, 450.00, 666.00, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Decoraciones S.A.'), FALSE, NULL, NULL, NULL, 'Jarrón de cerámica artesanal con diseños azules'),
-('Espejo Rectangular Plateado', 10, 3, 35, 950.00, 1406.00, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Espejos y Lámparas HN'), TRUE, 'Ana Martínez', 'ESP-2024-001', 2024, 'Espejo rectangular con marco plateado');
+INSERT INTO decoraciones (nombre_decoracion, stock_decoracion, stock_minimo_decoracion, stock_maximo_decoracion, id_proveedor_decoracion, id_coleccion_decoracion, descripcion_decoracion) VALUES
+('Espejo Circular Dorado', 15, 5, 50, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Decoraciones S.A.'), (SELECT id_coleccion FROM colecciones WHERE num_coleccion_coleccion = 'COL-2024-001'), 'Espejo circular con marco dorado de 24k'),
+('Lámpara de Cristal Moderna', 8, 3, 30, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Espejos y Lámparas HN'), NULL, 'Lámpara de techo con cristales colgantes'),
+('Mesa de Centro Madera', 12, 4, 40, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Muebles del Arte'), (SELECT id_coleccion FROM colecciones WHERE num_coleccion_coleccion = 'ART-2024-002'), 'Mesa de centro de madera maciza con diseños tallados'),
+('Cuadro Abstracto Grande', 20, 6, 60, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Decoraciones S.A.'), NULL, 'Cuadro abstracto con colores vibrantes'),
+('Alfombra Persica', 6, 2, 25, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Alfombras Elegantes'), (SELECT id_coleccion FROM colecciones WHERE num_coleccion_coleccion = 'PER-2024-003'), 'Alfombra persica tradicional 100% lana'),
+('Sofá de Cuero Negro', 4, 2, 15, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Muebles del Arte'), NULL, 'Sofá de tres plazas en cuero genuino'),
+('Jarrón Cerámica Azul', 25, 8, 80, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Decoraciones S.A.'), NULL, 'Jarrón de cerámica artesanal con diseños azules'),
+('Espejo Rectangular Plateado', 10, 3, 35, (SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Espejos y Lámparas HN'), (SELECT id_coleccion FROM colecciones WHERE num_coleccion_coleccion = 'ESP-2024-001'), 'Espejo rectangular con marco plateado');
 
 -- Insertar facturas de compra de ejemplo
 INSERT INTO facturas_compra (id_proveedor_factura_compra, numero_factura, total_factura_compra, tipo_pago_factura_compra, estado_factura_compra, fecha_factura_compra, fecha_vencimiento_factura, condicion_factura) VALUES
@@ -353,16 +399,16 @@ INSERT INTO facturas_compra (id_proveedor_factura_compra, numero_factura, total_
 ((SELECT id_proveedor FROM proveedores WHERE nombre_proveedor = 'Alfombras Elegantes'), 'FC-2024-004', 20000.00, 'Crédito', 'Pendiente', '2024-02-10', '2024-03-10', 'Crédito 30 días');
 
 -- Insertar detalle de compras de ejemplo
-INSERT INTO detalle_compra (id_factura_compra_detalle, id_decoracion_detalle, cantidad_detalle_compra, precio_unitario_compra, subtotal_detalle_compra) VALUES
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-001'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Espejo Circular Dorado'), 10, 1200.00, 12000.00),
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-001'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Cuadro Abstracto Grande'), 3, 800.00, 2400.00),
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-001'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Jarrón Cerámica Azul'), 2, 450.00, 900.00),
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-002'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Lámpara de Cristal Moderna'), 3, 2500.00, 7500.00),
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-002'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Espejo Rectangular Plateado'), 2, 950.00, 1900.00),
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-003'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Mesa de Centro Madera'), 5, 1800.00, 9000.00),
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-003'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Sofá de Cuero Negro'), 1, 4500.00, 4500.00),
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-004'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Alfombra Persica'), 4, 3500.00, 14000.00),
-((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-004'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Espejo Circular Dorado'), 5, 1200.00, 6000.00);
+INSERT INTO detalle_compra (id_factura_compra_detalle, id_decoracion_detalle, cantidad_detalle_compra, precio_costo_compra, precio_venta_compra, subtotal_detalle_compra) VALUES
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-001'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Espejo Circular Dorado'), 10, 1200.00, 1776.00, 12000.00),
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-001'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Cuadro Abstracto Grande'), 3, 800.00, 1184.00, 2400.00),
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-001'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Jarrón Cerámica Azul'), 2, 450.00, 666.00, 900.00),
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-002'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Lámpara de Cristal Moderna'), 3, 2500.00, 3700.00, 7500.00),
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-002'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Espejo Rectangular Plateado'), 2, 950.00, 1406.00, 1900.00),
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-003'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Mesa de Centro Madera'), 5, 1800.00, 2664.00, 9000.00),
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-003'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Sofá de Cuero Negro'), 1, 4500.00, 6660.00, 4500.00),
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-004'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Alfombra Persica'), 4, 3500.00, 5180.00, 14000.00),
+((SELECT id_factura_compra FROM facturas_compra WHERE numero_factura = 'FC-2024-004'), (SELECT id_decoracion FROM decoraciones WHERE nombre_decoracion = 'Espejo Circular Dorado'), 5, 1200.00, 1776.00, 6000.00);
 
 -- Insertar ventas de ejemplo
 INSERT INTO ventas (id_cliente_venta, numero_factura_venta, subtotal_venta, impuesto_venta, descuento_venta, total_venta, tipo_pago_venta, monto_efectivo, monto_tarjeta, cambio_venta, id_usuario_vendedor, fecha_venta) VALUES
