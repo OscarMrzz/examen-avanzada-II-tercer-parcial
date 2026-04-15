@@ -67,6 +67,50 @@
 - [ ] Archivo .form correspondiente creado
 - [ ] Ubicación correcta según `EstructuraDeCarpetas.md`
 
+### Para Crear Controladores
+
+**Referencia**: `EstructuraControlador.md`
+
+**Pasos a seguir**:
+
+1. Revisar `EstructuraPuntoDeEntrada.md` para entender inicialización
+2. Identificar vistas que gestionará el controlador
+3. Aplicar principio: **NO CREAR VISTAS**, solo recibirlas
+4. Definir constructor con inyección de dependencias
+5. Implementar métodos para manipular vistas recibidas
+6. Seguir responsabilidad única (solo vistas relacionadas)
+
+**Checklist final**:
+
+- [ ] Controlador recibe vistas por constructor
+- [ ] NO crea vistas con `new`
+- [ ] Gestiona solo sus vistas relacionadas
+- [ ] Constructor con inyección de dependencias
+- [ ] Métodos para manipular vistas existentes
+- [ ] Sin acoplamiento con creación de vistas
+- [ ] Seguir patrón MVC estrictamente
+
+### Para Configurar Punto de Entrada
+
+**Referencia**: `EstructuraPuntoDeEntrada.md`
+
+**Pasos a seguir**:
+
+1. Crear todas las vistas necesarias en main()
+2. Crear HomeController con vistas principales
+3. Crear controladores específicos con sus vistas
+4. Inyectar dependencias correctamente
+5. Iniciar aplicación a través de HomeController
+
+**Checklist final**:
+
+- [ ] Todas las vistas creadas en punto de entrada
+- [ ] HomeController recibe vistas principales
+- [ ] Controladores específicos reciben sus vistas
+- [ ] Sin creación de vistas en controladores
+- [ ] Inyección de dependencias implementada
+- [ ] Aplicación iniciada correctamente
+
 ### Para Crear Reportes
 
 **Referencia**: `EstructuraReportes.md`
@@ -132,14 +176,16 @@
 
 ## Documentación de Referencia
 
-| Archivo                    | Propósito                         | Cuándo consultar                    |
-| -------------------------- | --------------------------------- | ----------------------------------- |
-| `EstructuraDeCarpetas.md`  | Organización física del proyecto  | **SIEMPRE** antes de crear archivos |
-| `EstructuraFormularios.md` | Patrones para formularios JDialog | Al crear formularios Agregar/Editar |
-| `EstructuraVistas.md`      | Patrones para vistas principales  | Al crear vistas de listado          |
-| `EstructuraReportes.md`    | Guía para JasperReports           | Al crear reportes                   |
-| `EstructuraModelo.md`      | Skill CRUD y patrones del Modelo  | **SIEMPRE** al crear modelos CRUD   |
-| `EstructuraProyecto.md`    | Arquitectura general y datos      | Para entender contexto del sistema  |
+| Archivo                       | Propósito                         | Cuándo consultar                    |
+| ----------------------------- | --------------------------------- | ----------------------------------- |
+| `EstructuraDeCarpetas.md`     | Organización física del proyecto  | **SIEMPRE** antes de crear archivos |
+| `EstructuraFormularios.md`    | Patrones para formularios JDialog | Al crear formularios Agregar/Editar |
+| `EstructuraVistas.md`         | Patrones para vistas principales  | Al crear vistas de listado          |
+| `EstructuraReportes.md`       | Guía para JasperReports           | Al crear reportes                   |
+| `EstructuraModelo.md`         | Skill CRUD y patrones del Modelo  | **SIEMPRE** al crear modelos CRUD   |
+| `EstructuraProyecto.md`       | Arquitectura general y datos      | Para entender contexto del sistema  |
+| `EstructuraPuntoDeEntrada.md` | Punto de entrada y inicialización | **SIEMPRE** al iniciar aplicación   |
+| `EstructuraControlador.md`    | Arquitectura de controladores     | **SIEMPRE** al crear controladores  |
 
 ---
 
@@ -153,6 +199,8 @@
 4. **NO olvidar hacer públicos** los componentes
 5. **NO mezclar convenciones** de nomenclatura
 6. **NO crear archivos .form** separados del .java
+7. **NO crear vistas en controladores** (solo recibir por parámetro)
+8. **NO olvidar inyección de dependencias** en controladores
 
 ### Recordatorios de Calidad
 

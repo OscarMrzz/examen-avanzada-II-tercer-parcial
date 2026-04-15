@@ -14,6 +14,8 @@ import Controlador.colecciones.coleccionesController;
 import Vista.compras.comprasVista;
 import Controlador.compras.comprasController;
 import Vista.inventario.inventarioVista;
+import Vista.ventas.ventasVista;
+import Controlador.ventas.ventasController;
 
 public class HomeController {
     Home home;
@@ -30,6 +32,8 @@ public class HomeController {
     comprasVista comprasVista;
     comprasController comprasController;
     inventarioVista inventarioVista;
+    ventasVista ventasVista;
+    ventasController ventasController;
 
     public HomeController(Home home, LoginVista login, UsuariosVista usuariosVista) {
         this.home = home;
@@ -46,6 +50,8 @@ public class HomeController {
         this.comprasVista = new comprasVista(null, true);
         this.comprasController = new comprasController(comprasVista, home);
         this.inventarioVista = new inventarioVista(null, true);
+        this.ventasVista = new ventasVista(null, true);
+        this.ventasController = new ventasController(ventasVista, home);
     }
 
     public void iniciar() {
@@ -60,6 +66,7 @@ public class HomeController {
         home.botonirAColecciones.addActionListener(e -> irAColecciones());
         home.botonirACompras.addActionListener(e -> irACompras());
         home.botonIrAInventario.addActionListener(e -> irAInventario());
+        home.botonIrAVentas.addActionListener(e -> irAVentas());
     }
 
     public void irAUsuarios() {
@@ -90,6 +97,10 @@ public class HomeController {
     public void irAInventario() {
         inventarioVista.setVisible(true);
         home.setVisible(false);
+    }
+
+    public void irAVentas() {
+        ventasController.iniciar();
     }
 
 }
