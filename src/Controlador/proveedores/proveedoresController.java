@@ -11,11 +11,12 @@ public class proveedoresController {
     private FormularioEditarProveedor formularioEditar;
     private reportesProveedores reportes;
 
-    public proveedoresController(proveedoresVista vista) {
+    public proveedoresController(proveedoresVista vista, FormularioAgregarProveedor formularioAgregar,
+            FormularioEditarProveedor formularioEditar, reportesProveedores reportes) {
         this.vista = vista;
-        this.formularioAgregar = new FormularioAgregarProveedor(null, true);
-        this.formularioEditar = new FormularioEditarProveedor(null, true);
-        this.reportes = new reportesProveedores(null, true);
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
 
         initController();
     }

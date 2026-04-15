@@ -6,6 +6,8 @@ package Controlador.ventas;
 
 import Vista.ventas.ventasVista;
 import Vista.ventas.FormularioAgregarVenta;
+import Vista.ventas.FormularioEditarVenta;
+import Vista.ventas.reportesVentas;
 
 /**
  *
@@ -14,12 +16,19 @@ import Vista.ventas.FormularioAgregarVenta;
 public class ventasController {
 
     private ventasVista vista;
+    private FormularioAgregarVenta formularioAgregar;
+    private FormularioEditarVenta formularioEditar;
+    private reportesVentas reportes;
 
     /**
      * Creates new form ventasController
      */
-    public ventasController(ventasVista vista) {
+    public ventasController(ventasVista vista, FormularioAgregarVenta formularioAgregar,
+            FormularioEditarVenta formularioEditar, reportesVentas reportes) {
         this.vista = vista;
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
     }
 
     public void iniciar() {
@@ -30,7 +39,6 @@ public class ventasController {
     }
 
     public void abrirFormularioAgregar() {
-        FormularioAgregarVenta formulario = new FormularioAgregarVenta(null, true);
-        formulario.setVisible(true);
+        formularioAgregar.setVisible(true);
     }
 }

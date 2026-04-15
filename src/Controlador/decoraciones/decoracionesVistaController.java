@@ -3,32 +3,35 @@ package Controlador.decoraciones;
 import Vista.decoraciones.decoracionesVista;
 import Vista.decoraciones.FormularioAgregarDecoracion;
 import Vista.decoraciones.FormularioEditarDecoracion;
-import Vista.decoraciones.reportesDecoraciones;
-import Modelo.Conexion;
+import Modelo.decoraciones.DecoracionModel;
+import Type.decoraciones.DecoracionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Controlador para la vista de decoraciones
+ * Controlador principal para la vista de decoraciones
  * 
  * @author ossca
  */
 public class decoracionesVistaController {
 
+    private static final Logger logger = Logger.getLogger(decoracionesVistaController.class.getName());
     private decoracionesVista vista;
-    private Connection conexion;
+    private DecoracionModel modelo;
+    private FormularioAgregarDecoracion formularioAgregar;
+    private FormularioEditarDecoracion formularioEditar;
 
-    public decoracionesVistaController(decoracionesVista vista) {
+    public decoracionesVistaController(decoracionesVista vista, FormularioAgregarDecoracion formularioAgregar, FormularioEditarDecoracion formularioEditar) {
         this.vista = vista;
-        Conexion conexionObj = new Conexion();
-        this.conexion = conexionObj.getConxion();
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.modelo = new DecoracionModel();
         inicializarEventos();
         cargarTabla();
     }
@@ -39,9 +42,6 @@ public class decoracionesVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
-
-        // Evento del botón informe
-        vista.botonInforme.addActionListener(this::generarReporte);
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -79,34 +79,33 @@ public class decoracionesVistaController {
     }
 
     /**
-     * Carga todas las decoraciones en la tabla
+     * Carga todas las decoraciones en la tabla usando el Modelo
      */
     public void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
 
-        String sql = "SELECT d.id_decoracion, d.nombre, d.stock, d.precio_venta, " +
-                "p.nombre as proveedor, d.estado " +
-                "FROM decoraciones d " +
-                "LEFT JOIN proveedores p ON d.id_proveedor = p.id_proveedor " +
-                "ORDER BY d.id_decoracion";
+        try {
+            ArrayList<DecoracionType> decoraciones = modelo.getAll();
+            int index = 1;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
+            for (DecoracionType decoracion : decoraciones) {
                 Object[] fila = {
-                        rs.getInt("id_decoracion"),
-                        rs.getString("nombre"),
-                        rs.getInt("stock"),
-                        rs.getDouble("precio_venta"),
-                        rs.getString("proveedor"),
-                        rs.getString("estado")
+                        index++, // Número de registro/índice
+                        decoracion.getNombreDecoracion(),
+                        decoracion.getStockDecoracion(),
+                        decoracion.getStockMinimoDecoracion(),
+                        decoracion.getStockMaximoDecoracion(),
+                        decoracion.getIdProveedorDecoracion() != null ? decoracion.getIdProveedorDecoracion() : "N/A",
+                        decoracion.getIdColeccionDecoracion() != null ? decoracion.getIdColeccionDecoracion() : "N/A",
+                        decoracion.getDescripcionDecoracion() != null ? decoracion.getDescripcionDecoracion() : "N/A",
+                        decoracion.isEstadoDecoracion() ? "ACTIVO" : "INACTIVO"
                 };
-                modelo.addRow(fila);
+                modeloTabla.addRow(fila);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al cargar las decoraciones: " + ex.getMessage(), ex);
             JOptionPane.showMessageDialog(vista, "Error al cargar las decoraciones: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -123,37 +122,50 @@ public class decoracionesVistaController {
             return;
         }
 
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
 
-        String sql = "SELECT d.id_decoracion, d.nombre, d.stock, d.precio_venta, " +
-                "p.nombre as proveedor, d.estado " +
-                "FROM decoraciones d " +
-                "LEFT JOIN proveedores p ON d.id_proveedor = p.id_proveedor " +
-                "WHERE d.nombre LIKE ? OR p.nombre LIKE ? OR d.estado LIKE ? " +
-                "ORDER BY d.id_decoracion";
+        try {
+            ArrayList<DecoracionType> decoraciones = modelo.getAll();
+            int index = 1;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            String patron = "%" + textoBusqueda + "%";
-            stmt.setString(1, patron);
-            stmt.setString(2, patron);
-            stmt.setString(3, patron);
+            for (DecoracionType decoracion : decoraciones) {
+                // Búsqueda en múltiples campos (case-insensitive)
+                String descripcion = decoracion.getDescripcionDecoracion() != null
+                        ? decoracion.getDescripcionDecoracion()
+                        : "";
+                String proveedor = decoracion.getIdProveedorDecoracion() != null ? decoracion.getIdProveedorDecoracion()
+                        : "";
+                String coleccion = decoracion.getIdColeccionDecoracion() != null ? decoracion.getIdColeccionDecoracion()
+                        : "";
+                String estado = decoracion.isEstadoDecoracion() ? "ACTIVO" : "INACTIVO";
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
+                if (decoracion.getNombreDecoracion().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        descripcion.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        proveedor.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        coleccion.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        String.valueOf(decoracion.getStockDecoracion()).contains(textoBusqueda) ||
+                        String.valueOf(decoracion.getStockMinimoDecoracion()).contains(textoBusqueda) ||
+                        String.valueOf(decoracion.getStockMaximoDecoracion()).contains(textoBusqueda) ||
+                        estado.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+
                     Object[] fila = {
-                            rs.getInt("id_decoracion"),
-                            rs.getString("nombre"),
-                            rs.getInt("stock"),
-                            rs.getDouble("precio_venta"),
-                            rs.getString("proveedor"),
-                            rs.getString("estado")
+                            index++, // Mantener índice secuencial
+                            decoracion.getNombreDecoracion(),
+                            decoracion.getStockDecoracion(),
+                            decoracion.getStockMinimoDecoracion(),
+                            decoracion.getStockMaximoDecoracion(),
+                            proveedor.isEmpty() ? "N/A" : proveedor,
+                            coleccion.isEmpty() ? "N/A" : coleccion,
+                            descripcion.isEmpty() ? "N/A" : descripcion,
+                            estado
                     };
-                    modelo.addRow(fila);
+                    modeloTabla.addRow(fila);
                 }
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al buscar decoraciones: " + ex.getMessage(), ex);
             JOptionPane.showMessageDialog(vista, "Error al buscar decoraciones: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -187,10 +199,9 @@ public class decoracionesVistaController {
      * Abre el formulario para agregar una nueva decoración
      */
     private void abrirFormularioAgregar(ActionEvent e) {
-        FormularioAgregarDecoracion formulario = new FormularioAgregarDecoracion(new javax.swing.JFrame(), true);
-        formulario.setVisible(true);
+        new FormularioAgregarDecoracionController(formularioAgregar);
+        formularioAgregar.setVisible(true);
 
-        // Recargar la tabla después de agregar
         cargarTabla();
     }
 
@@ -206,23 +217,27 @@ public class decoracionesVistaController {
             return;
         }
 
-        // Obtener datos de la decoración seleccionada (se cargarán según los campos del
-        // formulario)
+        // Obtener el ID real de la decoración desde el modelo usando el índice de la
+        // fila
+        try {
+            ArrayList<DecoracionType> decoraciones = modelo.getAll();
+            if (fila < decoraciones.size()) {
+                String idDecoracion = decoraciones.get(fila).getIdDecoracion();
 
-        FormularioEditarDecoracion formulario = new FormularioEditarDecoracion(new javax.swing.JFrame(), true);
+                new FormularioEditarDecoracionController(formularioEditar, idDecoracion);
+                formularioEditar.setVisible(true);
 
-        // Cargar los datos en el formulario (según los campos disponibles)
-        // Nota: Necesitarás revisar los campos específicos del formulario de editar
-        // decoración
-
-        formulario.setVisible(true);
-
-        // Recargar la tabla después de editar
-        cargarTabla();
+                cargarTabla();
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al obtener la decoración: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al obtener la decoración: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
-     * Elimina la decoración seleccionada
+     * Elimina la decoración seleccionada usando el Modelo
      */
     private void eliminar() {
         int fila = vista.tabla.getSelectedRow();
@@ -233,45 +248,37 @@ public class decoracionesVistaController {
             return;
         }
 
-        int idDecoracion = (int) vista.tabla.getValueAt(fila, 0);
-        String nombreDecoracion = (String) vista.tabla.getValueAt(fila, 1);
+        // Obtener el ID real y nombre de la decoración desde el modelo usando el índice
+        // de la fila
+        try {
+            ArrayList<DecoracionType> decoraciones = modelo.getAll();
+            if (fila < decoraciones.size()) {
+                DecoracionType decoracionSeleccionada = decoraciones.get(fila);
+                String idDecoracion = decoracionSeleccionada.getIdDecoracion();
+                String nombreDecoracion = decoracionSeleccionada.getNombreDecoracion();
 
-        int confirmacion = JOptionPane.showConfirmDialog(
-                vista,
-                "¿Está seguro de que desea eliminar la decoración \"" + nombreDecoracion + "\"?",
-                "Confirmar Eliminación",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                int confirmacion = JOptionPane.showConfirmDialog(
+                        vista,
+                        "¿Está seguro de que desea eliminar la decoración \"" + nombreDecoracion + "\"?",
+                        "Confirmar Eliminación",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
 
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "DELETE FROM decoraciones WHERE id_decoracion = ?";
-
-            try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-                stmt.setInt(1, idDecoracion);
-
-                int filasAfectadas = stmt.executeUpdate();
-
-                if (filasAfectadas > 0) {
-                    JOptionPane.showMessageDialog(vista, "Decoración eliminada correctamente",
-                            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    cargarTabla();
-                } else {
-                    JOptionPane.showMessageDialog(vista, "No se pudo eliminar la decoración",
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                if (confirmacion == JOptionPane.YES_OPTION) {
+                    if (modelo.delete(idDecoracion)) {
+                        JOptionPane.showMessageDialog(vista, "Decoración eliminada correctamente",
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        cargarTabla();
+                    } else {
+                        JOptionPane.showMessageDialog(vista, "No se pudo eliminar la decoración",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(vista, "Error al eliminar la decoración: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al eliminar decoración: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al eliminar decoración: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    /**
-     * Abre la ventana de reportes de decoraciones
-     */
-    private void generarReporte(ActionEvent e) {
-        reportesDecoraciones reporte = new reportesDecoraciones(new javax.swing.JFrame(), true);
-        reporte.setVisible(true);
     }
 }

@@ -18,10 +18,12 @@ import javax.swing.JOptionPane;
 public class LoginVistaController {
 
     private LoginVista vista;
+    private Home home;
     private Connection conexion;
 
-    public LoginVistaController(LoginVista vista) {
+    public LoginVistaController(LoginVista vista, Home home) {
         this.vista = vista;
+        this.home = home;
         Conexion conexionObj = new Conexion();
         this.conexion = conexionObj.getConxion();
         inicializarEventos();
@@ -60,8 +62,8 @@ public class LoginVistaController {
             return;
         }
 
-        // Validar credenciales en la base de datos
-        String sql = "SELECT id_usuario, nombre, rol FROM usuarios WHERE nombre = ? AND password = ? AND estado = 'ACTIVO'";
+        // Validar credenciales en la base de datos según init.sql
+        String sql = "SELECT id_usuario, nombre_usuario, privilegio_usuario FROM usuarios WHERE user_usuario = ? AND pass_usuario = ? AND estado_usuario = true";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, nombre);
@@ -70,19 +72,18 @@ public class LoginVistaController {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     // Usuario encontrado y activo
-                    String nombreUsuario = rs.getString("nombre");
-                    String rol = rs.getString("rol");
+                    String nombreUsuario = rs.getString("nombre_usuario");
+                    String privilegio = rs.getString("privilegio_usuario");
 
                     // Cerrar ventana de login
                     vista.dispose();
 
-                    // Abrir la ventana principal (Home)
-                    Home home = new Home();
+                    // Abrir la ventana principal (Home) - ya recibida por constructor
                     home.setVisible(true);
 
                     // Mostrar mensaje de bienvenida
                     JOptionPane.showMessageDialog(null,
-                            "¡Bienvenido " + nombreUsuario + "!\nRol: " + rol,
+                            "¡Bienvenido " + nombreUsuario + "!\nPrivilegio: " + privilegio,
                             "Inicio de Sesión Exitoso",
                             JOptionPane.INFORMATION_MESSAGE);
 

@@ -11,11 +11,12 @@ public class decoracionesController {
     private FormularioEditarDecoracion formularioEditar;
     private reportesDecoraciones reportes;
 
-    public decoracionesController(decoracionesVista vista) {
+    public decoracionesController(decoracionesVista vista, FormularioAgregarDecoracion formularioAgregar,
+            FormularioEditarDecoracion formularioEditar, reportesDecoraciones reportes) {
         this.vista = vista;
-        this.formularioAgregar = new FormularioAgregarDecoracion(null, true);
-        this.formularioEditar = new FormularioEditarDecoracion(null, true);
-        this.reportes = new reportesDecoraciones(null, true);
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
 
         initController();
     }

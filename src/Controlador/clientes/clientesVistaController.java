@@ -3,32 +3,36 @@ package Controlador.clientes;
 import Vista.clientes.clientesVista;
 import Vista.clientes.FormularioAgregarCliente;
 import Vista.clientes.FormularioEditarCliente;
-import Vista.clientes.reportesClientes;
-import Modelo.Conexion;
+import Modelo.clientes.ClienteModel;
+import Type.clientes.ClienteType;
+import Type.clientes.TipoCliente;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Controlador para la vista de clientes
+ * Controlador principal para la vista de clientes
  * 
  * @author ossca
  */
 public class clientesVistaController {
 
+    private static final Logger logger = Logger.getLogger(clientesVistaController.class.getName());
     private clientesVista vista;
-    private Connection conexion;
+    private ClienteModel modelo;
+    private FormularioAgregarCliente formularioAgregar;
+    private FormularioEditarCliente formularioEditar;
 
-    public clientesVistaController(clientesVista vista) {
+    public clientesVistaController(clientesVista vista, FormularioAgregarCliente formularioAgregar, FormularioEditarCliente formularioEditar) {
         this.vista = vista;
-        Conexion conexionObj = new Conexion();
-        this.conexion = conexionObj.getConxion();
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.modelo = new ClienteModel();
         inicializarEventos();
         cargarTabla();
     }
@@ -39,9 +43,6 @@ public class clientesVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
-
-        // Evento del botón informe
-        vista.botonInforme.addActionListener(this::generarReporte);
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -76,33 +77,37 @@ public class clientesVistaController {
                 }
             }
         });
+
+        // Inicializar el campo de búsqueda
+        vista.inputBusqueda.setText("Buscar cliente...");
     }
 
     /**
-     * Carga todos los clientes en la tabla
+     * Carga todos los clientes en la tabla usando el Modelo
      */
     public void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
 
-        String sql = "SELECT id_cliente, nombre, rtn, tipo, telefono, estado FROM clientes ORDER BY id_cliente";
+        try {
+            ArrayList<ClienteType> clientes = modelo.getAll();
+            int index = 1;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
+            for (ClienteType cliente : clientes) {
                 Object[] fila = {
-                        rs.getInt("id_cliente"),
-                        rs.getString("nombre"),
-                        rs.getString("rtn"),
-                        rs.getString("tipo"),
-                        rs.getString("telefono"),
-                        rs.getString("estado")
+                        index++, // Número de registro/índice
+                        cliente.getNombreCliente(),
+                        cliente.getRtnCliente() != null ? cliente.getRtnCliente() : "N/A",
+                        cliente.getTipoCliente().toString(),
+                        cliente.getTelefonoCliente(),
+                        cliente.getEmailCliente() != null ? cliente.getEmailCliente() : "N/A",
+                        cliente.isEstadoCliente() ? "ACTIVO" : "INACTIVO"
                 };
-                modelo.addRow(fila);
+                modeloTabla.addRow(fila);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al cargar los clientes: " + ex.getMessage(), ex);
             JOptionPane.showMessageDialog(vista, "Error al cargar los clientes: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -119,33 +124,41 @@ public class clientesVistaController {
             return;
         }
 
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
 
-        String sql = "SELECT id_cliente, nombre, rtn, tipo, telefono, estado FROM clientes " +
-                "WHERE nombre LIKE ? OR rtn LIKE ? OR telefono LIKE ? ORDER BY id_cliente";
+        try {
+            ArrayList<ClienteType> clientes = modelo.getAll();
+            int index = 1;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            String patron = "%" + textoBusqueda + "%";
-            stmt.setString(1, patron);
-            stmt.setString(2, patron);
-            stmt.setString(3, patron);
+            for (ClienteType cliente : clientes) {
+                // Búsqueda en múltiples campos (case-insensitive)
+                String rtn = cliente.getRtnCliente() != null ? cliente.getRtnCliente() : "";
+                String email = cliente.getEmailCliente() != null ? cliente.getEmailCliente() : "";
+                String estado = cliente.isEstadoCliente() ? "ACTIVO" : "INACTIVO";
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
+                if (cliente.getNombreCliente().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        rtn.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        cliente.getTipoCliente().toString().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        cliente.getTelefonoCliente().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        email.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        estado.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+
                     Object[] fila = {
-                            rs.getInt("id_cliente"),
-                            rs.getString("nombre"),
-                            rs.getString("rtn"),
-                            rs.getString("tipo"),
-                            rs.getString("telefono"),
-                            rs.getString("estado")
+                            index++, // Mantener índice secuencial
+                            cliente.getNombreCliente(),
+                            rtn.isEmpty() ? "N/A" : rtn,
+                            cliente.getTipoCliente().toString(),
+                            cliente.getTelefonoCliente(),
+                            email.isEmpty() ? "N/A" : email,
+                            estado
                     };
-                    modelo.addRow(fila);
+                    modeloTabla.addRow(fila);
                 }
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al buscar clientes: " + ex.getMessage(), ex);
             JOptionPane.showMessageDialog(vista, "Error al buscar clientes: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -179,10 +192,9 @@ public class clientesVistaController {
      * Abre el formulario para agregar un nuevo cliente
      */
     private void abrirFormularioAgregar(ActionEvent e) {
-        FormularioAgregarCliente formulario = new FormularioAgregarCliente(new javax.swing.JFrame(), true);
-        formulario.setVisible(true);
+        new FormularioAgregarClienteController(formularioAgregar);
+        formularioAgregar.setVisible(true);
 
-        // Recargar la tabla después de agregar
         cargarTabla();
     }
 
@@ -198,32 +210,26 @@ public class clientesVistaController {
             return;
         }
 
-        // Obtener datos del cliente seleccionado
-        String nombre = (String) vista.tabla.getValueAt(fila, 1);
-        String rtn = (String) vista.tabla.getValueAt(fila, 2);
-        String tipo = (String) vista.tabla.getValueAt(fila, 3);
-        String telefono = (String) vista.tabla.getValueAt(fila, 4);
+        // Obtener el ID real del cliente desde el modelo usando el índice de la fila
+        try {
+            ArrayList<ClienteType> clientes = modelo.getAll();
+            if (fila < clientes.size()) {
+                String idCliente = clientes.get(fila).getIdCliente();
 
-        FormularioEditarCliente formulario = new FormularioEditarCliente(new javax.swing.JFrame(), true);
+                new FormularioEditarClienteController(formularioEditar, idCliente);
+                formularioEditar.setVisible(true);
 
-        // Cargar los datos en el formulario
-        formulario.inputNombreCliente.setText(nombre);
-        formulario.inputRTNCliente.setText(rtn);
-        formulario.comboBoxTipoCliente.setSelectedItem(tipo);
-        formulario.inputTelefonoCliente.setText(telefono);
-
-        // Guardar el ID del cliente en el formulario para la edición
-        // El ID del cliente se puede manejar a través de una variable estática o método
-        // setter en el formulario
-
-        formulario.setVisible(true);
-
-        // Recargar la tabla después de editar
-        cargarTabla();
+                cargarTabla();
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al obtener el cliente: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al obtener el cliente: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
-     * Elimina el cliente seleccionado
+     * Elimina el cliente seleccionado usando el Modelo
      */
     private void eliminar() {
         int fila = vista.tabla.getSelectedRow();
@@ -234,45 +240,37 @@ public class clientesVistaController {
             return;
         }
 
-        int idCliente = (int) vista.tabla.getValueAt(fila, 0);
-        String nombreCliente = (String) vista.tabla.getValueAt(fila, 1);
+        // Obtener el ID real y nombre del cliente desde el modelo usando el índice de
+        // la fila
+        try {
+            ArrayList<ClienteType> clientes = modelo.getAll();
+            if (fila < clientes.size()) {
+                ClienteType clienteSeleccionado = clientes.get(fila);
+                String idCliente = clienteSeleccionado.getIdCliente();
+                String nombreCliente = clienteSeleccionado.getNombreCliente();
 
-        int confirmacion = JOptionPane.showConfirmDialog(
-                vista,
-                "¿Está seguro de que desea eliminar al cliente \"" + nombreCliente + "\"?",
-                "Confirmar Eliminación",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                int confirmacion = JOptionPane.showConfirmDialog(
+                        vista,
+                        "¿Está seguro de que desea eliminar al cliente \"" + nombreCliente + "\"?",
+                        "Confirmar Eliminación",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
 
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "DELETE FROM clientes WHERE id_cliente = ?";
-
-            try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-                stmt.setInt(1, idCliente);
-
-                int filasAfectadas = stmt.executeUpdate();
-
-                if (filasAfectadas > 0) {
-                    JOptionPane.showMessageDialog(vista, "Cliente eliminado correctamente",
-                            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    cargarTabla();
-                } else {
-                    JOptionPane.showMessageDialog(vista, "No se pudo eliminar el cliente",
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                if (confirmacion == JOptionPane.YES_OPTION) {
+                    if (modelo.delete(idCliente)) {
+                        JOptionPane.showMessageDialog(vista, "Cliente eliminado correctamente",
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        cargarTabla();
+                    } else {
+                        JOptionPane.showMessageDialog(vista, "No se pudo eliminar el cliente",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(vista, "Error al eliminar el cliente: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al eliminar cliente: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al eliminar cliente: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    /**
-     * Abre la ventana de reportes de clientes
-     */
-    private void generarReporte(ActionEvent e) {
-        reportesClientes reporte = new reportesClientes(new javax.swing.JFrame(), true);
-        reporte.setVisible(true);
     }
 }

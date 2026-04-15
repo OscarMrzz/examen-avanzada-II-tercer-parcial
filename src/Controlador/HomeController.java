@@ -10,8 +10,13 @@ import Vista.colecciones.coleccionesVista;
 import Vista.compras.comprasVista;
 import Vista.inventario.inventarioVista;
 import Vista.ventas.ventasVista;
+import Type.usuarios.PrivilegioUsuario;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 public class HomeController {
+    private static final Logger logger = Logger.getLogger(HomeController.class.getName());
     Home home;
     LoginVista login;
     UsuariosVista usuariosVista;
@@ -22,6 +27,7 @@ public class HomeController {
     comprasVista comprasVista;
     inventarioVista inventarioVista;
     ventasVista ventasVista;
+    private PrivilegioUsuario privilegioUsuarioActual;
 
     public HomeController(Home home, LoginVista login, UsuariosVista usuariosVista,
             clientesVista clientesVista, coleccionesVista coleccionesVista,
@@ -47,6 +53,15 @@ public class HomeController {
         // Los controladores específicos se crean en el punto de entrada
     }
 
+    /**
+     * Establece el privilegio del usuario actual para controlar el acceso a módulos
+     * 
+     * @param privilegioUsuarioActual Privilegio del usuario que ha iniciado sesión
+     */
+    public void setPrivilegioUsuarioActual(PrivilegioUsuario privilegioUsuarioActual) {
+        this.privilegioUsuarioActual = privilegioUsuarioActual;
+    }
+
     public void iniciar() {
         home.setVisible(true);
     }
@@ -63,43 +78,91 @@ public class HomeController {
     }
 
     public void irAUsuarios() {
-        usuariosVista.setVisible(true);
-        home.setVisible(false);
+        if (validarAccesoModulo(PrivilegioUsuario.ADMIN, "usuarios")) {
+            usuariosVista.setVisible(true);
+            home.setVisible(false);
+        }
     }
 
     public void irAProveedores() {
-        proveedoresVista.setVisible(true);
-        home.setVisible(false);
+        if (validarAccesoModulo(PrivilegioUsuario.ADMIN, "proveedores")) {
+            proveedoresVista.setVisible(true);
+            home.setVisible(false);
+        }
     }
 
     public void irAClientes() {
-        clientesVista.setVisible(true);
-        home.setVisible(false);
+        if (validarAccesoModulo(PrivilegioUsuario.VENTAS, "clientes")) {
+            clientesVista.setVisible(true);
+            home.setVisible(false);
+        }
     }
 
     public void irADecoraciones() {
-        decoracionesVista.setVisible(true);
-        home.setVisible(false);
+        if (validarAccesoModulo(PrivilegioUsuario.INVENTARIO, "decoraciones")) {
+            decoracionesVista.setVisible(true);
+            home.setVisible(false);
+        }
     }
 
     public void irAColecciones() {
-        coleccionesVista.setVisible(true);
-        home.setVisible(false);
+        if (validarAccesoModulo(PrivilegioUsuario.INVENTARIO, "colecciones")) {
+            coleccionesVista.setVisible(true);
+            home.setVisible(false);
+        }
     }
 
     public void irACompras() {
-        comprasVista.setVisible(true);
-        home.setVisible(false);
+        if (validarAccesoModulo(PrivilegioUsuario.ADMIN, "compras")) {
+            comprasVista.setVisible(true);
+            home.setVisible(false);
+        }
     }
 
     public void irAInventario() {
-        inventarioVista.setVisible(true);
-        home.setVisible(false);
+        if (validarAccesoModulo(PrivilegioUsuario.INVENTARIO, "inventario")) {
+            inventarioVista.setVisible(true);
+            home.setVisible(false);
+        }
     }
 
     public void irAVentas() {
-        ventasVista.setVisible(true);
-        home.setVisible(false);
+        if (validarAccesoModulo(PrivilegioUsuario.VENTAS, "ventas")) {
+            ventasVista.setVisible(true);
+            home.setVisible(false);
+        }
+    }
+
+    /**
+     * Valida si el usuario actual tiene acceso a un módulo específico
+     * 
+     * @param privilegioRequerido Privilegio mínimo necesario para acceder
+     * @param nombreModulo        Nombre del módulo para mensajes de error
+     * @return true si tiene acceso, false en caso contrario
+     */
+    private boolean validarAccesoModulo(PrivilegioUsuario privilegioRequerido, String nombreModulo) {
+        // ADMIN tiene acceso a todos los módulos
+        if (privilegioUsuarioActual == PrivilegioUsuario.ADMIN) {
+            return true;
+        }
+
+        // Verificar si el usuario tiene el privilegio requerido
+        if (privilegioUsuarioActual == privilegioRequerido) {
+            return true;
+        }
+
+        // Si no tiene acceso, mostrar mensaje de error
+        JOptionPane.showMessageDialog(home,
+                "No tiene permisos para acceder al módulo de " + nombreModulo + ".\n" +
+                        "Privilegio requerido: " + privilegioRequerido + "\n" +
+                        "Su privilegio actual: " + privilegioUsuarioActual,
+                "Acceso Denegado", JOptionPane.WARNING_MESSAGE);
+
+        logger.log(Level.WARNING, "Acceso denegado al módulo " + nombreModulo +
+                " - Usuario con privilegio " + privilegioUsuarioActual +
+                " intentó acceder a módulo que requiere " + privilegioRequerido);
+
+        return false;
     }
 
     private void agregarListenersVistas() {

@@ -3,32 +3,35 @@ package Controlador.colecciones;
 import Vista.colecciones.coleccionesVista;
 import Vista.colecciones.FormularioAgregarColeccion;
 import Vista.colecciones.FormularioEditarColeccion;
-import Vista.colecciones.reportesColecciones;
-import Modelo.Conexion;
+import Modelo.colecciones.ColeccionModel;
+import Type.colecciones.ColeccionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Controlador para la vista de colecciones
+ * Controlador principal para la vista de colecciones
  * 
  * @author ossca
  */
 public class coleccionesVistaController {
 
+    private static final Logger logger = Logger.getLogger(coleccionesVistaController.class.getName());
     private coleccionesVista vista;
-    private Connection conexion;
+    private ColeccionModel modelo;
+    private FormularioAgregarColeccion formularioAgregar;
+    private FormularioEditarColeccion formularioEditar;
 
-    public coleccionesVistaController(coleccionesVista vista) {
+    public coleccionesVistaController(coleccionesVista vista, FormularioAgregarColeccion formularioAgregar, FormularioEditarColeccion formularioEditar) {
         this.vista = vista;
-        Conexion conexionObj = new Conexion();
-        this.conexion = conexionObj.getConxion();
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.modelo = new ColeccionModel();
         inicializarEventos();
         cargarTabla();
     }
@@ -39,9 +42,6 @@ public class coleccionesVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
-
-        // Evento del botón informe
-        vista.botonInforme.addActionListener(this::generarReporte);
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -76,39 +76,37 @@ public class coleccionesVistaController {
                 }
             }
         });
+
+        // Inicializar el campo de búsqueda
+        vista.inputBusqueda.setText("Buscar colección...");
     }
 
     /**
-     * Carga todas las colecciones en la tabla
+     * Carga todas las colecciones en la tabla usando el Modelo
      */
     public void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
 
-        String sql = "SELECT c.id_coleccion, c.nombre, c.disenador, c.numero_coleccion, c.anio, " +
-                "p.nombre as proveedor, c.stock, c.precio_venta " +
-                "FROM colecciones c " +
-                "LEFT JOIN proveedores p ON c.id_proveedor = p.id_proveedor " +
-                "ORDER BY c.id_coleccion";
+        try {
+            ArrayList<ColeccionType> colecciones = modelo.getAll();
+            int index = 1;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
+            for (ColeccionType coleccion : colecciones) {
                 Object[] fila = {
-                        rs.getInt("id_coleccion"),
-                        rs.getString("nombre"),
-                        rs.getString("disenador"),
-                        rs.getString("numero_coleccion"),
-                        rs.getInt("anio"),
-                        rs.getString("proveedor"),
-                        rs.getInt("stock"),
-                        rs.getDouble("precio_venta")
+                        index++, // Número de registro/índice
+                        coleccion.getNombreColeccion(),
+                        coleccion.getDisenadorColeccion(),
+                        coleccion.getNumColeccionColeccion(),
+                        coleccion.getAnioColeccion(),
+                        coleccion.getDescripcionColeccion() != null ? coleccion.getDescripcionColeccion() : "N/A",
+                        coleccion.isEstadoColeccion() ? "ACTIVO" : "INACTIVO"
                 };
-                modelo.addRow(fila);
+                modeloTabla.addRow(fila);
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al cargar las colecciones: " + ex.getMessage(), ex);
             JOptionPane.showMessageDialog(vista, "Error al cargar las colecciones: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -125,39 +123,42 @@ public class coleccionesVistaController {
             return;
         }
 
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
 
-        String sql = "SELECT c.id_coleccion, c.nombre, c.disenador, c.numero_coleccion, c.anio, " +
-                "p.nombre as proveedor, c.stock, c.precio_venta " +
-                "FROM colecciones c " +
-                "LEFT JOIN proveedores p ON c.id_proveedor = p.id_proveedor " +
-                "WHERE c.nombre LIKE ? OR c.disenador LIKE ? OR c.numero_coleccion LIKE ? " +
-                "ORDER BY c.id_coleccion";
+        try {
+            ArrayList<ColeccionType> colecciones = modelo.getAll();
+            int index = 1;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            String patron = "%" + textoBusqueda + "%";
-            stmt.setString(1, patron);
-            stmt.setString(2, patron);
-            stmt.setString(3, patron);
+            for (ColeccionType coleccion : colecciones) {
+                // Búsqueda en múltiples campos (case-insensitive)
+                String descripcion = coleccion.getDescripcionColeccion() != null ? coleccion.getDescripcionColeccion()
+                        : "";
+                String disenador = coleccion.getDisenadorColeccion() != null ? coleccion.getDisenadorColeccion() : "";
+                String estado = coleccion.isEstadoColeccion() ? "ACTIVO" : "INACTIVO";
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
+                if (coleccion.getNombreColeccion().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        disenador.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        coleccion.getNumColeccionColeccion().toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        descripcion.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        String.valueOf(coleccion.getAnioColeccion()).contains(textoBusqueda) ||
+                        estado.toLowerCase().contains(textoBusqueda.toLowerCase())) {
+
                     Object[] fila = {
-                            rs.getInt("id_coleccion"),
-                            rs.getString("nombre"),
-                            rs.getString("disenador"),
-                            rs.getString("numero_coleccion"),
-                            rs.getInt("anio"),
-                            rs.getString("proveedor"),
-                            rs.getInt("stock"),
-                            rs.getDouble("precio_venta")
+                            index++, // Mantener índice secuencial
+                            coleccion.getNombreColeccion(),
+                            disenador.isEmpty() ? "N/A" : disenador,
+                            coleccion.getNumColeccionColeccion(),
+                            coleccion.getAnioColeccion(),
+                            descripcion.isEmpty() ? "N/A" : descripcion,
+                            estado
                     };
-                    modelo.addRow(fila);
+                    modeloTabla.addRow(fila);
                 }
             }
 
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al buscar colecciones: " + ex.getMessage(), ex);
             JOptionPane.showMessageDialog(vista, "Error al buscar colecciones: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -191,10 +192,9 @@ public class coleccionesVistaController {
      * Abre el formulario para agregar una nueva colección
      */
     private void abrirFormularioAgregar(ActionEvent e) {
-        FormularioAgregarColeccion formulario = new FormularioAgregarColeccion(new javax.swing.JFrame(), true);
-        formulario.setVisible(true);
+        new FormularioAgregarColeccionController(formularioAgregar);
+        formularioAgregar.setVisible(true);
 
-        // Recargar la tabla después de agregar
         cargarTabla();
     }
 
@@ -210,28 +210,27 @@ public class coleccionesVistaController {
             return;
         }
 
-        // Obtener datos de la colección seleccionada
-        String nombre = (String) vista.tabla.getValueAt(fila, 1);
-        String disenador = (String) vista.tabla.getValueAt(fila, 2);
-        String numeroColeccion = (String) vista.tabla.getValueAt(fila, 3);
-        Integer anio = (Integer) vista.tabla.getValueAt(fila, 4);
+        // Obtener el ID real de la colección desde el modelo usando el índice de la
+        // fila
+        try {
+            ArrayList<ColeccionType> colecciones = modelo.getAll();
+            if (fila < colecciones.size()) {
+                String idColeccion = colecciones.get(fila).getIdColeccion();
 
-        FormularioEditarColeccion formulario = new FormularioEditarColeccion(new javax.swing.JFrame(), true);
+                new FormularioEditarColeccionController(formularioEditar, idColeccion);
+                formularioEditar.setVisible(true);
 
-        // Cargar los datos en el formulario
-        formulario.inputNombreColeccion.setText(nombre);
-        formulario.inputDisenadorColeccion.setText(disenador);
-        formulario.inputNumColeccionColeccion.setText(numeroColeccion);
-        formulario.inputAnioColeccion.setText(anio.toString());
-
-        formulario.setVisible(true);
-
-        // Recargar la tabla después de editar
-        cargarTabla();
+                cargarTabla();
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al obtener la colección: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al obtener la colección: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
-     * Elimina la colección seleccionada
+     * Elimina la colección seleccionada usando el Modelo
      */
     private void eliminar() {
         int fila = vista.tabla.getSelectedRow();
@@ -242,45 +241,37 @@ public class coleccionesVistaController {
             return;
         }
 
-        int idColeccion = (int) vista.tabla.getValueAt(fila, 0);
-        String nombreColeccion = (String) vista.tabla.getValueAt(fila, 1);
+        // Obtener el ID real y nombre de la colección desde el modelo usando el índice
+        // de la fila
+        try {
+            ArrayList<ColeccionType> colecciones = modelo.getAll();
+            if (fila < colecciones.size()) {
+                ColeccionType coleccionSeleccionada = colecciones.get(fila);
+                String idColeccion = coleccionSeleccionada.getIdColeccion();
+                String nombreColeccion = coleccionSeleccionada.getNombreColeccion();
 
-        int confirmacion = JOptionPane.showConfirmDialog(
-                vista,
-                "¿Está seguro de que desea eliminar la colección \"" + nombreColeccion + "\"?",
-                "Confirmar Eliminación",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                int confirmacion = JOptionPane.showConfirmDialog(
+                        vista,
+                        "¿Está seguro de que desea eliminar la colección \"" + nombreColeccion + "\"?",
+                        "Confirmar Eliminación",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
 
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "DELETE FROM colecciones WHERE id_coleccion = ?";
-
-            try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-                stmt.setInt(1, idColeccion);
-
-                int filasAfectadas = stmt.executeUpdate();
-
-                if (filasAfectadas > 0) {
-                    JOptionPane.showMessageDialog(vista, "Colección eliminada correctamente",
-                            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    cargarTabla();
-                } else {
-                    JOptionPane.showMessageDialog(vista, "No se pudo eliminar la colección",
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                if (confirmacion == JOptionPane.YES_OPTION) {
+                    if (modelo.delete(idColeccion)) {
+                        JOptionPane.showMessageDialog(vista, "Colección eliminada correctamente",
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        cargarTabla();
+                    } else {
+                        JOptionPane.showMessageDialog(vista, "No se pudo eliminar la colección",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(vista, "Error al eliminar la colección: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al eliminar colección: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al eliminar colección: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    /**
-     * Abre la ventana de reportes de colecciones
-     */
-    private void generarReporte(ActionEvent e) {
-        reportesColecciones reporte = new reportesColecciones(new javax.swing.JFrame(), true);
-        reporte.setVisible(true);
     }
 }

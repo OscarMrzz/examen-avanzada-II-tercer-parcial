@@ -21,6 +21,7 @@ public class ColeccionModel extends Conexion {
 
     /**
      * Crea un nuevo registro de colección
+     * 
      * @param objeto - Objeto ColeccionType con los datos a crear
      * @return true si la creación fue exitosa, false en caso contrario
      */
@@ -56,6 +57,7 @@ public class ColeccionModel extends Conexion {
 
     /**
      * Obtiene un registro específico por su ID
+     * 
      * @param id - Identificador del registro
      * @return Objeto ColeccionType o null si no existe
      */
@@ -109,6 +111,7 @@ public class ColeccionModel extends Conexion {
 
     /**
      * Obtiene todos los registros de la tabla
+     * 
      * @return ArrayList con todos los objetos
      */
     public ArrayList<ColeccionType> getAll() {
@@ -152,6 +155,7 @@ public class ColeccionModel extends Conexion {
 
     /**
      * Actualiza un registro existente
+     * 
      * @param objeto - Objeto ColeccionType con los datos actualizados
      * @return true si la actualización fue exitosa, false en caso contrario
      */
@@ -187,6 +191,7 @@ public class ColeccionModel extends Conexion {
 
     /**
      * Elimina un registro por su ID (eliminación lógica)
+     * 
      * @param id - Identificador del registro a eliminar
      * @return true si la eliminación fue exitosa, false en caso contrario
      */
@@ -213,4 +218,41 @@ public class ColeccionModel extends Conexion {
             }
         }
     } // Fin de delete
+
+    /**
+     * Obtiene el número de decoraciones asociadas a una colección
+     * 
+     * @param idColeccion ID de la colección
+     * @return número de decoraciones en la colección
+     */
+    public int getConteoDecoracionesPorColeccion(String idColeccion) {
+        connection = getConxion();
+        sentenciaSQL = "SELECT COUNT(*) as total FROM decoraciones WHERE id_coleccion_decoracion = ? AND estado_decoracion = true";
+
+        try {
+            preparedStatement = connection.prepareStatement(sentenciaSQL);
+            preparedStatement.setString(1, idColeccion);
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt("total");
+            }
+
+            return 0;
+        } catch (SQLException e) {
+            Logger.getLogger(ColeccionModel.class.getName()).log(Level.SEVERE, null, e);
+            System.out.print(e.getMessage());
+            return 0;
+        } finally {
+            try {
+                if (resultSet != null)
+                    resultSet.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                connection.close();
+            } catch (SQLException e) {
+                Logger.getLogger(ColeccionModel.class.getName()).log(Level.SEVERE, null, e);
+            }
+        }
+    }
 }

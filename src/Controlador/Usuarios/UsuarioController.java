@@ -1,6 +1,8 @@
 package Controlador.Usuarios;
 
 import Vista.usuarios.UsuariosVista;
+import Vista.usuarios.FormularioAgregarUsuario;
+import Vista.usuarios.FormularioEditarUsuario;
 import Modelo.usuarios.UsuarioModel;
 import Type.usuarios.UsuarioType;
 import java.awt.event.ActionEvent;
@@ -19,9 +21,14 @@ public class UsuarioController {
 
     private UsuariosVista vista;
     private UsuarioModel modelo;
+    private FormularioAgregarUsuario formularioAgregar;
+    private FormularioEditarUsuario formularioEditar;
 
-    public UsuarioController(UsuariosVista vista) {
+    public UsuarioController(UsuariosVista vista, FormularioAgregarUsuario formularioAgregar,
+            FormularioEditarUsuario formularioEditar) {
         this.vista = vista;
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
         this.modelo = new UsuarioModel();
         inicializarEventos();
         cargarTabla();
@@ -167,10 +174,8 @@ public class UsuarioController {
      * Abre el formulario para agregar un nuevo usuario
      */
     private void abrirFormularioAgregar(ActionEvent e) {
-        Vista.usuarios.FormularioAgregarUsuario formulario = new Vista.usuarios.FormularioAgregarUsuario(
-                new javax.swing.JFrame(), true);
-        new FormularioAgregarUsuarioController(formulario);
-        formulario.setVisible(true);
+        new FormularioAgregarUsuarioController(formularioAgregar);
+        formularioAgregar.setVisible(true);
 
         // Recargar la tabla después de agregar
         cargarTabla();
@@ -194,10 +199,8 @@ public class UsuarioController {
             if (fila < usuarios.size()) {
                 String idUsuario = usuarios.get(fila).getIdUsuario();
 
-                Vista.usuarios.FormularioEditarUsuario formulario = new Vista.usuarios.FormularioEditarUsuario(
-                        new javax.swing.JFrame(), true);
-                new FormularioEditarUsuarioController(formulario, idUsuario);
-                formulario.setVisible(true);
+                new FormularioEditarUsuarioController(formularioEditar, idUsuario);
+                formularioEditar.setVisible(true);
 
                 // Recargar la tabla después de editar
                 cargarTabla();

@@ -11,11 +11,12 @@ public class coleccionesController {
     private FormularioEditarColeccion formularioEditar;
     private reportesColecciones reportes;
 
-    public coleccionesController(coleccionesVista vista) {
+    public coleccionesController(coleccionesVista vista, FormularioAgregarColeccion formularioAgregar,
+            FormularioEditarColeccion formularioEditar, reportesColecciones reportes) {
         this.vista = vista;
-        this.formularioAgregar = new FormularioAgregarColeccion(null, true);
-        this.formularioEditar = new FormularioEditarColeccion(null, true);
-        this.reportes = new reportesColecciones(null, true);
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
 
         initController();
     }
@@ -108,8 +109,47 @@ public class coleccionesController {
     }
 
     private void cargarColecciones() {
-        // Implementar lógica para cargar colecciones en la tabla
-        System.out.println("Cargando lista de colecciones...");
+        try {
+            // Importar el modelo de colecciones
+            Modelo.colecciones.ColeccionModel coleccionModel = new Modelo.colecciones.ColeccionModel();
+
+            // Obtener todas las colecciones
+            java.util.ArrayList<Type.colecciones.ColeccionType> colecciones = coleccionModel.getAll();
+
+            // Limpiar tabla
+            vista.tabla.setModel(new javax.swing.table.DefaultTableModel());
+
+            // Configurar columnas
+            javax.swing.table.DefaultTableModel modelo = (javax.swing.table.DefaultTableModel) vista.tabla.getModel();
+            modelo.setColumnIdentifiers(new Object[] {
+                    "ID", "Nombre", "Diseñador", "# Colección", "Año", "Descripción", "Estado", "# Decoraciones"
+            });
+
+            // Agregar filas con conteo de decoraciones
+            for (Type.colecciones.ColeccionType coleccion : colecciones) {
+                // Obtener conteo de decoraciones para esta colección
+                int conteoDecoraciones = coleccionModel.getConteoDecoracionesPorColeccion(coleccion.getIdColeccion());
+
+                Object[] fila = {
+                        coleccion.getIdColeccion(),
+                        coleccion.getNombreColeccion(),
+                        coleccion.getDisenadorColeccion(),
+                        coleccion.getNumColeccionColeccion(),
+                        coleccion.getAnioColeccion(),
+                        coleccion.getDescripcionColeccion(),
+                        coleccion.isEstadoColeccion() ? "Activo" : "Inactivo",
+                        conteoDecoraciones
+                };
+
+                modelo.addRow(fila);
+            }
+
+            System.out.println("Colecciones cargadas correctamente: " + colecciones.size() + " registros");
+
+        } catch (Exception ex) {
+            System.out.println("Error al cargar colecciones: " + ex.getMessage());
+            ex.printStackTrace();
+        }
     }
 
     private void limpiarFormularioAgregar() {

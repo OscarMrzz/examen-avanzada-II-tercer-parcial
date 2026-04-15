@@ -11,11 +11,12 @@ public class comprasController {
     private FormularioEditarCompra formularioEditar;
     private reportesCompras reportes;
 
-    public comprasController(comprasVista vista) {
+    public comprasController(comprasVista vista, FormularioAgregarCompra formularioAgregar,
+            FormularioEditarCompra formularioEditar, reportesCompras reportes) {
         this.vista = vista;
-        this.formularioAgregar = new FormularioAgregarCompra(null, true);
-        this.formularioEditar = new FormularioEditarCompra(null, true);
-        this.reportes = new reportesCompras(null, true);
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
 
         initController();
     }

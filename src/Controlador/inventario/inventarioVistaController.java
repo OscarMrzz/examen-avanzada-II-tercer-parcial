@@ -2,46 +2,44 @@ package Controlador.inventario;
 
 import Vista.inventario.inventarioVista;
 import Vista.inventario.FormularioAgregarInventario;
-import Vista.inventario.FormularioEditarInventario;
-import Vista.inventario.reportesInventario;
-import Modelo.Conexion;
+import Modelo.inventario.InventarioModel;
+import Type.decoraciones.DecoracionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Controlador para la vista de inventario
+ * Controlador principal para la vista de inventario
+ * 
  * @author ossca
  */
 public class inventarioVistaController {
-    
+
+    private static final Logger logger = Logger.getLogger(inventarioVistaController.class.getName());
     private inventarioVista vista;
-    private Connection conexion;
-    
-    public inventarioVistaController(inventarioVista vista) {
+    private InventarioModel modelo;
+    private FormularioAgregarInventario formularioAgregar;
+
+    public inventarioVistaController(inventarioVista vista, FormularioAgregarInventario formularioAgregar) {
         this.vista = vista;
-        Conexion conexionObj = new Conexion();
-        this.conexion = conexionObj.getConxion();
+        this.formularioAgregar = formularioAgregar;
+        this.modelo = new InventarioModel();
         inicializarEventos();
         cargarTabla();
     }
-    
+
     private void inicializarEventos() {
         // Evento del botón buscar
         vista.botonBuscar.addActionListener(this::buscar);
-        
+
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
-        
-        // Evento del botón informe
-        vista.botonInforme.addActionListener(this::generarReporte);
-        
+
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
             @Override
@@ -50,7 +48,7 @@ public class inventarioVistaController {
                     mostrarMenuContextual(e);
                 }
             }
-            
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) {
@@ -58,7 +56,7 @@ public class inventarioVistaController {
                 }
             }
         });
-        
+
         // Evento focus en el campo de búsqueda
         vista.inputBusqueda.addFocusListener(new java.awt.event.FocusAdapter() {
             @Override
@@ -67,7 +65,7 @@ public class inventarioVistaController {
                     vista.inputBusqueda.setText("");
                 }
             }
-            
+
             @Override
             public void focusLost(java.awt.event.FocusEvent evt) {
                 if (vista.inputBusqueda.getText().isEmpty()) {
@@ -76,203 +74,232 @@ public class inventarioVistaController {
             }
         });
     }
-    
+
     /**
-     * Carga todos los items del inventario en la tabla
+     * Carga todos los items del inventario en la tabla usando el Modelo
      */
     public void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
-        
-        String sql = "SELECT i.id_inventario, i.nombre, i.stock, i.stock_minimo, " +
-                    "i.precio_venta, p.nombre as proveedor, " +
-                    "CASE WHEN i.stock <= i.stock_minimo THEN 'BAJO' ELSE 'NORMAL' END as estado_stock " +
-                    "FROM inventario i " +
-                    "LEFT JOIN proveedores p ON i.id_proveedor = p.id_proveedor " +
-                    "ORDER BY i.id_inventario";
-        
-        try (PreparedStatement stmt = conexion.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
-            while (rs.next()) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
+
+        try {
+            ArrayList<DecoracionType> productos = modelo.getAll();
+            int index = 1;
+
+            for (DecoracionType producto : productos) {
+                // Determinar estado del stock
+                String estadoStock = producto.getStockDecoracion() <= producto.getStockMinimoDecoracion() ? "BAJO"
+                        : "NORMAL";
+
                 Object[] fila = {
-                    rs.getInt("id_inventario"),
-                    rs.getString("nombre"),
-                    rs.getInt("stock"),
-                    rs.getInt("stock_minimo"),
-                    rs.getDouble("precio_venta"),
-                    rs.getString("proveedor"),
-                    rs.getString("estado_stock")
+                        index++, // Número de registro/índice
+                        producto.getNombreDecoracion(),
+                        producto.getStockDecoracion(),
+                        producto.getStockMinimoDecoracion(),
+                        producto.getStockMaximoDecoracion(),
+                        producto.getIdProveedorDecoracion() != null ? producto.getIdProveedorDecoracion() : "N/A",
+                        producto.getIdColeccionDecoracion() != null ? producto.getIdColeccionDecoracion() : "N/A",
+                        producto.getDescripcionDecoracion() != null ? producto.getDescripcionDecoracion() : "N/A",
+                        estadoStock,
+                        producto.isEstadoDecoracion() ? "ACTIVO" : "INACTIVO"
                 };
-                modelo.addRow(fila);
+                modeloTabla.addRow(fila);
             }
-            
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(vista, "Error al cargar el inventario: " + ex.getMessage(), 
+
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al cargar el inventario: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al cargar el inventario: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
      * Busca items en el inventario según el texto ingresado
      */
     private void buscar(ActionEvent e) {
         String textoBusqueda = vista.inputBusqueda.getText().trim();
-        
+
         if (textoBusqueda.isEmpty() || textoBusqueda.equals("Buscar en inventario...")) {
             cargarTabla();
             return;
         }
-        
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
-        
-        String sql = "SELECT i.id_inventario, i.nombre, i.stock, i.stock_minimo, " +
-                    "i.precio_venta, p.nombre as proveedor, " +
-                    "CASE WHEN i.stock <= i.stock_minimo THEN 'BAJO' ELSE 'NORMAL' END as estado_stock " +
-                    "FROM inventario i " +
-                    "LEFT JOIN proveedores p ON i.id_proveedor = p.id_proveedor " +
-                    "WHERE i.nombre LIKE ? OR p.nombre LIKE ? " +
-                    "ORDER BY i.id_inventario";
-        
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            String patron = "%" + textoBusqueda + "%";
-            stmt.setString(1, patron);
-            stmt.setString(2, patron);
-            
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Object[] fila = {
-                        rs.getInt("id_inventario"),
-                        rs.getString("nombre"),
-                        rs.getInt("stock"),
-                        rs.getInt("stock_minimo"),
-                        rs.getDouble("precio_venta"),
-                        rs.getString("proveedor"),
-                        rs.getString("estado_stock")
-                    };
-                    modelo.addRow(fila);
-                }
+
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
+
+        try {
+            ArrayList<DecoracionType> productos = modelo.buscar(textoBusqueda);
+            int index = 1;
+
+            for (DecoracionType producto : productos) {
+                // Determinar estado del stock
+                String estadoStock = producto.getStockDecoracion() <= producto.getStockMinimoDecoracion() ? "BAJO"
+                        : "NORMAL";
+
+                Object[] fila = {
+                        index++, // Mantener índice secuencial
+                        producto.getNombreDecoracion(),
+                        producto.getStockDecoracion(),
+                        producto.getStockMinimoDecoracion(),
+                        producto.getStockMaximoDecoracion(),
+                        producto.getIdProveedorDecoracion() != null ? producto.getIdProveedorDecoracion() : "N/A",
+                        producto.getIdColeccionDecoracion() != null ? producto.getIdColeccionDecoracion() : "N/A",
+                        producto.getDescripcionDecoracion() != null ? producto.getDescripcionDecoracion() : "N/A",
+                        estadoStock,
+                        producto.isEstadoDecoracion() ? "ACTIVO" : "INACTIVO"
+                };
+                modeloTabla.addRow(fila);
             }
-            
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(vista, "Error al buscar en el inventario: " + ex.getMessage(), 
+
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al buscar en el inventario: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al buscar en el inventario: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
      * Muestra el menú contextual en la tabla
      */
     private void mostrarMenuContextual(MouseEvent e) {
         int fila = vista.tabla.rowAtPoint(e.getPoint());
-        
+
         if (fila >= 0) {
             vista.tabla.setRowSelectionInterval(fila, fila);
-            
+
             javax.swing.JPopupMenu menu = new javax.swing.JPopupMenu();
-            
-            javax.swing.JMenuItem menuItemEditar = new javax.swing.JMenuItem("Editar");
-            menuItemEditar.addActionListener(evt -> abrirFormularioEditar());
-            
-            javax.swing.JMenuItem menuItemEliminar = new javax.swing.JMenuItem("Eliminar");
-            menuItemEliminar.addActionListener(evt -> eliminar());
-            
-            menu.add(menuItemEditar);
-            menu.add(menuItemEliminar);
-            
+
+            javax.swing.JMenuItem menuItemAjustarStock = new javax.swing.JMenuItem("Ajustar Stock");
+            menuItemAjustarStock.addActionListener(evt -> ajustarStock());
+
+            javax.swing.JMenuItem menuItemVerStockBajo = new javax.swing.JMenuItem("Ver Stock Bajo");
+            menuItemVerStockBajo.addActionListener(evt -> verStockBajo());
+
+            menu.add(menuItemAjustarStock);
+            menu.add(menuItemVerStockBajo);
+
             menu.show(vista.tabla, e.getX(), e.getY());
         }
     }
-    
+
     /**
      * Abre el formulario para agregar un nuevo item al inventario
      */
     private void abrirFormularioAgregar(ActionEvent e) {
-        FormularioAgregarInventario formulario = new FormularioAgregarInventario(new javax.swing.JFrame(), true);
-        formulario.setVisible(true);
-        
-        // Recargar la tabla después de agregar
+        new FormularioAgregarInventarioController(formularioAgregar);
+        formularioAgregar.setVisible(true);
+
         cargarTabla();
     }
-    
+
     /**
-     * Abre el formulario para editar el item del inventario seleccionado
+     * Ajusta el stock de un producto seleccionado
      */
-    private void abrirFormularioEditar() {
+    private void ajustarStock() {
         int fila = vista.tabla.getSelectedRow();
-        
+
         if (fila == -1) {
-            JOptionPane.showMessageDialog(vista, "Por favor seleccione un item para editar", 
+            JOptionPane.showMessageDialog(vista, "Por favor seleccione un producto para ajustar stock",
                     "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        
-        // Obtener datos del item seleccionado (se cargarán según los campos del formulario)
-        
-        FormularioEditarInventario formulario = new FormularioEditarInventario(new javax.swing.JFrame(), true);
-        
-        // Cargar los datos en el formulario (según los campos disponibles)
-        // Nota: Necesitarás revisar los campos específicos del formulario de editar inventario
-        
-        formulario.setVisible(true);
-        
-        // Recargar la tabla después de editar
-        cargarTabla();
-    }
-    
-    /**
-     * Elimina el item del inventario seleccionado
-     */
-    private void eliminar() {
-        int fila = vista.tabla.getSelectedRow();
-        
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(vista, "Por favor seleccione un item para eliminar", 
-                    "Advertencia", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-        int idInventario = (int) vista.tabla.getValueAt(fila, 0);
-        String nombreItem = (String) vista.tabla.getValueAt(fila, 1);
-        
-        int confirmacion = JOptionPane.showConfirmDialog(
-            vista,
-            "¿Está seguro de que desea eliminar \"" + nombreItem + "\" del inventario?",
-            "Confirmar Eliminación",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE
-        );
-        
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "DELETE FROM inventario WHERE id_inventario = ?";
-            
-            try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-                stmt.setInt(1, idInventario);
-                
-                int filasAfectadas = stmt.executeUpdate();
-                
-                if (filasAfectadas > 0) {
-                    JOptionPane.showMessageDialog(vista, "Item eliminado correctamente del inventario", 
-                            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    cargarTabla();
-                } else {
-                    JOptionPane.showMessageDialog(vista, "No se pudo eliminar el item del inventario", 
+
+        // Obtener el ID real del producto desde el modelo usando el índice de la fila
+        try {
+            ArrayList<DecoracionType> productos = modelo.getAll();
+            if (fila < productos.size()) {
+                DecoracionType productoSeleccionado = productos.get(fila);
+                String idProducto = productoSeleccionado.getIdDecoracion();
+                String nombreProducto = productoSeleccionado.getNombreDecoracion();
+                int stockActual = productoSeleccionado.getStockDecoracion();
+
+                // Pedir al usuario el tipo de ajuste
+                String[] opciones = { "ENTRADA", "SALIDA" };
+                String tipoAjuste = (String) JOptionPane.showInputDialog(
+                        vista,
+                        "Producto: " + nombreProducto + "\nStock actual: " + stockActual
+                                + "\n\nSeleccione tipo de ajuste:",
+                        "Ajustar Stock",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        opciones,
+                        opciones[0]);
+
+                if (tipoAjuste == null) {
+                    return; // Usuario canceló
+                }
+
+                // Pedir la cantidad
+                String cantidadStr = JOptionPane.showInputDialog(
+                        vista,
+                        "Ingrese la cantidad para " + tipoAjuste + ":",
+                        "Cantidad",
+                        JOptionPane.QUESTION_MESSAGE);
+
+                if (cantidadStr == null || cantidadStr.trim().isEmpty()) {
+                    return; // Usuario canceló o no ingresó cantidad
+                }
+
+                try {
+                    int cantidad = Integer.parseInt(cantidadStr.trim());
+                    if (cantidad <= 0) {
+                        JOptionPane.showMessageDialog(vista, "La cantidad debe ser mayor que cero",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Aplicar el signo según el tipo de ajuste
+                    int cantidadAjuste = "SALIDA".equals(tipoAjuste) ? -cantidad : cantidad;
+
+                    // Realizar el ajuste usando el modelo
+                    if (modelo.ajustarStock(idProducto, cantidadAjuste, tipoAjuste)) {
+                        cargarTabla(); // Recargar la tabla
+                    }
+
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(vista, "La cantidad debe ser un número válido",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(vista, "Error al eliminar del inventario: " + ex.getMessage(), 
-                        "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al ajustar stock: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al ajustar stock: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     /**
-     * Abre la ventana de reportes de inventario
+     * Muestra productos con stock bajo
      */
-    private void generarReporte(ActionEvent e) {
-        reportesInventario reporte = new reportesInventario(new javax.swing.JFrame(), true);
-        reporte.setVisible(true);
+    private void verStockBajo() {
+        try {
+            ArrayList<DecoracionType> productosStockBajo = modelo.getStockBajo();
+
+            if (productosStockBajo.isEmpty()) {
+                JOptionPane.showMessageDialog(vista, "No hay productos con stock bajo",
+                        "Información", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            // Crear mensaje con los productos de stock bajo
+            StringBuilder mensaje = new StringBuilder("Productos con stock bajo:\n\n");
+            for (DecoracionType producto : productosStockBajo) {
+                mensaje.append("Producto: ").append(producto.getNombreDecoracion())
+                        .append("\nStock actual: ").append(producto.getStockDecoracion())
+                        .append("\nStock mínimo: ").append(producto.getStockMinimoDecoracion())
+                        .append("\nProveedor: ")
+                        .append(producto.getIdProveedorDecoracion() != null ? producto.getIdProveedorDecoracion()
+                                : "N/A")
+                        .append("\n\n");
+            }
+
+            JOptionPane.showMessageDialog(vista, mensaje.toString(),
+                    "Stock Bajo", JOptionPane.WARNING_MESSAGE);
+
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al obtener stock bajo: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al obtener stock bajo: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

@@ -3,32 +3,35 @@ package Controlador.compras;
 import Vista.compras.comprasVista;
 import Vista.compras.FormularioAgregarCompra;
 import Vista.compras.FormularioEditarCompra;
-import Vista.compras.reportesCompras;
-import Modelo.Conexion;
+import Modelo.compras.FacturaCompraModel;
+import Type.compras.FacturaCompraType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * Controlador para la vista de compras
+ * Controlador principal para la vista de compras
  * 
  * @author ossca
  */
 public class comprasVistaController {
 
+    private static final Logger logger = Logger.getLogger(comprasVistaController.class.getName());
     private comprasVista vista;
-    private Connection conexion;
+    private FacturaCompraModel modelo;
+    private FormularioAgregarCompra formularioAgregar;
+    private FormularioEditarCompra formularioEditar;
 
-    public comprasVistaController(comprasVista vista) {
+    public comprasVistaController(comprasVista vista, FormularioAgregarCompra formularioAgregar, FormularioEditarCompra formularioEditar) {
         this.vista = vista;
-        Conexion conexionObj = new Conexion();
-        this.conexion = conexionObj.getConxion();
+        this.formularioAgregar = formularioAgregar;
+        this.formularioEditar = formularioEditar;
+        this.modelo = new FacturaCompraModel();
         inicializarEventos();
         cargarTabla();
     }
@@ -39,9 +42,6 @@ public class comprasVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
-
-        // Evento del botón informe
-        vista.botonInforme.addActionListener(this::generarReporte);
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -79,42 +79,41 @@ public class comprasVistaController {
     }
 
     /**
-     * Carga todas las compras en la tabla
+     * Carga todas las facturas de compra en la tabla usando el Modelo
      */
     public void cargarTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
 
-        String sql = "SELECT c.id_compra, p.nombre as proveedor, c.fecha_compra, " +
-                "c.total, c.estado, u.nombre as usuario " +
-                "FROM compras c " +
-                "LEFT JOIN proveedores p ON c.id_proveedor = p.id_proveedor " +
-                "LEFT JOIN usuarios u ON c.id_usuario = u.id_usuario " +
-                "ORDER BY c.id_compra DESC";
+        try {
+            ArrayList<FacturaCompraType> facturas = modelo.getAll();
+            int index = 1;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql);
-                ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
+            for (FacturaCompraType factura : facturas) {
                 Object[] fila = {
-                        rs.getInt("id_compra"),
-                        rs.getString("proveedor"),
-                        rs.getDate("fecha_compra"),
-                        rs.getDouble("total"),
-                        rs.getString("estado"),
-                        rs.getString("usuario")
+                        index++, // Número de registro/índice
+                        factura.getNumeroFactura(),
+                        factura.getIdProveedorFacturaCompra() != null ? factura.getIdProveedorFacturaCompra() : "N/A",
+                        factura.getFechaFacturaCompra(),
+                        factura.getFechaVencimientoFactura(),
+                        factura.getTotalFacturaCompra(),
+                        factura.getTipoPagoFacturaCompra() != null ? factura.getTipoPagoFacturaCompra().toString()
+                                : "N/A",
+                        factura.getEstadoFacturaCompra() != null ? factura.getEstadoFacturaCompra().toString() : "N/A",
+                        factura.getCondicionFactura() != null ? factura.getCondicionFactura() : "N/A"
                 };
-                modelo.addRow(fila);
+                modeloTabla.addRow(fila);
             }
 
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(vista, "Error al cargar las compras: " + ex.getMessage(),
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al cargar las facturas de compra: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al cargar las facturas de compra: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     /**
-     * Busca compras según el texto ingresado
+     * Busca facturas de compra según el texto ingresado
      */
     private void buscar(ActionEvent e) {
         String textoBusqueda = vista.inputBusqueda.getText().trim();
@@ -124,39 +123,50 @@ public class comprasVistaController {
             return;
         }
 
-        DefaultTableModel modelo = (DefaultTableModel) vista.tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modeloTabla = (DefaultTableModel) vista.tabla.getModel();
+        modeloTabla.setRowCount(0);
 
-        String sql = "SELECT c.id_compra, p.nombre as proveedor, c.fecha_compra, " +
-                "c.total, c.estado, u.nombre as usuario " +
-                "FROM compras c " +
-                "LEFT JOIN proveedores p ON c.id_proveedor = p.id_proveedor " +
-                "LEFT JOIN usuarios u ON c.id_usuario = u.id_usuario " +
-                "WHERE p.nombre LIKE ? OR c.estado LIKE ? OR u.nombre LIKE ? " +
-                "ORDER BY c.id_compra DESC";
+        try {
+            ArrayList<FacturaCompraType> facturas = modelo.getAll();
+            int index = 1;
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            String patron = "%" + textoBusqueda + "%";
-            stmt.setString(1, patron);
-            stmt.setString(2, patron);
-            stmt.setString(3, patron);
+            for (FacturaCompraType factura : facturas) {
+                // Búsqueda en múltiples campos (case-insensitive)
+                String numero = factura.getNumeroFactura() != null ? factura.getNumeroFactura() : "";
+                String proveedor = factura.getIdProveedorFacturaCompra() != null ? factura.getIdProveedorFacturaCompra()
+                        : "";
+                String condicion = factura.getCondicionFactura() != null ? factura.getCondicionFactura() : "";
+                String tipoPago = factura.getTipoPagoFacturaCompra() != null
+                        ? factura.getTipoPagoFacturaCompra().toString()
+                        : "";
+                String estado = factura.getEstadoFacturaCompra() != null ? factura.getEstadoFacturaCompra().toString()
+                        : "";
 
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
+                if (numero.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        proveedor.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        condicion.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        tipoPago.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        estado.toLowerCase().contains(textoBusqueda.toLowerCase()) ||
+                        String.valueOf(factura.getTotalFacturaCompra()).contains(textoBusqueda)) {
+
                     Object[] fila = {
-                            rs.getInt("id_compra"),
-                            rs.getString("proveedor"),
-                            rs.getDate("fecha_compra"),
-                            rs.getDouble("total"),
-                            rs.getString("estado"),
-                            rs.getString("usuario")
+                            index++, // Mantener índice secuencial
+                            numero,
+                            proveedor.isEmpty() ? "N/A" : proveedor,
+                            factura.getFechaFacturaCompra(),
+                            factura.getFechaVencimientoFactura(),
+                            factura.getTotalFacturaCompra(),
+                            tipoPago.isEmpty() ? "N/A" : tipoPago,
+                            estado.isEmpty() ? "N/A" : estado,
+                            condicion.isEmpty() ? "N/A" : condicion
                     };
-                    modelo.addRow(fila);
+                    modeloTabla.addRow(fila);
                 }
             }
 
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(vista, "Error al buscar compras: " + ex.getMessage(),
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al buscar facturas de compra: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al buscar facturas de compra: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -189,10 +199,9 @@ public class comprasVistaController {
      * Abre el formulario para agregar una nueva compra
      */
     private void abrirFormularioAgregar(ActionEvent e) {
-        FormularioAgregarCompra formulario = new FormularioAgregarCompra(new javax.swing.JFrame(), true);
-        formulario.setVisible(true);
+        new FormularioAgregarCompraController(formularioAgregar);
+        formularioAgregar.setVisible(true);
 
-        // Recargar la tabla después de agregar
         cargarTabla();
     }
 
@@ -203,77 +212,72 @@ public class comprasVistaController {
         int fila = vista.tabla.getSelectedRow();
 
         if (fila == -1) {
-            JOptionPane.showMessageDialog(vista, "Por favor seleccione una compra para editar",
+            JOptionPane.showMessageDialog(vista, "Por favor seleccione una factura para editar",
                     "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Obtener datos de la compra seleccionada (se cargarán según los campos del
-        // formulario)
+        // Obtener el ID real de la factura desde el modelo usando el índice de la fila
+        try {
+            ArrayList<FacturaCompraType> facturas = modelo.getAll();
+            if (fila < facturas.size()) {
+                String idFactura = facturas.get(fila).getIdFacturaCompra();
 
-        FormularioEditarCompra formulario = new FormularioEditarCompra(new javax.swing.JFrame(), true);
+                new FormularioEditarCompraController(formularioEditar, idFactura);
+                formularioEditar.setVisible(true);
 
-        // Cargar los datos en el formulario (según los campos disponibles)
-        // Nota: Necesitarás revisar los campos específicos del formulario de editar
-        // compra
-
-        formulario.setVisible(true);
-
-        // Recargar la tabla después de editar
-        cargarTabla();
+                cargarTabla();
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al obtener la factura: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al obtener la factura: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
-     * Elimina la compra seleccionada
+     * Elimina la factura de compra seleccionada usando el Modelo
      */
     private void eliminar() {
         int fila = vista.tabla.getSelectedRow();
 
         if (fila == -1) {
-            JOptionPane.showMessageDialog(vista, "Por favor seleccione una compra para eliminar",
+            JOptionPane.showMessageDialog(vista, "Por favor seleccione una factura para eliminar",
                     "Advertencia", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        int idCompra = (int) vista.tabla.getValueAt(fila, 0);
-        String proveedor = (String) vista.tabla.getValueAt(fila, 1);
+        // Obtener el ID real y número de la factura desde el modelo usando el índice de
+        // la fila
+        try {
+            ArrayList<FacturaCompraType> facturas = modelo.getAll();
+            if (fila < facturas.size()) {
+                FacturaCompraType facturaSeleccionada = facturas.get(fila);
+                String idFactura = facturaSeleccionada.getIdFacturaCompra();
+                String numeroFactura = facturaSeleccionada.getNumeroFactura();
 
-        int confirmacion = JOptionPane.showConfirmDialog(
-                vista,
-                "¿Está seguro de que desea eliminar la compra #" + idCompra + " del proveedor \"" + proveedor + "\"?",
-                "Confirmar Eliminación",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE);
+                int confirmacion = JOptionPane.showConfirmDialog(
+                        vista,
+                        "¿Está seguro de que desea eliminar la factura \"" + numeroFactura + "\"?",
+                        "Confirmar Eliminación",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
 
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            String sql = "DELETE FROM compras WHERE id_compra = ?";
-
-            try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-                stmt.setInt(1, idCompra);
-
-                int filasAfectadas = stmt.executeUpdate();
-
-                if (filasAfectadas > 0) {
-                    JOptionPane.showMessageDialog(vista, "Compra eliminada correctamente",
-                            "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                    cargarTabla();
-                } else {
-                    JOptionPane.showMessageDialog(vista, "No se pudo eliminar la compra",
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                if (confirmacion == JOptionPane.YES_OPTION) {
+                    if (modelo.delete(idFactura)) {
+                        JOptionPane.showMessageDialog(vista, "Factura eliminada correctamente",
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        cargarTabla();
+                    } else {
+                        JOptionPane.showMessageDialog(vista, "No se pudo eliminar la factura",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
-
-            } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(vista, "Error al eliminar la compra: " + ex.getMessage(),
-                        "Error", JOptionPane.ERROR_MESSAGE);
             }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al eliminar factura: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al eliminar factura: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    /**
-     * Abre la ventana de reportes de compras
-     */
-    private void generarReporte(ActionEvent e) {
-        reportesCompras reporte = new reportesCompras(new javax.swing.JFrame(), true);
-        reporte.setVisible(true);
     }
 }

@@ -1,36 +1,38 @@
 package Controlador.clientes;
 
-import Vista.clientes.FormularioAgregarCliente;
+import Vista.clientes.FormularioEditarCliente;
 import Modelo.clientes.ClienteModel;
 import Type.clientes.ClienteType;
 import Type.clientes.TipoCliente;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import java.util.regex.Pattern;
 
 /**
- * Controlador para el formulario de agregar cliente
+ * Controlador para el formulario de editar cliente
  * 
  * @author ossca
  */
-public class FormularioAgregarClienteController {
+public class FormularioEditarClienteController {
 
-    private static final Logger logger = Logger.getLogger(FormularioAgregarClienteController.class.getName());
-    private FormularioAgregarCliente vista;
+    private static final Logger logger = Logger.getLogger(FormularioEditarClienteController.class.getName());
+    private FormularioEditarCliente vista;
     private ClienteModel modelo;
+    private String idCliente;
 
-    public FormularioAgregarClienteController(FormularioAgregarCliente vista) {
+    public FormularioEditarClienteController(FormularioEditarCliente vista, String idCliente) {
         this.vista = vista;
+        this.idCliente = idCliente;
         this.modelo = new ClienteModel();
         inicializarEventos();
         cargarCombos();
+        cargarDatosCliente();
     }
 
     private void inicializarEventos() {
         // Botón Guardar
-        vista.botonGuardar.addActionListener(this::guardar);
+        vista.botonGuardar.addActionListener(this::actualizar);
 
         // Botón Cancelar
         vista.botonCancelar.addActionListener(this::cancelar);
@@ -57,44 +59,73 @@ public class FormularioAgregarClienteController {
     }
 
     /**
-     * Guarda un nuevo cliente en la base de datos
+     * Carga los datos del cliente en el formulario usando el Modelo
      */
-    private void guardar(java.awt.event.ActionEvent e) {
+    private void cargarDatosCliente() {
+        try {
+            ClienteType cliente = modelo.getById(idCliente);
+            if (cliente != null) {
+                vista.inputNombreCliente.setText(cliente.getNombreCliente());
+                vista.inputRTNCliente.setText(cliente.getRtnCliente() != null ? cliente.getRtnCliente() : "");
+                vista.inputTelefonoCliente.setText(cliente.getTelefonoCliente());
+                vista.inputEmailCliente.setText(cliente.getEmailCliente() != null ? cliente.getEmailCliente() : "");
+                vista.inputDireccionCliente.setText(cliente.getDireccionCliente() != null ? cliente.getDireccionCliente() : "");
+                
+                // Cargar tipo de cliente
+                if (vista.comboBoxTipoCliente != null && cliente.getTipoCliente() != null) {
+                    vista.comboBoxTipoCliente.setSelectedItem(cliente.getTipoCliente().toString());
+                }
+            } else {
+                JOptionPane.showMessageDialog(vista, "Cliente no encontrado",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                vista.dispose();
+            }
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Error al cargar datos del cliente: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al cargar datos del cliente: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            vista.dispose();
+        }
+    }
+
+    /**
+     * Actualiza los datos del cliente en la base de datos
+     */
+    private void actualizar(java.awt.event.ActionEvent e) {
         if (!validarCampos()) {
             return;
         }
 
         try {
-            // Crear objeto ClienteType con los datos del formulario
-            ClienteType nuevoCliente = new ClienteType();
-            nuevoCliente.setIdCliente(UUID.randomUUID().toString());
-            nuevoCliente.setNombreCliente(vista.inputNombreCliente.getText().trim());
-            nuevoCliente.setRtnCliente(vista.inputRTNCliente.getText().trim());
-            nuevoCliente.setTelefonoCliente(vista.inputTelefonoCliente.getText().trim());
-            nuevoCliente.setEmailCliente(vista.inputEmailCliente.getText().trim());
-            nuevoCliente.setDireccionCliente(vista.inputDireccionCliente.getText().trim());
-            nuevoCliente.setEstadoCliente(true);
+            // Crear objeto ClienteType con los datos actualizados
+            ClienteType clienteActualizado = new ClienteType();
+            clienteActualizado.setIdCliente(idCliente);
+            clienteActualizado.setNombreCliente(vista.inputNombreCliente.getText().trim());
+            clienteActualizado.setRtnCliente(vista.inputRTNCliente.getText().trim());
+            clienteActualizado.setTelefonoCliente(vista.inputTelefonoCliente.getText().trim());
+            clienteActualizado.setEmailCliente(vista.inputEmailCliente.getText().trim());
+            clienteActualizado.setDireccionCliente(vista.inputDireccionCliente.getText().trim());
+            clienteActualizado.setEstadoCliente(true);
 
             // Obtener tipo de cliente del ComboBox
             String seleccion = (String) vista.comboBoxTipoCliente.getSelectedItem();
             if (seleccion != null && !seleccion.equals("Seleccionar...")) {
-                nuevoCliente.setTipoCliente(TipoCliente.valueOf(seleccion));
+                clienteActualizado.setTipoCliente(TipoCliente.valueOf(seleccion));
             }
 
-            // Guardar en base de datos usando el modelo
-            if (modelo.create(nuevoCliente)) {
-                JOptionPane.showMessageDialog(vista, "Cliente guardado correctamente",
+            // Actualizar en base de datos usando el modelo
+            if (modelo.update(clienteActualizado)) {
+                JOptionPane.showMessageDialog(vista, "Cliente actualizado correctamente",
                         "Éxito", JOptionPane.INFORMATION_MESSAGE);
-                limpiarCampos();
                 vista.dispose();
             } else {
-                JOptionPane.showMessageDialog(vista, "No se pudo guardar el cliente",
+                JOptionPane.showMessageDialog(vista, "No se pudo actualizar el cliente",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
-
+            
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Error al guardar cliente: " + ex.getMessage(), ex);
-            JOptionPane.showMessageDialog(vista, "Error al guardar cliente. Por favor, intente nuevamente.",
+            logger.log(Level.SEVERE, "Error al actualizar cliente: " + ex.getMessage(), ex);
+            JOptionPane.showMessageDialog(vista, "Error al actualizar cliente. Por favor, intente nuevamente.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -132,7 +163,7 @@ public class FormularioAgregarClienteController {
         // Validar RTN (opcional para consumidor final)
         String rtn = vista.inputRTNCliente.getText().trim();
         String tipoSeleccionado = (String) vista.comboBoxTipoCliente.getSelectedItem();
-
+        
         if (rtn != null && !rtn.isEmpty()) {
             // Validar formato de RTN hondureño (14 dígitos o formato con guiones)
             if (!Pattern.matches("^\\d{14}$|^\\d{4}-\\d{6}-\\d{4}$", rtn)) {
@@ -171,20 +202,5 @@ public class FormularioAgregarClienteController {
         }
 
         return true;
-    }
-
-    /**
-     * Limpia todos los campos del formulario
-     */
-    private void limpiarCampos() {
-        vista.inputNombreCliente.setText("");
-        vista.inputRTNCliente.setText("");
-        vista.inputTelefonoCliente.setText("");
-        vista.inputEmailCliente.setText("");
-        vista.inputDireccionCliente.setText("");
-
-        if (vista.comboBoxTipoCliente != null) {
-            vista.comboBoxTipoCliente.setSelectedIndex(0);
-        }
     }
 }

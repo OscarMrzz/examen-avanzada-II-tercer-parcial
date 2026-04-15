@@ -18,9 +18,28 @@ import java.awt.event.ActionEvent;
 public class HomeVistaController {
     
     private Home vista;
+    private UsuariosVista usuariosVista;
+    private clientesVista clientesVista;
+    private proveedoresVista proveedoresVista;
+    private coleccionesVista coleccionesVista;
+    private decoracionesVista decoracionesVista;
+    private comprasVista comprasVista;
+    private inventarioVista inventarioVista;
+    private ventasVista ventasVista;
     
-    public HomeVistaController(Home vista) {
+    public HomeVistaController(Home vista, UsuariosVista usuariosVista, clientesVista clientesVista,
+            proveedoresVista proveedoresVista, coleccionesVista coleccionesVista,
+            decoracionesVista decoracionesVista, comprasVista comprasVista,
+            inventarioVista inventarioVista, ventasVista ventasVista) {
         this.vista = vista;
+        this.usuariosVista = usuariosVista;
+        this.clientesVista = clientesVista;
+        this.proveedoresVista = proveedoresVista;
+        this.coleccionesVista = coleccionesVista;
+        this.decoracionesVista = decoracionesVista;
+        this.comprasVista = comprasVista;
+        this.inventarioVista = inventarioVista;
+        this.ventasVista = ventasVista;
         inicializarEventos();
     }
     
@@ -57,7 +76,6 @@ public class HomeVistaController {
      * Abre la vista de Usuarios
      */
     private void abrirUsuarios(ActionEvent e) {
-        UsuariosVista usuariosVista = new UsuariosVista(vista, true);
         usuariosVista.setVisible(true);
     }
     
@@ -65,7 +83,6 @@ public class HomeVistaController {
      * Abre la vista de Clientes
      */
     private void abrirClientes(ActionEvent e) {
-        clientesVista clientesVista = new clientesVista(vista, true);
         clientesVista.setVisible(true);
     }
     
@@ -73,7 +90,6 @@ public class HomeVistaController {
      * Abre la vista de Proveedores
      */
     private void abrirProveedores(ActionEvent e) {
-        proveedoresVista proveedoresVista = new proveedoresVista(vista, true);
         proveedoresVista.setVisible(true);
     }
     
@@ -81,7 +97,6 @@ public class HomeVistaController {
      * Abre la vista de Colecciones
      */
     private void abrirColecciones(ActionEvent e) {
-        coleccionesVista coleccionesVista = new coleccionesVista(vista, true);
         coleccionesVista.setVisible(true);
     }
     
@@ -89,7 +104,6 @@ public class HomeVistaController {
      * Abre la vista de Productos (Decoraciones)
      */
     private void abrirProductos(ActionEvent e) {
-        decoracionesVista decoracionesVista = new decoracionesVista(vista, true);
         decoracionesVista.setVisible(true);
     }
     
@@ -97,7 +111,6 @@ public class HomeVistaController {
      * Abre la vista de Compras
      */
     private void abrirCompras(ActionEvent e) {
-        comprasVista comprasVista = new comprasVista(vista, true);
         comprasVista.setVisible(true);
     }
     
@@ -105,7 +118,6 @@ public class HomeVistaController {
      * Abre la vista de Inventario
      */
     private void abrirInventario(ActionEvent e) {
-        inventarioVista inventarioVista = new inventarioVista(vista, true);
         inventarioVista.setVisible(true);
     }
     
@@ -113,7 +125,6 @@ public class HomeVistaController {
      * Abre la vista de Ventas
      */
     private void abrirVentas(ActionEvent e) {
-        ventasVista ventasVista = new ventasVista(vista, true);
         ventasVista.setVisible(true);
     }
     
@@ -123,9 +134,9 @@ public class HomeVistaController {
     private void abrirReportes(ActionEvent e) {
         // Aquí puedes implementar la lógica para abrir reportes
         // Por ahora, puedes mostrar un mensaje o abrir una ventana de reportes general
-        javax.swing.JOptionPane.showMessageDialog(vista, 
-                "Módulo de Reportes en desarrollo", 
-                "Reportes", 
+        javax.swing.JOptionPane.showMessageDialog(vista,
+                "Módulo de Reportes en desarrollo",
+                "Reportes",
                 javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }
 }
