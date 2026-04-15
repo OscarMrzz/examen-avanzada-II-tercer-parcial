@@ -4,14 +4,18 @@ import Vista.compras.comprasVista;
 import Vista.compras.FormularioAgregarCompra;
 import Vista.compras.FormularioEditarCompra;
 import Vista.compras.reportesCompras;
+import Modelo.reportes.JasperService;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Date;
+import java.util.Map;
 
 public class comprasController {
     private comprasVista vista;
     private FormularioAgregarCompra formularioAgregar;
     private FormularioEditarCompra formularioEditar;
     private reportesCompras reportes;
+    private JasperService jasper;
 
     public comprasController(comprasVista vista, FormularioAgregarCompra formularioAgregar,
             FormularioEditarCompra formularioEditar, reportesCompras reportes) {
@@ -19,6 +23,7 @@ public class comprasController {
         this.formularioAgregar = formularioAgregar;
         this.formularioEditar = formularioEditar;
         this.reportes = reportes;
+        this.jasper = new JasperService();
 
         initController();
     }
@@ -119,12 +124,50 @@ public class comprasController {
         String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
         String fechaInicio = reportes.inputFechaInicio.getText();
         String fechaFin = reportes.inputFechaFin.getText();
+        if (tipoReporte == null) {
+            javax.swing.JOptionPane.showMessageDialog(reportes, "Seleccione un tipo de reporte.", "Reporte",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        System.out.println("Generando reporte: " + tipoReporte);
-        System.out.println("Fecha inicio: " + fechaInicio);
-        System.out.println("Fecha fin: " + fechaFin);
+        Date fi = JasperService.parseSqlDateOrNull(fechaInicio);
+        Date ff = JasperService.parseSqlDateOrNull(fechaFin);
 
-        // Implementar lógica de generación de reportes
+        try {
+            switch (tipoReporte) {
+                case "Compras por Fecha": {
+                    if (fi == null || ff == null) {
+                        javax.swing.JOptionPane.showMessageDialog(reportes,
+                                "Ingrese Fecha Inicio y Fecha Fin en formato AAAA-MM-DD.",
+                                "Fechas requeridas", javax.swing.JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Compras por rango de fechas",
+                            "fechaInicio", fi,
+                            "fechaFin", ff);
+                    jasper.verReporte("/reportes/compras_por_fechas.jrxml", p);
+                    break;
+                }
+                case "Listado General":
+                case "Compras por Proveedor":
+                case "Compras por Estado":
+                case "Resumen Mensual": {
+                    javax.swing.JOptionPane.showMessageDialog(reportes,
+                            "Este tipo de reporte aún no tiene plantilla Jasper específica.\nUse 'Compras por Fecha' por ahora.",
+                            "Reporte", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                default:
+                    javax.swing.JOptionPane.showMessageDialog(reportes,
+                            "Tipo de reporte no soportado: " + tipoReporte,
+                            "Reporte", javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(reportes,
+                    "No se pudo generar el reporte.\n" + ex.getMessage(),
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void cargarCompras() {

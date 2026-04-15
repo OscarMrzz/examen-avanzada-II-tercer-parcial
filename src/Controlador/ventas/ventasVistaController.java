@@ -3,12 +3,16 @@ package Controlador.ventas;
 import Vista.ventas.ventasVista;
 import Vista.ventas.FormularioAgregarVenta;
 import Vista.ventas.FormularioEditarVenta;
+import Vista.ventas.reportesVentas;
+import Modelo.reportes.JasperService;
 import Modelo.ventas.VentaModel;
 import Type.ventas.VentaType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -26,13 +30,17 @@ public class ventasVistaController {
     private VentaModel modelo;
     private FormularioAgregarVenta formularioAgregar;
     private FormularioEditarVenta formularioEditar;
+    private reportesVentas reportes;
+    private JasperService jasper;
 
     public ventasVistaController(ventasVista vista, FormularioAgregarVenta formularioAgregar,
-            FormularioEditarVenta formularioEditar) {
+            FormularioEditarVenta formularioEditar, reportesVentas reportes) {
         this.vista = vista;
         this.formularioAgregar = formularioAgregar;
         this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
         this.modelo = new VentaModel();
+        this.jasper = new JasperService();
         inicializarEventos();
         cargarTabla();
     }
@@ -43,6 +51,9 @@ public class ventasVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
+
+        // Evento del botón informe
+        vista.botonInforme.addActionListener(e -> reportes.setVisible(true));
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -77,6 +88,67 @@ public class ventasVistaController {
                 }
             }
         });
+
+        // Botones en el diálogo de reportes
+        reportes.botonGenerar.addActionListener(e -> generarReporte());
+        reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
+    }
+
+    private void generarReporte() {
+        String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
+        if (tipoReporte == null) {
+            JOptionPane.showMessageDialog(reportes, "Seleccione un tipo de reporte.", "Reporte", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Date fi = JasperService.parseSqlDateOrNull(reportes.inputFechaInicio.getText());
+        Date ff = JasperService.parseSqlDateOrNull(reportes.inputFechaFin.getText());
+
+        try {
+            switch (tipoReporte) {
+                case "Ventas por Fecha": {
+                    if (fi == null || ff == null) {
+                        JOptionPane.showMessageDialog(reportes,
+                                "Ingrese Fecha Inicio y Fecha Fin en formato AAAA-MM-DD.",
+                                "Fechas requeridas", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Ventas por rango de fechas",
+                            "fechaInicio", fi,
+                            "fechaFin", ff);
+                    jasper.verReporte("/reportes/ventas_por_fechas.jrxml", p);
+                    break;
+                }
+                case "Ventas Generales": {
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Ventas diarias (incluye gráfica)");
+                    jasper.verReporte("/reportes/ventas_diarias.jrxml", p);
+                    break;
+                }
+                case "Productos Más Vendidos": {
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Decoraciones más vendidas (incluye gráfica)");
+                    jasper.verReporte("/reportes/decoraciones_mas_vendidas.jrxml", p);
+                    break;
+                }
+                case "Ventas por Cliente":
+                case "Ventas por Vendedor": {
+                    JOptionPane.showMessageDialog(reportes,
+                            "Este reporte requiere parametrización (cliente/vendedor).\nPor ahora use 'Ventas por Fecha' o 'Ventas Generales'.",
+                            "Reporte", JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                default:
+                    JOptionPane.showMessageDialog(reportes,
+                            "Tipo de reporte no soportado: " + tipoReporte,
+                            "Reporte", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(reportes,
+                    "No se pudo generar el reporte.\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**

@@ -37,6 +37,7 @@ import Vista.decoraciones.FormularioEditarDecoracion;
 import Vista.decoraciones.reportesDecoraciones;
 import Vista.inventario.inventarioVista;
 import Vista.inventario.FormularioAgregarInventario;
+import Vista.inventario.reportesInventario;
 import Vista.proveedores.proveedoresVista;
 import Vista.proveedores.FormularioAgregarProveedor;
 import Vista.proveedores.FormularioEditarProveedor;
@@ -88,6 +89,7 @@ public class Examen_tercer_parcial {
         reportesDecoraciones reportesDecoraciones = new reportesDecoraciones(null, true);
         inventarioVista inventarioVista = new inventarioVista(null, true);
         FormularioAgregarInventario formularioAgregarInventario = new FormularioAgregarInventario(null, true);
+        reportesInventario reportesInventario = new reportesInventario(null, true);
         proveedoresVista proveedoresVista = new proveedoresVista(null, true);
         FormularioAgregarProveedor formularioAgregarProveedor = new FormularioAgregarProveedor(null, true);
         FormularioEditarProveedor formularioEditarProveedor = new FormularioEditarProveedor(null, true);
@@ -116,15 +118,15 @@ public class Examen_tercer_parcial {
         coleccionesVistaController coleccionesVistaController = new coleccionesVistaController(coleccionesVista,
                 formularioAgregarColeccion, formularioEditarColeccion);
         comprasVistaController comprasVistaController = new comprasVistaController(comprasVista, formularioAgregarCompra,
-                formularioEditarCompra);
+                formularioEditarCompra, reportesCompras);
         decoracionesVistaController decoracionesVistaController = new decoracionesVistaController(decoracionesVista,
-                formularioAgregarDecoracion, formularioEditarDecoracion);
+                formularioAgregarDecoracion, formularioEditarDecoracion, reportesDecoraciones);
         inventarioVistaController inventarioVistaController = new inventarioVistaController(inventarioVista,
-                formularioAgregarInventario);
+                formularioAgregarInventario, reportesInventario);
         proveedoresVistaController proveedoresVistaController = new proveedoresVistaController(proveedoresVista,
-                formularioAgregarProveedor, formularioEditarProveedor);
+                formularioAgregarProveedor, formularioEditarProveedor, reportesProveedores);
         ventasVistaController ventasVistaController = new ventasVistaController(ventasVista, formularioAgregarVenta,
-                formularioEditarVenta);
+                formularioEditarVenta, reportesVentas);
 
         LoginVistaController loginVistaController = new LoginVistaController(loginVista, home);
 

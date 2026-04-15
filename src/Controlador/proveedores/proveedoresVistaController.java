@@ -3,12 +3,15 @@ package Controlador.proveedores;
 import Vista.proveedores.proveedoresVista;
 import Vista.proveedores.FormularioAgregarProveedor;
 import Vista.proveedores.FormularioEditarProveedor;
+import Vista.proveedores.reportesProveedores;
+import Modelo.reportes.JasperService;
 import Modelo.proveedores.ProveedorModel;
 import Type.proveedores.ProveedorType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -26,12 +29,17 @@ public class proveedoresVistaController {
     private ProveedorModel modelo;
     private FormularioAgregarProveedor formularioAgregar;
     private FormularioEditarProveedor formularioEditar;
+    private reportesProveedores reportes;
+    private JasperService jasper;
 
-    public proveedoresVistaController(proveedoresVista vista, FormularioAgregarProveedor formularioAgregar, FormularioEditarProveedor formularioEditar) {
+    public proveedoresVistaController(proveedoresVista vista, FormularioAgregarProveedor formularioAgregar,
+            FormularioEditarProveedor formularioEditar, reportesProveedores reportes) {
         this.vista = vista;
         this.formularioAgregar = formularioAgregar;
         this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
         this.modelo = new ProveedorModel();
+        this.jasper = new JasperService();
         inicializarEventos();
         cargarTabla();
     }
@@ -42,6 +50,9 @@ public class proveedoresVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
+
+        // Evento del botón informe
+        vista.botonInforme.addActionListener(e -> reportes.setVisible(true));
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -79,6 +90,27 @@ public class proveedoresVistaController {
 
         // Inicializar el campo de búsqueda
         vista.inputBusqueda.setText("Buscar proveedor...");
+
+        // Botones del diálogo de reportes
+        reportes.botonGenerarReporte.addActionListener(e -> generarReporte());
+        reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
+    }
+
+    private void generarReporte() {
+        String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
+        if (tipoReporte == null) {
+            JOptionPane.showMessageDialog(reportes, "Seleccione un tipo de reporte.", "Reporte", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            Map<String, Object> p = JasperService.params("titulo", "Listado de proveedores");
+            jasper.verReporte("/reportes/proveedores_listado.jrxml", p);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(reportes,
+                    "No se pudo generar el reporte.\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**

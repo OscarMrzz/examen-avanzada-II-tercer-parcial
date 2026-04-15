@@ -4,14 +4,17 @@ import Vista.proveedores.proveedoresVista;
 import Vista.proveedores.FormularioAgregarProveedor;
 import Vista.proveedores.FormularioEditarProveedor;
 import Vista.proveedores.reportesProveedores;
+import Modelo.reportes.JasperService;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 
 public class proveedoresController {
     private proveedoresVista vista;
     private FormularioAgregarProveedor formularioAgregar;
     private FormularioEditarProveedor formularioEditar;
     private reportesProveedores reportes;
+    private JasperService jasper;
 
     public proveedoresController(proveedoresVista vista, FormularioAgregarProveedor formularioAgregar,
             FormularioEditarProveedor formularioEditar, reportesProveedores reportes) {
@@ -19,6 +22,7 @@ public class proveedoresController {
         this.formularioAgregar = formularioAgregar;
         this.formularioEditar = formularioEditar;
         this.reportes = reportes;
+        this.jasper = new JasperService();
 
         initController();
     }
@@ -119,12 +123,33 @@ public class proveedoresController {
         String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
         String fechaInicio = reportes.inputFechaInicio.getText();
         String fechaFin = reportes.inputFechaFin.getText();
+        if (tipoReporte == null) {
+            javax.swing.JOptionPane.showMessageDialog(reportes, "Seleccione un tipo de reporte.", "Reporte",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        System.out.println("Generando reporte: " + tipoReporte);
-        System.out.println("Fecha inicio: " + fechaInicio);
-        System.out.println("Fecha fin: " + fechaFin);
-
-        // Implementar lógica de generación de reportes
+        try {
+            switch (tipoReporte) {
+                case "Listado General":
+                case "Proveedores Activos":
+                case "Proveedores por RTN":
+                case "Reporte de Contactos": {
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Módulo Proveedores: reportes Jasper pendientes (pagos/recibos).");
+                    jasper.verReporte("/reportes/compras_por_fechas.jrxml", p);
+                    break;
+                }
+                default:
+                    javax.swing.JOptionPane.showMessageDialog(reportes,
+                            "Tipo de reporte no soportado: " + tipoReporte,
+                            "Reporte", javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(reportes,
+                    "No se pudo generar el reporte.\n" + ex.getMessage(),
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void cargarProveedores() {

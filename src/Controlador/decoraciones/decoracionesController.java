@@ -4,14 +4,18 @@ import Vista.decoraciones.decoracionesVista;
 import Vista.decoraciones.FormularioAgregarDecoracion;
 import Vista.decoraciones.FormularioEditarDecoracion;
 import Vista.decoraciones.reportesDecoraciones;
+import Modelo.reportes.JasperService;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Date;
+import java.util.Map;
 
 public class decoracionesController {
     private decoracionesVista vista;
     private FormularioAgregarDecoracion formularioAgregar;
     private FormularioEditarDecoracion formularioEditar;
     private reportesDecoraciones reportes;
+    private JasperService jasper;
 
     public decoracionesController(decoracionesVista vista, FormularioAgregarDecoracion formularioAgregar,
             FormularioEditarDecoracion formularioEditar, reportesDecoraciones reportes) {
@@ -19,6 +23,7 @@ public class decoracionesController {
         this.formularioAgregar = formularioAgregar;
         this.formularioEditar = formularioEditar;
         this.reportes = reportes;
+        this.jasper = new JasperService();
 
         initController();
     }
@@ -119,12 +124,48 @@ public class decoracionesController {
         String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
         String fechaInicio = reportes.inputFechaInicio.getText();
         String fechaFin = reportes.inputFechaFin.getText();
+        if (tipoReporte == null) {
+            javax.swing.JOptionPane.showMessageDialog(reportes, "Seleccione un tipo de reporte.", "Reporte",
+                    javax.swing.JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        System.out.println("Generando reporte: " + tipoReporte);
-        System.out.println("Fecha inicio: " + fechaInicio);
-        System.out.println("Fecha fin: " + fechaFin);
+        Date fi = JasperService.parseSqlDateOrNull(fechaInicio);
+        Date ff = JasperService.parseSqlDateOrNull(fechaFin);
 
-        // Implementar lógica de generación de reportes
+        try {
+            switch (tipoReporte) {
+                case "Inventario Actual": {
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Decoraciones con stock (existencia)");
+                    jasper.verReporte("/reportes/decoraciones_existencia.jrxml", p);
+                    break;
+                }
+                case "Reporte de Ventas": {
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Decoraciones más vendidas (incluye gráfica)");
+                    jasper.verReporte("/reportes/decoraciones_mas_vendidas.jrxml", p);
+                    break;
+                }
+                case "Listado General":
+                case "Decoraciones por Proveedor":
+                case "Decoraciones por Colección":
+                case "Stock Bajo": {
+                    javax.swing.JOptionPane.showMessageDialog(reportes,
+                            "Este tipo de reporte aún no tiene plantilla Jasper específica.\nUse 'Inventario Actual' o 'Reporte de Ventas'.",
+                            "Reporte", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+                    break;
+                }
+                default:
+                    javax.swing.JOptionPane.showMessageDialog(reportes,
+                            "Tipo de reporte no soportado: " + tipoReporte,
+                            "Reporte", javax.swing.JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception ex) {
+            javax.swing.JOptionPane.showMessageDialog(reportes,
+                    "No se pudo generar el reporte.\n" + ex.getMessage(),
+                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void cargarDecoraciones() {

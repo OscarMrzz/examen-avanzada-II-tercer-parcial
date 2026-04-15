@@ -2,12 +2,16 @@ package Controlador.inventario;
 
 import Vista.inventario.inventarioVista;
 import Vista.inventario.FormularioAgregarInventario;
+import Vista.inventario.reportesInventario;
+import Modelo.reportes.JasperService;
 import Modelo.inventario.InventarioModel;
 import Type.decoraciones.DecoracionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.sql.Date;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -24,11 +28,16 @@ public class inventarioVistaController {
     private inventarioVista vista;
     private InventarioModel modelo;
     private FormularioAgregarInventario formularioAgregar;
+    private reportesInventario reportes;
+    private JasperService jasper;
 
-    public inventarioVistaController(inventarioVista vista, FormularioAgregarInventario formularioAgregar) {
+    public inventarioVistaController(inventarioVista vista, FormularioAgregarInventario formularioAgregar,
+            reportesInventario reportes) {
         this.vista = vista;
         this.formularioAgregar = formularioAgregar;
+        this.reportes = reportes;
         this.modelo = new InventarioModel();
+        this.jasper = new JasperService();
         inicializarEventos();
         cargarTabla();
     }
@@ -39,6 +48,9 @@ public class inventarioVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
+
+        // Evento del botón informe
+        vista.botonInforme.addActionListener(e -> reportes.setVisible(true));
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -73,6 +85,48 @@ public class inventarioVistaController {
                 }
             }
         });
+
+        // Botones del diálogo de reportes
+        reportes.botonGenerar.addActionListener(e -> generarReporte());
+        reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
+    }
+
+    private void generarReporte() {
+        String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
+        if (tipoReporte == null) {
+            JOptionPane.showMessageDialog(reportes, "Seleccione un tipo de reporte.", "Reporte", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Date fi = JasperService.parseSqlDateOrNull(reportes.inputFechaInicio.getText());
+        Date ff = JasperService.parseSqlDateOrNull(reportes.inputFechaFin.getText());
+
+        try {
+            switch (tipoReporte) {
+                case "Inventario General": {
+                    Map<String, Object> p = JasperService.params("titulo", "Inventario general");
+                    jasper.verReporte("/reportes/inventario_general.jrxml", p);
+                    break;
+                }
+                default: {
+                    if (fi != null && ff != null) {
+                        Map<String, Object> p = JasperService.params(
+                                "titulo", "Inventario (referencia por fechas: compras en rango)",
+                                "fechaInicio", fi,
+                                "fechaFin", ff);
+                        jasper.verReporte("/reportes/compras_por_fechas.jrxml", p);
+                    } else {
+                        JOptionPane.showMessageDialog(reportes,
+                                "Use 'Inventario General' o ingrese fechas AAAA-MM-DD para ver compras del rango.",
+                                "Reporte", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(reportes,
+                    "No se pudo generar el reporte.\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**

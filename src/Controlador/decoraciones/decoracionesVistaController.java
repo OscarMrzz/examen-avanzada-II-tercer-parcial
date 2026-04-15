@@ -3,12 +3,15 @@ package Controlador.decoraciones;
 import Vista.decoraciones.decoracionesVista;
 import Vista.decoraciones.FormularioAgregarDecoracion;
 import Vista.decoraciones.FormularioEditarDecoracion;
+import Vista.decoraciones.reportesDecoraciones;
+import Modelo.reportes.JasperService;
 import Modelo.decoraciones.DecoracionModel;
 import Type.decoraciones.DecoracionType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -26,12 +29,17 @@ public class decoracionesVistaController {
     private DecoracionModel modelo;
     private FormularioAgregarDecoracion formularioAgregar;
     private FormularioEditarDecoracion formularioEditar;
+    private reportesDecoraciones reportes;
+    private JasperService jasper;
 
-    public decoracionesVistaController(decoracionesVista vista, FormularioAgregarDecoracion formularioAgregar, FormularioEditarDecoracion formularioEditar) {
+    public decoracionesVistaController(decoracionesVista vista, FormularioAgregarDecoracion formularioAgregar,
+            FormularioEditarDecoracion formularioEditar, reportesDecoraciones reportes) {
         this.vista = vista;
         this.formularioAgregar = formularioAgregar;
         this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
         this.modelo = new DecoracionModel();
+        this.jasper = new JasperService();
         inicializarEventos();
         cargarTabla();
     }
@@ -42,6 +50,9 @@ public class decoracionesVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
+
+        // Evento del botón informe
+        vista.botonInforme.addActionListener(e -> reportes.setVisible(true));
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -76,6 +87,40 @@ public class decoracionesVistaController {
                 }
             }
         });
+
+        reportes.botonGenerarReporte.addActionListener(e -> generarReporte());
+        reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
+    }
+
+    private void generarReporte() {
+        String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
+        if (tipoReporte == null) {
+            JOptionPane.showMessageDialog(reportes, "Seleccione un tipo de reporte.", "Reporte", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            switch (tipoReporte) {
+                case "Inventario Actual": {
+                    Map<String, Object> p = JasperService.params("titulo", "Decoraciones en existencia (stock > 0)");
+                    jasper.verReporte("/reportes/decoraciones_existencia.jrxml", p);
+                    break;
+                }
+                case "Reporte de Ventas": {
+                    Map<String, Object> p = JasperService.params("titulo", "Decoraciones más vendidas (incluye gráfica)");
+                    jasper.verReporte("/reportes/decoraciones_mas_vendidas.jrxml", p);
+                    break;
+                }
+                default:
+                    JOptionPane.showMessageDialog(reportes,
+                            "Este tipo de reporte aún no tiene plantilla Jasper específica.\nUse 'Inventario Actual' o 'Reporte de Ventas'.",
+                            "Reporte", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(reportes,
+                    "No se pudo generar el reporte.\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**

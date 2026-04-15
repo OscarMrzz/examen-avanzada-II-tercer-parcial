@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="compras_por_fechas" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f7a3d8d3-8f65-4ae1-8db5-79a2d884b6f6">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQL"/>
+
+    <parameter name="fechaInicio" class="java.sql.Date"/>
+    <parameter name="fechaFin" class="java.sql.Date"/>
+    <parameter name="titulo" class="java.lang.String"/>
+
+    <queryString>
+        <![CDATA[
+SELECT
+  numero_factura,
+  fecha_factura_compra,
+  fecha_vencimiento_factura,
+  nombre_proveedor,
+  total_factura_compra,
+  tipo_pago_factura_compra,
+  estado_factura_compra,
+  total_pagado,
+  saldo_pendiente,
+  estado_real_pago
+FROM vista_detallada_compras
+WHERE fecha_factura_compra BETWEEN $P{fechaInicio} AND $P{fechaFin}
+ORDER BY fecha_factura_compra DESC
+        ]]>
+    </queryString>
+
+    <field name="numero_factura" class="java.lang.String"/>
+    <field name="fecha_factura_compra" class="java.sql.Date"/>
+    <field name="fecha_vencimiento_factura" class="java.sql.Date"/>
+    <field name="nombre_proveedor" class="java.lang.String"/>
+    <field name="total_factura_compra" class="java.math.BigDecimal"/>
+    <field name="tipo_pago_factura_compra" class="java.lang.String"/>
+    <field name="estado_factura_compra" class="java.lang.String"/>
+    <field name="total_pagado" class="java.math.BigDecimal"/>
+    <field name="saldo_pendiente" class="java.math.BigDecimal"/>
+    <field name="estado_real_pago" class="java.lang.String"/>
+
+    <title>
+        <band height="58">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="22"/>
+                <textElement textAlignment="Center">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <text><![CDATA[COMPRAS POR FECHAS]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="0" y="26" width="555" height="18"/>
+                <textElement textAlignment="Center"><font size="10"/></textElement>
+                <textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="0" y="44" width="555" height="14"/>
+                <textElement textAlignment="Center"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA["Rango: " + $P{fechaInicio} + " a " + $P{fechaFin}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="18">
+            <staticText><reportElement x="0" y="0" width="75" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Factura]]></text></staticText>
+            <staticText><reportElement x="75" y="0" width="65" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Fecha]]></text></staticText>
+            <staticText><reportElement x="140" y="0" width="105" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Proveedor]]></text></staticText>
+            <staticText><reportElement x="245" y="0" width="60" height="18"/><textElement textAlignment="Right"><font isBold="true" size="9"/></textElement><text><![CDATA[Total]]></text></staticText>
+            <staticText><reportElement x="305" y="0" width="45" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Pago]]></text></staticText>
+            <staticText><reportElement x="350" y="0" width="55" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Estado]]></text></staticText>
+            <staticText><reportElement x="405" y="0" width="50" height="18"/><textElement textAlignment="Right"><font isBold="true" size="9"/></textElement><text><![CDATA[Pagado]]></text></staticText>
+            <staticText><reportElement x="455" y="0" width="55" height="18"/><textElement textAlignment="Right"><font isBold="true" size="9"/></textElement><text><![CDATA[Saldo]]></text></staticText>
+            <staticText><reportElement x="510" y="0" width="45" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Real]]></text></staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="16">
+            <textField><reportElement x="0" y="0" width="75" height="16"/><textElement><font size="9"/></textElement><textFieldExpression><![CDATA[$F{numero_factura}]]></textFieldExpression></textField>
+            <textField pattern="yyyy-MM-dd"><reportElement x="75" y="0" width="65" height="16"/><textElement><font size="9"/></textElement><textFieldExpression><![CDATA[$F{fecha_factura_compra}]]></textFieldExpression></textField>
+            <textField><reportElement x="140" y="0" width="105" height="16"/><textElement><font size="9"/></textElement><textFieldExpression><![CDATA[$F{nombre_proveedor}]]></textFieldExpression></textField>
+            <textField pattern="#,##0.00"><reportElement x="245" y="0" width="60" height="16"/><textElement textAlignment="Right"><font size="9"/></textElement><textFieldExpression><![CDATA[$F{total_factura_compra}]]></textFieldExpression></textField>
+            <textField><reportElement x="305" y="0" width="45" height="16"/><textElement><font size="9"/></textElement><textFieldExpression><![CDATA[$F{tipo_pago_factura_compra}]]></textFieldExpression></textField>
+            <textField><reportElement x="350" y="0" width="55" height="16"/><textElement><font size="9"/></textElement><textFieldExpression><![CDATA[$F{estado_factura_compra}]]></textFieldExpression></textField>
+            <textField pattern="#,##0.00"><reportElement x="405" y="0" width="50" height="16"/><textElement textAlignment="Right"><font size="9"/></textElement><textFieldExpression><![CDATA[$F{total_pagado}]]></textFieldExpression></textField>
+            <textField pattern="#,##0.00"><reportElement x="455" y="0" width="55" height="16"/><textElement textAlignment="Right"><font size="9"/></textElement><textFieldExpression><![CDATA[$F{saldo_pendiente}]]></textFieldExpression></textField>
+            <textField><reportElement x="510" y="0" width="45" height="16"/><textElement><font size="9"/></textElement><textFieldExpression><![CDATA[$F{estado_real_pago}]]></textFieldExpression></textField>
+        </band>
+    </detail>
+</jasperReport>

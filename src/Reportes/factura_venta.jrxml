@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+    name="factura_venta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="de8b67f3-6d3f-4b6f-9b43-5b1c1abbe7d0">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="MySQL"/>
+
+    <parameter name="numeroFacturaVenta" class="java.lang.String"/>
+
+    <queryString>
+        <![CDATA[
+SELECT
+  v.numero_factura_venta,
+  v.fecha_venta,
+  v.subtotal_venta,
+  v.impuesto_venta,
+  v.descuento_venta,
+  v.total_venta,
+  v.tipo_pago_venta,
+  c.nombre_cliente,
+  c.rtn_cliente,
+  c.direccion_cliente,
+  c.telefono_cliente
+FROM ventas v
+INNER JOIN clientes c ON v.id_cliente_venta = c.id_cliente
+WHERE v.numero_factura_venta = $P{numeroFacturaVenta}
+LIMIT 1
+        ]]>
+    </queryString>
+
+    <field name="numero_factura_venta" class="java.lang.String"/>
+    <field name="fecha_venta" class="java.sql.Timestamp"/>
+    <field name="subtotal_venta" class="java.math.BigDecimal"/>
+    <field name="impuesto_venta" class="java.math.BigDecimal"/>
+    <field name="descuento_venta" class="java.math.BigDecimal"/>
+    <field name="total_venta" class="java.math.BigDecimal"/>
+    <field name="tipo_pago_venta" class="java.lang.String"/>
+    <field name="nombre_cliente" class="java.lang.String"/>
+    <field name="rtn_cliente" class="java.lang.String"/>
+    <field name="direccion_cliente" class="java.lang.String"/>
+    <field name="telefono_cliente" class="java.lang.String"/>
+
+    <subDataset name="detalleVentaDataset" uuid="b69f3e2a-c23b-4d2a-b2fb-3aa6c4b9a105">
+        <parameter name="numeroFacturaVenta" class="java.lang.String"/>
+        <queryString>
+            <![CDATA[
+SELECT
+  d.nombre_decoracion,
+  dv.cantidad_detalle_venta,
+  dv.precio_unitario_venta,
+  dv.descuento_detalle,
+  dv.subtotal_detalle_venta
+FROM detalle_venta dv
+INNER JOIN ventas v ON dv.id_venta_detalle = v.id_venta
+INNER JOIN decoraciones d ON dv.id_decoracion_detalle = d.id_decoracion
+WHERE v.numero_factura_venta = $P{numeroFacturaVenta}
+ORDER BY d.nombre_decoracion
+            ]]>
+        </queryString>
+        <field name="nombre_decoracion" class="java.lang.String"/>
+        <field name="cantidad_detalle_venta" class="java.lang.Integer"/>
+        <field name="precio_unitario_venta" class="java.math.BigDecimal"/>
+        <field name="descuento_detalle" class="java.math.BigDecimal"/>
+        <field name="subtotal_detalle_venta" class="java.math.BigDecimal"/>
+    </subDataset>
+
+    <title>
+        <band height="90">
+            <staticText>
+                <reportElement x="0" y="0" width="555" height="22"/>
+                <textElement textAlignment="Center"><font size="16" isBold="true"/></textElement>
+                <text><![CDATA[FACTURA DE VENTA]]></text>
+            </staticText>
+
+            <staticText><reportElement x="0" y="30" width="110" height="14"/><textElement><font isBold="true" size="10"/></textElement><text><![CDATA[Factura:]]></text></staticText>
+            <textField><reportElement x="110" y="30" width="200" height="14"/><textElement><font size="10"/></textElement><textFieldExpression><![CDATA[$F{numero_factura_venta}]]></textFieldExpression></textField>
+
+            <staticText><reportElement x="320" y="30" width="70" height="14"/><textElement><font isBold="true" size="10"/></textElement><text><![CDATA[Fecha:]]></text></staticText>
+            <textField pattern="yyyy-MM-dd HH:mm"><reportElement x="390" y="30" width="165" height="14"/><textElement textAlignment="Right"><font size="10"/></textElement><textFieldExpression><![CDATA[$F{fecha_venta}]]></textFieldExpression></textField>
+
+            <staticText><reportElement x="0" y="48" width="110" height="14"/><textElement><font isBold="true" size="10"/></textElement><text><![CDATA[Cliente:]]></text></staticText>
+            <textField><reportElement x="110" y="48" width="445" height="14"/><textElement><font size="10"/></textElement><textFieldExpression><![CDATA[$F{nombre_cliente}]]></textFieldExpression></textField>
+
+            <staticText><reportElement x="0" y="64" width="110" height="14"/><textElement><font isBold="true" size="10"/></textElement><text><![CDATA[RTN:]]></text></staticText>
+            <textField><reportElement x="110" y="64" width="200" height="14"/><textElement><font size="10"/></textElement><textFieldExpression><![CDATA[$F{rtn_cliente}]]></textFieldExpression></textField>
+
+            <staticText><reportElement x="320" y="64" width="70" height="14"/><textElement><font isBold="true" size="10"/></textElement><text><![CDATA[Tel:]]></text></staticText>
+            <textField><reportElement x="390" y="64" width="165" height="14"/><textElement textAlignment="Right"><font size="10"/></textElement><textFieldExpression><![CDATA[$F{telefono_cliente}]]></textFieldExpression></textField>
+        </band>
+    </title>
+
+    <detail>
+        <band height="220">
+            <componentElement>
+                <reportElement x="0" y="0" width="555" height="160"/>
+                <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+                    <datasetRun subDataset="detalleVentaDataset">
+                        <datasetParameter name="numeroFacturaVenta">
+                            <datasetParameterExpression><![CDATA[$P{numeroFacturaVenta}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                    </datasetRun>
+                    <jr:column width="245" uuid="a1f9d5aa-58f8-4b8a-a9fb-9f4d2ef4a1ff">
+                        <jr:columnHeader height="18">
+                            <staticText><reportElement x="0" y="0" width="245" height="18"/><textElement><font isBold="true" size="9"/></textElement><text><![CDATA[Producto]]></text></staticText>
+                        </jr:columnHeader>
+                        <jr:detailCell height="16">
+                            <textField><reportElement x="0" y="0" width="245" height="16"/><textElement><font size="9"/></textElement><textFieldExpression><![CDATA[$F{nombre_decoracion}]]></textFieldExpression></textField>
+                        </jr:detailCell>
+                    </jr:column>
+                    <jr:column width="60" uuid="c0ee33b1-5c70-4a0d-8a4a-86dfc76f7a31">
+                        <jr:columnHeader height="18">
+                            <staticText><reportElement x="0" y="0" width="60" height="18"/><textElement textAlignment="Right"><font isBold="true" size="9"/></textElement><text><![CDATA[Cant]]></text></staticText>
+                        </jr:columnHeader>
+                        <jr:detailCell height="16">
+                            <textField><reportElement x="0" y="0" width="60" height="16"/><textElement textAlignment="Right"><font size="9"/></textElement><textFieldExpression><![CDATA[$F{cantidad_detalle_venta}]]></textFieldExpression></textField>
+                        </jr:detailCell>
+                    </jr:column>
+                    <jr:column width="80" uuid="b8a5792f-2236-4db9-9bc1-749ee0f5bd63">
+                        <jr:columnHeader height="18">
+                            <staticText><reportElement x="0" y="0" width="80" height="18"/><textElement textAlignment="Right"><font isBold="true" size="9"/></textElement><text><![CDATA[Precio]]></text></staticText>
+                        </jr:columnHeader>
+                        <jr:detailCell height="16">
+                            <textField pattern="#,##0.00"><reportElement x="0" y="0" width="80" height="16"/><textElement textAlignment="Right"><font size="9"/></textElement><textFieldExpression><![CDATA[$F{precio_unitario_venta}]]></textFieldExpression></textField>
+                        </jr:detailCell>
+                    </jr:column>
+                    <jr:column width="70" uuid="75e1de48-27c0-4e8a-9c93-03b999b1bda2">
+                        <jr:columnHeader height="18">
+                            <staticText><reportElement x="0" y="0" width="70" height="18"/><textElement textAlignment="Right"><font isBold="true" size="9"/></textElement><text><![CDATA[Desc]]></text></staticText>
+                        </jr:columnHeader>
+                        <jr:detailCell height="16">
+                            <textField pattern="#,##0.00"><reportElement x="0" y="0" width="70" height="16"/><textElement textAlignment="Right"><font size="9"/></textElement><textFieldExpression><![CDATA[$F{descuento_detalle}]]></textFieldExpression></textField>
+                        </jr:detailCell>
+                    </jr:column>
+                    <jr:column width="100" uuid="8a0bb747-8bb8-4e30-9a2c-516aeab9c2b2">
+                        <jr:columnHeader height="18">
+                            <staticText><reportElement x="0" y="0" width="100" height="18"/><textElement textAlignment="Right"><font isBold="true" size="9"/></textElement><text><![CDATA[Subtotal]]></text></staticText>
+                        </jr:columnHeader>
+                        <jr:detailCell height="16">
+                            <textField pattern="#,##0.00"><reportElement x="0" y="0" width="100" height="16"/><textElement textAlignment="Right"><font size="9"/></textElement><textFieldExpression><![CDATA[$F{subtotal_detalle_venta}]]></textFieldExpression></textField>
+                        </jr:detailCell>
+                    </jr:column>
+                </jr:table>
+            </componentElement>
+
+            <staticText><reportElement x="310" y="170" width="120" height="14"/><textElement textAlignment="Right"><font isBold="true" size="10"/></textElement><text><![CDATA[Subtotal:]]></text></staticText>
+            <textField pattern="#,##0.00"><reportElement x="430" y="170" width="125" height="14"/><textElement textAlignment="Right"><font size="10"/></textElement><textFieldExpression><![CDATA[$F{subtotal_venta}]]></textFieldExpression></textField>
+
+            <staticText><reportElement x="310" y="186" width="120" height="14"/><textElement textAlignment="Right"><font isBold="true" size="10"/></textElement><text><![CDATA[Impuesto (18%):]]></text></staticText>
+            <textField pattern="#,##0.00"><reportElement x="430" y="186" width="125" height="14"/><textElement textAlignment="Right"><font size="10"/></textElement><textFieldExpression><![CDATA[$F{impuesto_venta}]]></textFieldExpression></textField>
+
+            <staticText><reportElement x="310" y="202" width="120" height="14"/><textElement textAlignment="Right"><font isBold="true" size="10"/></textElement><text><![CDATA[Descuento:]]></text></staticText>
+            <textField pattern="#,##0.00"><reportElement x="430" y="202" width="125" height="14"/><textElement textAlignment="Right"><font size="10"/></textElement><textFieldExpression><![CDATA[$F{descuento_venta}]]></textFieldExpression></textField>
+
+            <staticText><reportElement x="310" y="218" width="120" height="14"/><textElement textAlignment="Right"><font isBold="true" size="11"/></textElement><text><![CDATA[TOTAL:]]></text></staticText>
+            <textField pattern="#,##0.00"><reportElement x="430" y="218" width="125" height="14"/><textElement textAlignment="Right"><font isBold="true" size="11"/></textElement><textFieldExpression><![CDATA[$F{total_venta}]]></textFieldExpression></textField>
+        </band>
+    </detail>
+</jasperReport>

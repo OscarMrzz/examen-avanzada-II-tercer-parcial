@@ -3,12 +3,16 @@ package Controlador.compras;
 import Vista.compras.comprasVista;
 import Vista.compras.FormularioAgregarCompra;
 import Vista.compras.FormularioEditarCompra;
+import Vista.compras.reportesCompras;
+import Modelo.reportes.JasperService;
 import Modelo.compras.FacturaCompraModel;
 import Type.compras.FacturaCompraType;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -26,12 +30,17 @@ public class comprasVistaController {
     private FacturaCompraModel modelo;
     private FormularioAgregarCompra formularioAgregar;
     private FormularioEditarCompra formularioEditar;
+    private reportesCompras reportes;
+    private JasperService jasper;
 
-    public comprasVistaController(comprasVista vista, FormularioAgregarCompra formularioAgregar, FormularioEditarCompra formularioEditar) {
+    public comprasVistaController(comprasVista vista, FormularioAgregarCompra formularioAgregar, FormularioEditarCompra formularioEditar,
+            reportesCompras reportes) {
         this.vista = vista;
         this.formularioAgregar = formularioAgregar;
         this.formularioEditar = formularioEditar;
+        this.reportes = reportes;
         this.modelo = new FacturaCompraModel();
+        this.jasper = new JasperService();
         inicializarEventos();
         cargarTabla();
     }
@@ -42,6 +51,9 @@ public class comprasVistaController {
 
         // Evento del botón agregar
         vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
+
+        // Evento del botón informe
+        vista.botonInforme.addActionListener(e -> reportes.setVisible(true));
 
         // Evento del mouse en la tabla para menú contextual
         vista.tabla.addMouseListener(new MouseAdapter() {
@@ -76,6 +88,48 @@ public class comprasVistaController {
                 }
             }
         });
+
+        // Botones del diálogo de reportes
+        reportes.botonGenerarReporte.addActionListener(e -> generarReporte());
+        reportes.botonCancelar.addActionListener(e -> reportes.setVisible(false));
+    }
+
+    private void generarReporte() {
+        String tipoReporte = (String) reportes.comboBoxTipoReporte.getSelectedItem();
+        if (tipoReporte == null) {
+            JOptionPane.showMessageDialog(reportes, "Seleccione un tipo de reporte.", "Reporte", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Date fi = JasperService.parseSqlDateOrNull(reportes.inputFechaInicio.getText());
+        Date ff = JasperService.parseSqlDateOrNull(reportes.inputFechaFin.getText());
+
+        try {
+            switch (tipoReporte) {
+                case "Compras por Fecha": {
+                    if (fi == null || ff == null) {
+                        JOptionPane.showMessageDialog(reportes,
+                                "Ingrese Fecha Inicio y Fecha Fin en formato AAAA-MM-DD.",
+                                "Fechas requeridas", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    Map<String, Object> p = JasperService.params(
+                            "titulo", "Compras por rango de fechas",
+                            "fechaInicio", fi,
+                            "fechaFin", ff);
+                    jasper.verReporte("/reportes/compras_por_fechas.jrxml", p);
+                    break;
+                }
+                default:
+                    JOptionPane.showMessageDialog(reportes,
+                            "Este tipo de reporte aún no tiene plantilla Jasper específica.\nUse 'Compras por Fecha' por ahora.",
+                            "Reporte", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(reportes,
+                    "No se pudo generar el reporte.\n" + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
