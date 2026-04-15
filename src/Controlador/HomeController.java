@@ -41,6 +41,9 @@ public class HomeController {
         this.proveedoresVista = proveedoresVista;
         this.ventasVista = ventasVista;
 
+        // Agregar listeners para volver al Home cuando se cierren las vistas
+        agregarListenersVistas();
+
         // Los controladores específicos se crean en el punto de entrada
     }
 
@@ -97,6 +100,72 @@ public class HomeController {
     public void irAVentas() {
         ventasVista.setVisible(true);
         home.setVisible(false);
+    }
+
+    private void agregarListenersVistas() {
+        // Listener para clientesVista
+        clientesVista.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                home.setVisible(true);
+            }
+        });
+
+        // Listener para coleccionesVista
+        coleccionesVista.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                home.setVisible(true);
+            }
+        });
+
+        // Listener para comprasVista
+        comprasVista.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                home.setVisible(true);
+            }
+        });
+
+        // Listener para decoracionesVista
+        decoracionesVista.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                home.setVisible(true);
+            }
+        });
+
+        // Listener para inventarioVista
+        inventarioVista.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                home.setVisible(true);
+            }
+        });
+
+        // Listener para proveedoresVista
+        proveedoresVista.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                home.setVisible(true);
+            }
+        });
+
+        // Listener para ventasVista
+        ventasVista.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                home.setVisible(true);
+            }
+        });
+
+        // Listener para usuariosVista
+        usuariosVista.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                home.setVisible(true);
+            }
+        });
     }
 
 }

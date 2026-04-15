@@ -66,14 +66,27 @@ public static void main(String[] args) {
     LoginVista loginVista = new LoginVista(null, true);
     Home home = new Home();
     UsuariosVista usuariosVista = new UsuariosVista(null, true);
-    ClientesVista clientesVista = new ClientesVista(null, true);
-    VentasVista ventasVista = new VentasVista(null, true);
+    clientesVista clientesVista = new clientesVista(null, true);
+    coleccionesVista coleccionesVista = new coleccionesVista(null, true);
+    comprasVista comprasVista = new comprasVista(null, true);
+    decoracionesVista decoracionesVista = new decoracionesVista(null, true);
+    inventarioVista inventarioVista = new inventarioVista(null, true);
+    proveedoresVista proveedoresVista = new proveedoresVista(null, true);
+    ventasVista ventasVista = new ventasVista(null, true);
 
-    // Crear controladores con sus vistas específicas
-    HomeController homeController = new HomeController(home, loginVista, usuariosVista);
-    UsuariosController usuariosController = new UsuariosController(usuariosVista, home);
-    ClientesController clientesController = new ClientesController(clientesVista, home);
-    VentasController ventasController = new VentasController(ventasVista, home);
+    // Crear HomeController con todas las vistas principales
+    HomeController homeController = new HomeController(home, loginVista, usuariosVista,
+            clientesVista, coleccionesVista, comprasVista, decoracionesVista,
+            inventarioVista, proveedoresVista, ventasVista);
+
+    // Crear controladores específicos con sus vistas (SOLO EN PUNTO DE ENTRADA)
+    UsuariosController usuariosController = new UsuariosController(usuariosVista);
+    clientesController clientesController = new clientesController(clientesVista);
+    coleccionesController coleccionesController = new coleccionesController(coleccionesVista);
+    comprasController comprasController = new comprasController(comprasVista);
+    decoracionesController decoracionesController = new decoracionesController(decoracionesVista);
+    proveedoresController proveedoresController = new proveedoresController(proveedoresVista);
+    ventasController ventasController = new ventasController(ventasVista);
 
     // Iniciar aplicación
     homeController.iniciar();
@@ -81,10 +94,27 @@ public static void main(String[] args) {
 }
 ```
 
-#### 8. **Ventajas de este Enfoque**
+#### 8. **Responsabilidades Claras**
+
+**HomeController:**
+
+- Controla solo la vista Home y sus botones de navegación
+- Muestra/oculta vistas directamente
+- NO crea controladores específicos
+- NO maneja lógica de negocio de otras vistas
+
+**Controladores Específicos (creados en punto de entrada):**
+
+- Manejan la lógica de sus vistas correspondientes
+- Controlan botones Agregar, Editar, Eliminar, Buscar
+- NO gestionan navegación entre vistas
+- Solo reciben su vista asignada
+
+#### 9. **Ventajas de este Enfoque**
 
 - Control centralizado de la creación de objetos
 - Inyección de dependencias clara
 - Los controladores se enfocan solo en su lógica
 - Fácil mantenimiento y testing
 - Sin acoplamiento entre controladores para creación de vistas
+- Sin duplicación de listeners (un solo controlador por vista)
