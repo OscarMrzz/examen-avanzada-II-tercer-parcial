@@ -4,6 +4,7 @@
 
 ### 📍 Antes de Cualquier Tarea - Lectura Obligatoria
 
+**Si te piden hacer una REVISIÓN / AUDITORÍA del proyecto →** `ManualDeRevicion.md`
 **Si te piden crear TABLAS →** `EstructuraDeTablas.md`
 **Si te piden crear VISTAS →** `EstructuraVistas.md`
 **Si te piden crear FORMULARIOS →** `EstructuraFormularios.md`
@@ -14,6 +15,18 @@
 ---
 
 ## 🎯 Flujo de Decisión por Tipo de Petición
+
+### ✅ Para HACER UNA REVISIÓN COMPLETA DEL PROYECTO
+
+**Referencia principal**: `ManualDeRevicion.md`
+
+**Cuándo usar**: Cuando el usuario diga “revisa mi proyecto”, “audita”, “asegúrate que todo esté bien”, “haz una revisión completa”
+
+**Objetivo**: Seguir el checklist para validar estructura, DB, Types, Modelos, Controladores, Vistas, tablas, formularios, reportes y requisitos del proyecto.
+
+**Redirección específica**: Ver `ManualDeRevicion.md`
+
+---
 
 ### 📊 Para TRABAJAR CON TABLAS
 
@@ -191,6 +204,7 @@
 | "Organizar carpetas"    | `EstructuraDeCarpetas.md`     | Subcarpetas temáticas, archivos juntos                        |
 | "Iniciar aplicación"    | `EstructuraPuntoDeEntrada.md` | Crear vistas → HomeController → inyección                     |
 | "Crear modelo/DAO"      | `EstructuraModelo.md`         | Skill CRUD, patrones estándar                                 |
+| "Revisar proyecto"      | `ManualDeRevicion.md`         | Seguir checklist completo de revisión                          |
 
 ---
 
@@ -222,6 +236,7 @@ TAREA COMPLETADA
 
 ## 📚 ARCHIVOS DE REFERENCIA COMPLETA
 
+- `ManualDeRevicion.md` - Checklist obligatorio para revisar el proyecto completo
 - `EstructuraDeTablas.md` - Guía completa para tablas con resaltado, menú contextual y refrescos
 - `EstructuraVistas.md` - Patrones para vistas principales con componentes estándar
 - `EstructuraFormularios.md` - Formularios Agregar/Editar con validaciones

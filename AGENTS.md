@@ -31,6 +31,7 @@ Java Swing desktop app (NetBeans, Java 8) for a decoration store. MVC architectu
 ## Reference Files
 
 This repo has extensive Spanish documentation in `EstructuraProyectoJava/`:
+- `index.md` — ALWAYS read this first (before planning or changes)
 - `index.md` — Quick reference map for every file type
 - `EstructuraDeCarpetas.md` — Mandatory folder/subfolder structure
 - `EstructuraVistas.md` — JDialog patterns (component naming, NO/tabla/inputBusqueda/botonBuscar/botonAgregar)
@@ -38,6 +39,10 @@ This repo has extensive Spanish documentation in `EstructuraProyectoJava/`:
 - `EstructuraModelo.md` — DAO/Model CRUD patterns
 - `EstructuraReportes.md` — JasperReports integration
 - `EstructuraFormularios.md` — Add/Edit form patterns
+
+## Planning rule (mandatory)
+
+- Before any implementation or planning, **read `EstructuraProyectoJava/index.md` first** and base the plan on the referenced guide file(s) for the task type (tables/views/forms/controllers/reports/review/etc.).
 
 Also read `EstructuraProyecto.md` and `PlanDeImplementacion.md` for business logic constants and implementation status.
 
