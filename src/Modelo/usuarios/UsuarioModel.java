@@ -22,6 +22,7 @@ public class UsuarioModel extends Conexion {
 
     /**
      * Crea un nuevo registro de usuario
+     * 
      * @param objeto - Objeto UsuarioType con los datos a crear
      * @return true si la creación fue exitosa, false en caso contrario
      */
@@ -39,7 +40,6 @@ public class UsuarioModel extends Conexion {
             preparedStatement.setString(6, objeto.getFotoUsuario());
             preparedStatement.setBoolean(7, objeto.isEstadoUsuario());
             preparedStatement.execute();
-            JOptionPane.showMessageDialog(null, "Usuario ingresado correctamente");
             return true;
         } catch (SQLException e) {
             Logger.getLogger(UsuarioModel.class.getName()).log(Level.SEVERE, null, e);
@@ -57,6 +57,7 @@ public class UsuarioModel extends Conexion {
 
     /**
      * Obtiene un registro específico por su ID
+     * 
      * @param id - Identificador del registro
      * @return Objeto UsuarioType o null si no existe
      */
@@ -110,12 +111,13 @@ public class UsuarioModel extends Conexion {
 
     /**
      * Obtiene todos los registros de la tabla
+     * 
      * @return ArrayList con todos los objetos
      */
     public ArrayList<UsuarioType> getAll() {
         ArrayList<UsuarioType> lista = new ArrayList<>();
         connection = getConxion();
-        sentenciaSQL = "SELECT * FROM usuarios";
+        sentenciaSQL = "SELECT * FROM usuarios WHERE estado_usuario = 1";
 
         try {
             preparedStatement = connection.prepareStatement(sentenciaSQL);
@@ -153,6 +155,7 @@ public class UsuarioModel extends Conexion {
 
     /**
      * Actualiza un registro existente
+     * 
      * @param objeto - Objeto UsuarioType con los datos actualizados
      * @return true si la actualización fue exitosa, false en caso contrario
      */
@@ -170,7 +173,6 @@ public class UsuarioModel extends Conexion {
             preparedStatement.setBoolean(6, objeto.isEstadoUsuario());
             preparedStatement.setString(7, objeto.getIdUsuario());
             preparedStatement.execute();
-            JOptionPane.showMessageDialog(null, "Usuario actualizado correctamente");
             return true;
         } catch (SQLException e) {
             Logger.getLogger(UsuarioModel.class.getName()).log(Level.SEVERE, null, e);
@@ -188,18 +190,18 @@ public class UsuarioModel extends Conexion {
 
     /**
      * Elimina un registro por su ID (eliminación lógica)
+     * 
      * @param id - Identificador del registro a eliminar
      * @return true si la eliminación fue exitosa, false en caso contrario
      */
     public boolean delete(String id) {
         connection = getConxion();
-        sentenciaSQL = "UPDATE usuarios SET estado_usuario=false WHERE id_usuario=?";
+        sentenciaSQL = "UPDATE usuarios SET estado_usuario = 0 WHERE id_usuario=?";
 
         try {
             preparedStatement = connection.prepareStatement(sentenciaSQL);
             preparedStatement.setString(1, id);
             preparedStatement.execute();
-            JOptionPane.showMessageDialog(null, "Usuario eliminado correctamente");
             return true;
         } catch (SQLException e) {
             Logger.getLogger(UsuarioModel.class.getName()).log(Level.SEVERE, null, e);
@@ -217,7 +219,8 @@ public class UsuarioModel extends Conexion {
 
     /**
      * Autentica un usuario en el sistema
-     * @param usuario - Nombre de usuario
+     * 
+     * @param usuario  - Nombre de usuario
      * @param password - Contraseña del usuario
      * @return Objeto UsuarioType si las credenciales son correctas, null si no
      */
