@@ -265,6 +265,6 @@ public class FormularioAgregarUsuario extends javax.swing.JDialog {
         private javax.swing.JLabel jLabel3;
         private javax.swing.JLabel jLabel4;
         private javax.swing.JPanel jPanel1;
-        private javax.swing.JLabel labelImagem;
+        public javax.swing.JLabel labelImagem;
         // End of variables declaration//GEN-END:variables
 }
