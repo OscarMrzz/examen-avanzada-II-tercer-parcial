@@ -36,8 +36,8 @@ public class FacturaCompraModel extends Conexion {
             preparedStatement.setString(2, objeto.getIdProveedorFacturaCompra());
             preparedStatement.setString(3, objeto.getNumeroFactura());
             preparedStatement.setDouble(4, objeto.getTotalFacturaCompra());
-            preparedStatement.setString(5, objeto.getTipoPagoFacturaCompra().toString());
-            preparedStatement.setString(6, objeto.getEstadoFacturaCompra().toString());
+            preparedStatement.setString(5, objeto.getTipoPagoFacturaCompra() != null ? objeto.getTipoPagoFacturaCompra().getDisplayName() : null);
+            preparedStatement.setString(6, objeto.getEstadoFacturaCompra() != null ? objeto.getEstadoFacturaCompra().getDisplayName() : null);
             preparedStatement.setDate(7, objeto.getFechaFacturaCompra());
             preparedStatement.setDate(8, objeto.getFechaVencimientoFactura());
             preparedStatement.setString(9, objeto.getCondicionFactura());
@@ -176,8 +176,8 @@ public class FacturaCompraModel extends Conexion {
             preparedStatement.setString(1, objeto.getIdProveedorFacturaCompra());
             preparedStatement.setString(2, objeto.getNumeroFactura());
             preparedStatement.setDouble(3, objeto.getTotalFacturaCompra());
-            preparedStatement.setString(4, objeto.getTipoPagoFacturaCompra().toString());
-            preparedStatement.setString(5, objeto.getEstadoFacturaCompra().toString());
+            preparedStatement.setString(4, objeto.getTipoPagoFacturaCompra() != null ? objeto.getTipoPagoFacturaCompra().getDisplayName() : null);
+            preparedStatement.setString(5, objeto.getEstadoFacturaCompra() != null ? objeto.getEstadoFacturaCompra().getDisplayName() : null);
             preparedStatement.setDate(6, objeto.getFechaFacturaCompra());
             preparedStatement.setDate(7, objeto.getFechaVencimientoFactura());
             preparedStatement.setString(8, objeto.getCondicionFactura());

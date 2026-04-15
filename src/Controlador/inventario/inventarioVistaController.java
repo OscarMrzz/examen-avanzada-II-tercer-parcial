@@ -46,8 +46,11 @@ public class inventarioVistaController {
         // Evento del botón buscar
         vista.botonBuscar.addActionListener(this::buscar);
 
-        // Evento del botón agregar
-        vista.botonAgregar.addActionListener(this::abrirFormularioAgregar);
+        // Inventario NO se agrega manualmente: sube/baja por compras/ventas
+        if (vista.botonAgregar != null) {
+            vista.botonAgregar.setVisible(false);
+            vista.botonAgregar.setEnabled(false);
+        }
 
         // Evento del botón informe
         vista.botonInforme.addActionListener(e -> reportes.setVisible(true));

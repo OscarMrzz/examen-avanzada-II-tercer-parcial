@@ -46,7 +46,6 @@ import Vista.ventas.ventasVista;
 import Vista.ventas.FormularioAgregarVenta;
 import Vista.ventas.FormularioEditarVenta;
 import Vista.ventas.reportesVentas;
-import Type.usuarios.PrivilegioUsuario;
 
 /**
  *
@@ -106,10 +105,6 @@ public class Examen_tercer_parcial {
                 clientesVista, coleccionesVista, comprasVista, decoracionesVista,
                 inventarioVista, proveedoresVista, ventasVista);
 
-        // Establecer privilegio del usuario actual (por defecto ADMIN para desarrollo)
-        // En producción, esto debería obtenerse del sistema de login
-        homeController.setPrivilegioUsuarioActual(PrivilegioUsuario.ADMIN);
-
         // Crear controladores específicos con sus vistas y formularios
         UsuarioController usuarioController = new UsuarioController(usuariosVista, formularioAgregarUsuario,
                 formularioEditarUsuario);
@@ -128,11 +123,14 @@ public class Examen_tercer_parcial {
         ventasVistaController ventasVistaController = new ventasVistaController(ventasVista, formularioAgregarVenta,
                 formularioEditarVenta, reportesVentas);
 
-        LoginVistaController loginVistaController = new LoginVistaController(loginVista, home);
-
-        // Iniciar aplicación
-        homeController.iniciar();
+        // Cargar listeners del Home (navegación) pero NO mostrar Home aún
         homeController.cargarBotones();
+        homeController.aplicarPrivilegiosEnHome(); // bloquea todo hasta iniciar sesión
+
+        LoginVistaController loginVistaController = new LoginVistaController(loginVista, homeController);
+
+        // Iniciar aplicación mostrando Login primero (modal)
+        loginVista.setVisible(true);
     }
 
 }

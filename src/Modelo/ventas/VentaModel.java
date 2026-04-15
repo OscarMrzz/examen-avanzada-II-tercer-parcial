@@ -40,11 +40,11 @@ public class VentaModel extends Conexion {
             preparedStatement.setDouble(5, objeto.getImpuestoVenta());
             preparedStatement.setDouble(6, objeto.getDescuentoVenta());
             preparedStatement.setDouble(7, objeto.getTotalVenta());
-            preparedStatement.setString(8, objeto.getTipoPagoVenta().toString());
+            preparedStatement.setString(8, objeto.getTipoPagoVenta() != null ? objeto.getTipoPagoVenta().getDisplayName() : null);
             preparedStatement.setDouble(9, objeto.getMontoEfectivo());
             preparedStatement.setDouble(10, objeto.getMontoTarjeta());
             preparedStatement.setDouble(11, objeto.getCambioVenta());
-            preparedStatement.setString(12, objeto.getEstadoVenta().toString());
+            preparedStatement.setString(12, objeto.getEstadoVenta() != null ? objeto.getEstadoVenta().getDisplayName() : null);
             preparedStatement.setString(13, objeto.getIdUsuarioVendedor());
             preparedStatement.execute();
             JOptionPane.showMessageDialog(null, "Venta ingresada correctamente");
@@ -203,11 +203,11 @@ public class VentaModel extends Conexion {
             preparedStatement.setDouble(4, objeto.getImpuestoVenta());
             preparedStatement.setDouble(5, objeto.getDescuentoVenta());
             preparedStatement.setDouble(6, objeto.getTotalVenta());
-            preparedStatement.setString(7, objeto.getTipoPagoVenta().toString());
+            preparedStatement.setString(7, objeto.getTipoPagoVenta() != null ? objeto.getTipoPagoVenta().getDisplayName() : null);
             preparedStatement.setDouble(8, objeto.getMontoEfectivo());
             preparedStatement.setDouble(9, objeto.getMontoTarjeta());
             preparedStatement.setDouble(10, objeto.getCambioVenta());
-            preparedStatement.setString(11, objeto.getEstadoVenta().toString());
+            preparedStatement.setString(11, objeto.getEstadoVenta() != null ? objeto.getEstadoVenta().getDisplayName() : null);
             preparedStatement.setString(12, objeto.getIdUsuarioVendedor());
             preparedStatement.setString(13, objeto.getIdVenta());
             preparedStatement.execute();

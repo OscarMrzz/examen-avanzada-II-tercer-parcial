@@ -1,7 +1,7 @@
 package Controlador.login;
 
 import Vista.login.LoginVista;
-import Vista.home.Home;
+import Controlador.HomeController;
 import Modelo.Conexion;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import Type.usuarios.PrivilegioUsuario;
 
 /**
  * Controlador para la vista de Login
@@ -18,12 +19,12 @@ import javax.swing.JOptionPane;
 public class LoginVistaController {
 
     private LoginVista vista;
-    private Home home;
+    private HomeController homeController;
     private Connection conexion;
 
-    public LoginVistaController(LoginVista vista, Home home) {
+    public LoginVistaController(LoginVista vista, HomeController homeController) {
         this.vista = vista;
-        this.home = home;
+        this.homeController = homeController;
         Conexion conexionObj = new Conexion();
         this.conexion = conexionObj.getConxion();
         inicializarEventos();
@@ -74,12 +75,23 @@ public class LoginVistaController {
                     // Usuario encontrado y activo
                     String nombreUsuario = rs.getString("nombre_usuario");
                     String privilegio = rs.getString("privilegio_usuario");
+                    PrivilegioUsuario privilegioUsuario = parsePrivilegio(privilegio);
+                    if (privilegioUsuario == null) {
+                        JOptionPane.showMessageDialog(vista,
+                                "El usuario tiene un privilegio no válido en la BD: " + privilegio,
+                                "Error de Privilegios",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    homeController.setPrivilegioUsuarioActual(privilegioUsuario);
+                    homeController.aplicarPrivilegiosEnHome();
 
                     // Cerrar ventana de login
                     vista.dispose();
 
-                    // Abrir la ventana principal (Home) - ya recibida por constructor
-                    home.setVisible(true);
+                    // Abrir la ventana principal (Home)
+                    homeController.iniciar();
 
                     // Mostrar mensaje de bienvenida
                     JOptionPane.showMessageDialog(null,
@@ -106,6 +118,18 @@ public class LoginVistaController {
                     "Error al conectar con la base de datos: " + ex.getMessage(),
                     "Error de Conexión",
                     JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private PrivilegioUsuario parsePrivilegio(String privilegioDb) {
+        if (privilegioDb == null) {
+            return null;
+        }
+        String p = privilegioDb.trim().toUpperCase();
+        try {
+            return PrivilegioUsuario.valueOf(p);
+        } catch (IllegalArgumentException ex) {
+            return null;
         }
     }
 

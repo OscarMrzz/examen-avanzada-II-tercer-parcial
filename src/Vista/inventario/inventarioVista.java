@@ -39,7 +39,6 @@ public class inventarioVista extends javax.swing.JDialog {
                 inputBusqueda = new javax.swing.JTextField();
                 botonBuscar = new javax.swing.JButton();
                 jPanel3 = new javax.swing.JPanel();
-                botonAgregar = new javax.swing.JButton();
                 botonInforme = new javax.swing.JButton();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -88,8 +87,6 @@ public class inventarioVista extends javax.swing.JDialog {
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addComponent(botonBuscar)));
 
-                botonAgregar.setText("Agregar");
-
                 botonInforme.setText("Ver Informe");
 
                 javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -97,14 +94,7 @@ public class inventarioVista extends javax.swing.JDialog {
                 jPanel3Layout.setHorizontalGroup(
                                 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel3Layout.createSequentialGroup()
-                                                                .addComponent(botonAgregar,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
-                                                                                120,
-                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(
-                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED,
-                                                                                203,
-                                                                                Short.MAX_VALUE)
+                                                                .addGap(0, 0, Short.MAX_VALUE)
                                                                 .addComponent(botonInforme,
                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                 120,
@@ -113,7 +103,6 @@ public class inventarioVista extends javax.swing.JDialog {
                                 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(jPanel3Layout.createParallelGroup(
                                                                 javax.swing.GroupLayout.Alignment.BASELINE)
-                                                                .addComponent(botonAgregar)
                                                                 .addComponent(botonInforme)));
 
                 javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -226,7 +215,6 @@ public class inventarioVista extends javax.swing.JDialog {
         }
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
-        public javax.swing.JButton botonAgregar;
         public javax.swing.JButton botonBuscar;
         public javax.swing.JButton botonInforme;
         public javax.swing.JTextField inputBusqueda;

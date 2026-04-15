@@ -118,7 +118,17 @@ public class FormularioAgregarCompraController {
 
             // Obtener proveedor seleccionado
             String proveedorSeleccionado = (String) vista.comboBoxProveedor.getSelectedItem();
-            nuevaFactura.setIdProveedorFacturaCompra(proveedorSeleccionado);
+            String idProveedor = obtenerIdProveedorPorNombre(proveedorSeleccionado);
+            if (idProveedor == null) {
+                JOptionPane.showMessageDialog(vista, "No se pudo obtener el ID del proveedor seleccionado.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            nuevaFactura.setIdProveedorFacturaCompra(idProveedor);
+
+            // Número de factura (autogenerado si la vista no lo pide)
+            String numeroFactura = "FC-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            nuevaFactura.setNumeroFactura(numeroFactura);
 
             // Validar y convertir fecha de compra
             String fechaCompraStr = vista.inputFechaCompra.getText().trim();
@@ -170,29 +180,22 @@ public class FormularioAgregarCompraController {
             }
 
             // Validar y convertir precio venta
-            String precioVentaStr = vista.inputPrecioVenta.getText().trim();
-            double precioVenta;
-            try {
-                precioVenta = Double.parseDouble(precioVentaStr);
-                if (precioVenta <= 0) {
-                    JOptionPane.showMessageDialog(vista, "El precio venta debe ser mayor que cero",
-                            "Error de Validación", JOptionPane.ERROR_MESSAGE);
-                    vista.inputPrecioVenta.requestFocus();
-                    return;
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(vista, "El precio venta debe ser un número válido",
-                        "Error de Validación", JOptionPane.ERROR_MESSAGE);
-                vista.inputPrecioVenta.requestFocus();
-                return;
+            double precioVenta = precioCosto * 1.48; // margen obligatorio 48%
+            if (vista.inputPrecioVenta != null) {
+                vista.inputPrecioVenta.setText(String.format("%.2f", precioVenta));
             }
 
             // Calcular total
             double total = precioCosto * cantidad;
             nuevaFactura.setTotalFacturaCompra(total);
 
-            // Obtener estado seleccionado
+            // Tipo pago (Contado / Crédito) según estado
+            // Si queda Pendiente -> Crédito; si Completada -> Contado
             String estadoSeleccionado = (String) vista.comboBoxEstado.getSelectedItem();
+            TipoPago tipoPago = "Completada".equals(estadoSeleccionado) ? TipoPago.CONTADO : TipoPago.CREDITO;
+            nuevaFactura.setTipoPagoFacturaCompra(tipoPago);
+
+            // Obtener estado seleccionado
             if (estadoSeleccionado.equals("Completada")) {
                 nuevaFactura.setEstadoFacturaCompra(Type.generales.EstadoFactura.PAGADA);
             } else {
@@ -201,13 +204,27 @@ public class FormularioAgregarCompraController {
 
             // Obtener observaciones
             String observaciones = vista.inputObservaciones.getText().trim();
+            nuevaFactura.setCondicionFactura(observaciones.isEmpty() ? null : observaciones);
 
-            // Validar que haya detalles de compra
-            if (detallesCompra.isEmpty()) {
-                JOptionPane.showMessageDialog(vista, "Debe agregar al menos una decoración a la compra",
-                        "Error de Validación", JOptionPane.ERROR_MESSAGE);
+            // Construir 1 detalle de compra con los campos actuales del formulario
+            String decoracionSeleccionada = (String) vista.comboBoxDecoracion.getSelectedItem();
+            String idDecoracion = obtenerIdDecoracionPorNombre(decoracionSeleccionada);
+            if (idDecoracion == null) {
+                JOptionPane.showMessageDialog(vista, "No se pudo obtener el ID de la decoración seleccionada.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            DetalleCompraType detalle = new DetalleCompraType();
+            detalle.setIdDetalleCompra(UUID.randomUUID().toString());
+            detalle.setIdDecoracionDetalle(idDecoracion);
+            detalle.setCantidadDetalleCompra(cantidad);
+            detalle.setPrecioCostoCompra(precioCosto);
+            detalle.setPrecioVentaCompra(precioVenta);
+            detalle.setSubtotalDetalleCompra(precioCosto * cantidad);
+
+            detallesCompra.clear();
+            detallesCompra.add(detalle);
 
             // Procesar compra completa con actualización de inventario
             if (procesarCompraCompleta(nuevaFactura)) {
@@ -226,6 +243,46 @@ public class FormularioAgregarCompraController {
             JOptionPane.showMessageDialog(vista, "Error al guardar factura de compra. Por favor, intente nuevamente.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private String obtenerIdProveedorPorNombre(String nombreProveedor) {
+        if (nombreProveedor == null || nombreProveedor.trim().isEmpty()
+                || "Seleccione un proveedor".equals(nombreProveedor)) {
+            return null;
+        }
+        try {
+            Modelo.proveedores.ProveedorModel proveedorModel = new Modelo.proveedores.ProveedorModel();
+            java.util.ArrayList<Type.proveedores.ProveedorType> proveedores = proveedorModel.getAll();
+            for (Type.proveedores.ProveedorType p : proveedores) {
+                if (p != null && p.getNombreProveedor() != null
+                        && p.getNombreProveedor().trim().equalsIgnoreCase(nombreProveedor.trim())) {
+                    return p.getIdProveedor();
+                }
+            }
+        } catch (Exception ex) {
+            logger.log(Level.WARNING, "No se pudo mapear proveedor: " + ex.getMessage());
+        }
+        return null;
+    }
+
+    private String obtenerIdDecoracionPorNombre(String nombreDecoracion) {
+        if (nombreDecoracion == null || nombreDecoracion.trim().isEmpty()
+                || "Seleccione una decoración".equals(nombreDecoracion)) {
+            return null;
+        }
+        try {
+            Modelo.decoraciones.DecoracionModel decoracionModel = new Modelo.decoraciones.DecoracionModel();
+            java.util.ArrayList<Type.decoraciones.DecoracionType> decoraciones = decoracionModel.getAll();
+            for (Type.decoraciones.DecoracionType d : decoraciones) {
+                if (d != null && d.getNombreDecoracion() != null
+                        && d.getNombreDecoracion().trim().equalsIgnoreCase(nombreDecoracion.trim())) {
+                    return d.getIdDecoracion();
+                }
+            }
+        } catch (Exception ex) {
+            logger.log(Level.WARNING, "No se pudo mapear decoración: " + ex.getMessage());
+        }
+        return null;
     }
 
     /**

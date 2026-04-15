@@ -77,6 +77,42 @@ public class HomeController {
         home.botonIrAVentas.addActionListener(e -> irAVentas());
     }
 
+    public void aplicarPrivilegiosEnHome() {
+        if (privilegioUsuarioActual == null) {
+            bloquearTodoPorFaltaDeSesion();
+            return;
+        }
+
+        boolean isAdmin = privilegioUsuarioActual == PrivilegioUsuario.ADMIN;
+        boolean isVentas = privilegioUsuarioActual == PrivilegioUsuario.VENTAS;
+        boolean isInventario = privilegioUsuarioActual == PrivilegioUsuario.INVENTARIO;
+
+        home.botonIrAUsuarios.setEnabled(isAdmin);
+
+        home.botonIrAClientes.setEnabled(isAdmin || isVentas);
+        home.botonIrAVentas.setEnabled(isAdmin || isVentas);
+
+        home.botonIrAProductos.setEnabled(isAdmin || isInventario);
+        home.botonirAColecciones.setEnabled(isAdmin || isInventario);
+        home.botonIrAInventario.setEnabled(isAdmin || isInventario);
+        home.botonIrAProveedores.setEnabled(isAdmin || isInventario);
+        home.botonirACompras.setEnabled(isAdmin || isInventario);
+
+        home.botonIrAReportes.setEnabled(isAdmin || isVentas || isInventario);
+    }
+
+    private void bloquearTodoPorFaltaDeSesion() {
+        home.botonIrAUsuarios.setEnabled(false);
+        home.botonIrAClientes.setEnabled(false);
+        home.botonIrAVentas.setEnabled(false);
+        home.botonIrAProductos.setEnabled(false);
+        home.botonirAColecciones.setEnabled(false);
+        home.botonIrAInventario.setEnabled(false);
+        home.botonIrAProveedores.setEnabled(false);
+        home.botonirACompras.setEnabled(false);
+        home.botonIrAReportes.setEnabled(false);
+    }
+
     public void irAUsuarios() {
         if (validarAccesoModulo(PrivilegioUsuario.ADMIN, "usuarios")) {
             usuariosVista.setVisible(true);
@@ -85,7 +121,7 @@ public class HomeController {
     }
 
     public void irAProveedores() {
-        if (validarAccesoModulo(PrivilegioUsuario.ADMIN, "proveedores")) {
+        if (validarAccesoModulo(PrivilegioUsuario.INVENTARIO, "proveedores")) {
             proveedoresVista.setVisible(true);
             home.setVisible(false);
         }
@@ -113,7 +149,7 @@ public class HomeController {
     }
 
     public void irACompras() {
-        if (validarAccesoModulo(PrivilegioUsuario.ADMIN, "compras")) {
+        if (validarAccesoModulo(PrivilegioUsuario.INVENTARIO, "compras")) {
             comprasVista.setVisible(true);
             home.setVisible(false);
         }
@@ -141,6 +177,13 @@ public class HomeController {
      * @return true si tiene acceso, false en caso contrario
      */
     private boolean validarAccesoModulo(PrivilegioUsuario privilegioRequerido, String nombreModulo) {
+        if (privilegioUsuarioActual == null) {
+            JOptionPane.showMessageDialog(home,
+                    "Debe iniciar sesión para acceder al módulo de " + nombreModulo + ".",
+                    "Sesión requerida", JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
         // ADMIN tiene acceso a todos los módulos
         if (privilegioUsuarioActual == PrivilegioUsuario.ADMIN) {
             return true;

@@ -38,6 +38,15 @@ public class FormularioAgregarVenta extends javax.swing.JDialog {
                 comboBoxCliente = new javax.swing.JComboBox<>();
                 jLabel3 = new javax.swing.JLabel();
                 inputNumeroFactura = new javax.swing.JTextField();
+                jPanelDetalles = new javax.swing.JPanel();
+                jLabel12 = new javax.swing.JLabel();
+                comboBoxDecoracion = new javax.swing.JComboBox<>();
+                jLabel13 = new javax.swing.JLabel();
+                inputCantidadDecoracion = new javax.swing.JTextField();
+                botonAgregarDecoracion = new javax.swing.JButton();
+                botonQuitarItem = new javax.swing.JButton();
+                jScrollPaneDetalles = new javax.swing.JScrollPane();
+                tablaDetalles = new javax.swing.JTable();
                 jLabel4 = new javax.swing.JLabel();
                 inputSubtotal = new javax.swing.JTextField();
                 jLabel5 = new javax.swing.JLabel();
@@ -69,6 +78,95 @@ public class FormularioAgregarVenta extends javax.swing.JDialog {
                 jLabel2.setText("Cliente:");
 
                 jLabel3.setText("Número Factura:");
+
+                jLabel12.setText("Decoración:");
+                comboBoxDecoracion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar..." }));
+
+                jLabel13.setText("Cantidad:");
+
+                botonAgregarDecoracion.setText("Agregar");
+                botonQuitarItem.setText("Quitar");
+
+                tablaDetalles.setModel(new javax.swing.table.DefaultTableModel(
+                                new Object[][] {},
+                                new String[] { "NO", "Decoración", "Cantidad", "Precio", "Descuento %", "Subtotal" }) {
+                        Class[] types = new Class[] { java.lang.Integer.class, java.lang.String.class,
+                                        java.lang.Integer.class, java.lang.Double.class, java.lang.Double.class,
+                                        java.lang.Double.class };
+                        boolean[] canEdit = new boolean[] { false, false, false, false, false, false };
+
+                        public Class getColumnClass(int columnIndex) {
+                                return types[columnIndex];
+                        }
+
+                        public boolean isCellEditable(int rowIndex, int columnIndex) {
+                                return canEdit[columnIndex];
+                        }
+                });
+                jScrollPaneDetalles.setViewportView(tablaDetalles);
+
+                javax.swing.GroupLayout jPanelDetallesLayout = new javax.swing.GroupLayout(jPanelDetalles);
+                jPanelDetalles.setLayout(jPanelDetallesLayout);
+                jPanelDetallesLayout.setHorizontalGroup(
+                                jPanelDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(jPanelDetallesLayout.createSequentialGroup()
+                                                                .addContainerGap()
+                                                                .addGroup(jPanelDetallesLayout
+                                                                                .createParallelGroup(
+                                                                                                javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                .addComponent(jScrollPaneDetalles)
+                                                                                .addGroup(jPanelDetallesLayout
+                                                                                                .createSequentialGroup()
+                                                                                                .addComponent(jLabel12)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(comboBoxDecoracion,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                220,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                                .addComponent(jLabel13)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(inputCantidadDecoracion,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                                60,
+                                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                                .addComponent(botonAgregarDecoracion)
+                                                                                                .addPreferredGap(
+                                                                                                                javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                .addComponent(botonQuitarItem)
+                                                                                                .addGap(0, 0, Short.MAX_VALUE)))
+                                                                .addContainerGap()));
+                jPanelDetallesLayout.setVerticalGroup(
+                                jPanelDetallesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addGroup(jPanelDetallesLayout.createSequentialGroup()
+                                                                .addContainerGap()
+                                                                .addGroup(jPanelDetallesLayout.createParallelGroup(
+                                                                                javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                .addComponent(jLabel12)
+                                                                                .addComponent(comboBoxDecoracion,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(jLabel13)
+                                                                                .addComponent(inputCantidadDecoracion,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(botonAgregarDecoracion)
+                                                                                .addComponent(botonQuitarItem))
+                                                                .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(jScrollPaneDetalles,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                140,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                Short.MAX_VALUE)));
 
                 jLabel4.setText("Subtotal:");
 
@@ -187,6 +285,10 @@ public class FormularioAgregarVenta extends javax.swing.JDialog {
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 200,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                .addComponent(jPanelDetalles,
+                                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                                0,
+                                                                                                Short.MAX_VALUE)
                                                                                 .addComponent(inputSubtotal,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 200,
@@ -239,6 +341,12 @@ public class FormularioAgregarVenta extends javax.swing.JDialog {
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE,
                                                                                                 javax.swing.GroupLayout.DEFAULT_SIZE,
                                                                                                 javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                .addPreferredGap(
+                                                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                .addComponent(jPanelDetalles,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE,
+                                                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                                                javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                 .addPreferredGap(
                                                                                 javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                 .addGroup(jPanel2Layout.createParallelGroup(
@@ -411,10 +519,14 @@ public class FormularioAgregarVenta extends javax.swing.JDialog {
 
         // Variables declaration - do not modify//GEN-BEGIN:variables
         public javax.swing.JButton botonCancelar;
+        public javax.swing.JButton botonAgregarDecoracion;
         public javax.swing.JButton botonGuardar;
+        public javax.swing.JButton botonQuitarItem;
         public javax.swing.JComboBox<String> comboBoxCliente;
+        public javax.swing.JComboBox<String> comboBoxDecoracion;
         public javax.swing.JComboBox<String> comboBoxTipoPago;
         public javax.swing.JTextField inputCambio;
+        public javax.swing.JTextField inputCantidadDecoracion;
         public javax.swing.JTextField inputDescuento;
         public javax.swing.JTextField inputImpuesto;
         public javax.swing.JTextField inputMontoEfectivo;
@@ -425,6 +537,8 @@ public class FormularioAgregarVenta extends javax.swing.JDialog {
         public javax.swing.JLabel jLabel1;
         public javax.swing.JLabel jLabel10;
         public javax.swing.JLabel jLabel11;
+        public javax.swing.JLabel jLabel12;
+        public javax.swing.JLabel jLabel13;
         public javax.swing.JLabel jLabel2;
         public javax.swing.JLabel jLabel3;
         public javax.swing.JLabel jLabel4;
@@ -436,5 +550,8 @@ public class FormularioAgregarVenta extends javax.swing.JDialog {
         public javax.swing.JPanel jPanel1;
         public javax.swing.JPanel jPanel2;
         public javax.swing.JPanel jPanel3;
+        public javax.swing.JPanel jPanelDetalles;
+        public javax.swing.JScrollPane jScrollPaneDetalles;
+        public javax.swing.JTable tablaDetalles;
         // End of variables declaration//GEN-END:variables
 }
