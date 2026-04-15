@@ -41,6 +41,15 @@ public class Examen_tercer_parcial {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        try {
+            System.out.println(" Cargando tema FlatLaf...");
+            javax.swing.UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatDarkLaf());
+            System.out.println(" FlatLaf cargado exitosamente!");
+        } catch (Exception e) {
+            System.out.println(" ERROR: No se pudo cargar el tema.");
+            e.printStackTrace();
+        }
+
         // Crear todas las vistas
         LoginVista loginVista = new LoginVista(null, true);
         Home home = new Home();
