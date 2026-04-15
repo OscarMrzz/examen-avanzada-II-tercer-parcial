@@ -11,6 +11,8 @@ import Vista.decoraciones.decoracionesVista;
 import Controlador.decoraciones.decoracionesController;
 import Vista.colecciones.coleccionesVista;
 import Controlador.colecciones.coleccionesController;
+import Vista.compras.comprasVista;
+import Controlador.compras.comprasController;
 
 public class HomeController {
     Home home;
@@ -24,6 +26,8 @@ public class HomeController {
     decoracionesController decoracionesController;
     coleccionesVista coleccionesVista;
     coleccionesController coleccionesController;
+    comprasVista comprasVista;
+    comprasController comprasController;
 
     public HomeController(Home home, LoginVista login, UsuariosVista usuariosVista) {
         this.home = home;
@@ -37,6 +41,8 @@ public class HomeController {
         this.decoracionesController = new decoracionesController(decoracionesVista, home);
         this.coleccionesVista = new coleccionesVista(null, true);
         this.coleccionesController = new coleccionesController(coleccionesVista, home);
+        this.comprasVista = new comprasVista(null, true);
+        this.comprasController = new comprasController(comprasVista, home);
     }
 
     public void iniciar() {
@@ -49,6 +55,7 @@ public class HomeController {
         home.botonIrAClientes.addActionListener(e -> irAClientes());
         home.botonIrAProductos.addActionListener(e -> irADecoraciones());
         home.botonirAColecciones.addActionListener(e -> irAColecciones());
+        home.botonirACompras.addActionListener(e -> irACompras());
     }
 
     public void irAUsuarios() {
@@ -70,6 +77,10 @@ public class HomeController {
 
     public void irAColecciones() {
         coleccionesController.iniciar();
+    }
+
+    public void irACompras() {
+        comprasController.iniciar();
     }
 
 }
