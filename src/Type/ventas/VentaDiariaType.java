@@ -1,4 +1,4 @@
-package Type;
+package Type.ventas;
 
 import java.sql.Date;
 
@@ -15,9 +15,9 @@ public class VentaDiariaType {
     public VentaDiariaType() {
     }
 
-    public VentaDiariaType(Date fechaVenta, int cantidadVentas, double totalVentasDia, 
-                         double subtotalDia, double totalImpuestosDia, double totalDescuentosDia, 
-                         double promedioVenta, int cantidadClientes) {
+    public VentaDiariaType(Date fechaVenta, int cantidadVentas, double totalVentasDia,
+            double subtotalDia, double totalImpuestosDia, double totalDescuentosDia,
+            double promedioVenta, int cantidadClientes) {
         this.fechaVenta = fechaVenta;
         this.cantidadVentas = cantidadVentas;
         this.totalVentasDia = totalVentasDia;

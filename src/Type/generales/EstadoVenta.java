@@ -1,15 +1,15 @@
-package Type;
+package Type.generales;
 
-public enum EstadoFactura {
-    PAGADA("Pagada"),
-    PENDIENTE("Pendiente");
-    
+public enum EstadoVenta {
+    ACTIVA("Activa"),
+    CANCELADA("Cancelada");
+
     private final String displayName;
-    
-    EstadoFactura(String displayName) {
+
+    EstadoVenta(String displayName) {
         this.displayName = displayName;
     }
-    
+
     public String getDisplayName() {
         return displayName;
     }

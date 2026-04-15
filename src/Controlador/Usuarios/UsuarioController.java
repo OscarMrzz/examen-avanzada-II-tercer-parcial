@@ -1,5 +1,5 @@
-package Modelo.usuarios;
+package Controlador.Usuarios;
 
 public class UsuarioController {
-    
+
 }

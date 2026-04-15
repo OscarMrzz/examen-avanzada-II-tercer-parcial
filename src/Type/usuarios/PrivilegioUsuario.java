@@ -1,4 +1,4 @@
-package Type;
+package Type.usuarios;
 
 public enum PrivilegioUsuario {
     ADMIN,

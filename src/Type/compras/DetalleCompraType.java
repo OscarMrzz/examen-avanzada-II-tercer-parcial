@@ -1,4 +1,4 @@
-package Type;
+package Type.compras;
 
 public class DetalleCompraType {
     private String idDetalleCompra;
@@ -11,8 +11,8 @@ public class DetalleCompraType {
     public DetalleCompraType() {
     }
 
-    public DetalleCompraType(String idDetalleCompra, String idFacturaCompraDetalle, String idDecoracionDetalle, 
-                           int cantidadDetalleCompra, double precioUnitarioCompra, double subtotalDetalleCompra) {
+    public DetalleCompraType(String idDetalleCompra, String idFacturaCompraDetalle, String idDecoracionDetalle,
+            int cantidadDetalleCompra, double precioUnitarioCompra, double subtotalDetalleCompra) {
         this.idDetalleCompra = idDetalleCompra;
         this.idFacturaCompraDetalle = idFacturaCompraDetalle;
         this.idDecoracionDetalle = idDecoracionDetalle;

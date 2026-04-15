@@ -1,5 +1,7 @@
-package Type;
+package Type.compras;
 
+import Type.generales.TipoPago;
+import Type.generales.EstadoFactura;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -18,10 +20,10 @@ public class FacturaCompraType {
     public FacturaCompraType() {
     }
 
-    public FacturaCompraType(String idFacturaCompra, String idProveedorFacturaCompra, String numeroFactura, 
-                           double totalFacturaCompra, TipoPago tipoPagoFacturaCompra, 
-                           EstadoFactura estadoFacturaCompra, Date fechaFacturaCompra, 
-                           Date fechaVencimientoFactura, String condicionFactura, Timestamp createdAt) {
+    public FacturaCompraType(String idFacturaCompra, String idProveedorFacturaCompra, String numeroFactura,
+            double totalFacturaCompra, TipoPago tipoPagoFacturaCompra,
+            EstadoFactura estadoFacturaCompra, Date fechaFacturaCompra,
+            Date fechaVencimientoFactura, String condicionFactura, Timestamp createdAt) {
         this.idFacturaCompra = idFacturaCompra;
         this.idProveedorFacturaCompra = idProveedorFacturaCompra;
         this.numeroFactura = numeroFactura;

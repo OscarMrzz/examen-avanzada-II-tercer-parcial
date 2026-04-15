@@ -1,4 +1,4 @@
-package Type;
+package Type.decoraciones;
 
 public class DecoracionMasVendidaType {
     private String idDecoracion;
@@ -15,10 +15,10 @@ public class DecoracionMasVendidaType {
     public DecoracionMasVendidaType() {
     }
 
-    public DecoracionMasVendidaType(String idDecoracion, String nombreDecoracion, boolean esColeccionDecoracion, 
-                                  String disenadorDecoracion, String numColeccionDecoracion, 
-                                  Integer anioDecoracion, String nombreProveedor, int totalUnidadesVendidas, 
-                                  double totalVentasGeneradas, int cantidadVentas) {
+    public DecoracionMasVendidaType(String idDecoracion, String nombreDecoracion, boolean esColeccionDecoracion,
+            String disenadorDecoracion, String numColeccionDecoracion,
+            Integer anioDecoracion, String nombreProveedor, int totalUnidadesVendidas,
+            double totalVentasGeneradas, int cantidadVentas) {
         this.idDecoracion = idDecoracion;
         this.nombreDecoracion = nombreDecoracion;
         this.esColeccionDecoracion = esColeccionDecoracion;

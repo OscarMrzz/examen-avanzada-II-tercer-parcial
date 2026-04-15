@@ -1,5 +1,8 @@
-package Type;
+package Type.ventas;
 
+import Type.clientes.TipoCliente;
+import Type.generales.TipoPagoVenta;
+import Type.generales.EstadoVenta;
 import java.sql.Timestamp;
 
 public class VentaDetalladaType {
@@ -27,13 +30,13 @@ public class VentaDetalladaType {
     public VentaDetalladaType() {
     }
 
-    public VentaDetalladaType(String idVenta, String numeroFacturaVenta, Timestamp fechaVenta, 
-                             String idCliente, String nombreCliente, String rtnCliente, 
-                             TipoCliente tipoCliente, String telefonoCliente, String idUsuario, 
-                             String vendedor, double subtotalVenta, double impuestoVenta, 
-                             double descuentoVenta, double totalVenta, TipoPagoVenta tipoPagoVenta, 
-                             Double montoEfectivo, Double montoTarjeta, double cambioVenta, 
-                             EstadoVenta estadoVenta, int cantidadProductos) {
+    public VentaDetalladaType(String idVenta, String numeroFacturaVenta, Timestamp fechaVenta,
+            String idCliente, String nombreCliente, String rtnCliente,
+            TipoCliente tipoCliente, String telefonoCliente, String idUsuario,
+            String vendedor, double subtotalVenta, double impuestoVenta,
+            double descuentoVenta, double totalVenta, TipoPagoVenta tipoPagoVenta,
+            Double montoEfectivo, Double montoTarjeta, double cambioVenta,
+            EstadoVenta estadoVenta, int cantidadProductos) {
         this.idVenta = idVenta;
         this.numeroFacturaVenta = numeroFacturaVenta;
         this.fechaVenta = fechaVenta;

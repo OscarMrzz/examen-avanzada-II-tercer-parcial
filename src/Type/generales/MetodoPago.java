@@ -1,16 +1,16 @@
-package Type;
+package Type.generales;
 
-public enum TipoPagoVenta {
+public enum MetodoPago {
     EFECTIVO("Efectivo"),
-    TARJETA("Tarjeta"),
-    MIXTO("Mixto");
-    
+    TRANSFERENCIA("Transferencia"),
+    CHEQUE("Cheque");
+
     private final String displayName;
-    
-    TipoPagoVenta(String displayName) {
+
+    MetodoPago(String displayName) {
         this.displayName = displayName;
     }
-    
+
     public String getDisplayName() {
         return displayName;
     }

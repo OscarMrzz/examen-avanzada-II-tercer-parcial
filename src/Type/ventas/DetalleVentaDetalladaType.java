@@ -1,4 +1,4 @@
-package Type;
+package Type.ventas;
 
 import java.sql.Timestamp;
 
@@ -24,13 +24,13 @@ public class DetalleVentaDetalladaType {
     public DetalleVentaDetalladaType() {
     }
 
-    public DetalleVentaDetalladaType(String idDetalleVenta, String idVentaDetalle, String numeroFacturaVenta, 
-                                   Timestamp fechaVenta, String nombreCliente, String idDecoracion, 
-                                   String nombreDecoracion, boolean esColeccionDecoracion, 
-                                   String disenadorDecoracion, String numColeccionDecoracion, 
-                                   Integer anioDecoracion, String nombreProveedor, int cantidadDetalleVenta, 
-                                   double precioUnitarioVenta, double subtotalDetalleVenta, 
-                                   double descuentoDetalle, double precioFinalUnitario) {
+    public DetalleVentaDetalladaType(String idDetalleVenta, String idVentaDetalle, String numeroFacturaVenta,
+            Timestamp fechaVenta, String nombreCliente, String idDecoracion,
+            String nombreDecoracion, boolean esColeccionDecoracion,
+            String disenadorDecoracion, String numColeccionDecoracion,
+            Integer anioDecoracion, String nombreProveedor, int cantidadDetalleVenta,
+            double precioUnitarioVenta, double subtotalDetalleVenta,
+            double descuentoDetalle, double precioFinalUnitario) {
         this.idDetalleVenta = idDetalleVenta;
         this.idVentaDetalle = idVentaDetalle;
         this.numeroFacturaVenta = numeroFacturaVenta;

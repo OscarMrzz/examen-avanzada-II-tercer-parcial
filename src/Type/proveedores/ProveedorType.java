@@ -1,4 +1,4 @@
-package Type;
+package Type.proveedores;
 
 import java.sql.Timestamp;
 
@@ -16,9 +16,9 @@ public class ProveedorType {
     public ProveedorType() {
     }
 
-    public ProveedorType(String idProveedor, String nombreProveedor, String rtnProveedor, 
-                        String telefonoProveedor, String emailProveedor, String direccionProveedor, 
-                        String contactoProveedor, Timestamp fechaRegistro, boolean estadoProveedor) {
+    public ProveedorType(String idProveedor, String nombreProveedor, String rtnProveedor,
+            String telefonoProveedor, String emailProveedor, String direccionProveedor,
+            String contactoProveedor, Timestamp fechaRegistro, boolean estadoProveedor) {
         this.idProveedor = idProveedor;
         this.nombreProveedor = nombreProveedor;
         this.rtnProveedor = rtnProveedor;

@@ -1,6 +1,8 @@
-package Type;
+package Type.decoraciones;
 
-public class InventarioDetalladoType {
+import java.sql.Timestamp;
+
+public class DecoracionType {
     private String idDecoracion;
     private String nombreDecoracion;
     private int stockDecoracion;
@@ -8,31 +10,25 @@ public class InventarioDetalladoType {
     private int stockMaximoDecoracion;
     private double precioCostoDecoracion;
     private double precioVentaDecoracion;
+    private String idProveedorDecoracion;
+    private String imagenDecoracion;
     private boolean esColeccionDecoracion;
     private String disenadorDecoracion;
     private String numColeccionDecoracion;
     private Integer anioDecoracion;
     private String descripcionDecoracion;
+    private Timestamp fechaCreacion;
     private boolean estadoDecoracion;
-    private String idProveedor;
-    private String nombreProveedor;
-    private String telefonoProveedor;
-    private double margenUtilidadPorcentaje;
-    private double valorTotalInventario;
-    private String estadoStock;
 
-    public InventarioDetalladoType() {
+    public DecoracionType() {
     }
 
-    public InventarioDetalladoType(String idDecoracion, String nombreDecoracion, int stockDecoracion, 
-                                  int stockMinimoDecoracion, int stockMaximoDecoracion, 
-                                  double precioCostoDecoracion, double precioVentaDecoracion, 
-                                  boolean esColeccionDecoracion, String disenadorDecoracion, 
-                                  String numColeccionDecoracion, Integer anioDecoracion, 
-                                  String descripcionDecoracion, boolean estadoDecoracion, 
-                                  String idProveedor, String nombreProveedor, String telefonoProveedor, 
-                                  double margenUtilidadPorcentaje, double valorTotalInventario, 
-                                  String estadoStock) {
+    public DecoracionType(String idDecoracion, String nombreDecoracion, int stockDecoracion,
+            int stockMinimoDecoracion, int stockMaximoDecoracion, double precioCostoDecoracion,
+            double precioVentaDecoracion, String idProveedorDecoracion, String imagenDecoracion,
+            boolean esColeccionDecoracion, String disenadorDecoracion, String numColeccionDecoracion,
+            Integer anioDecoracion, String descripcionDecoracion, Timestamp fechaCreacion,
+            boolean estadoDecoracion) {
         this.idDecoracion = idDecoracion;
         this.nombreDecoracion = nombreDecoracion;
         this.stockDecoracion = stockDecoracion;
@@ -40,18 +36,15 @@ public class InventarioDetalladoType {
         this.stockMaximoDecoracion = stockMaximoDecoracion;
         this.precioCostoDecoracion = precioCostoDecoracion;
         this.precioVentaDecoracion = precioVentaDecoracion;
+        this.idProveedorDecoracion = idProveedorDecoracion;
+        this.imagenDecoracion = imagenDecoracion;
         this.esColeccionDecoracion = esColeccionDecoracion;
         this.disenadorDecoracion = disenadorDecoracion;
         this.numColeccionDecoracion = numColeccionDecoracion;
         this.anioDecoracion = anioDecoracion;
         this.descripcionDecoracion = descripcionDecoracion;
+        this.fechaCreacion = fechaCreacion;
         this.estadoDecoracion = estadoDecoracion;
-        this.idProveedor = idProveedor;
-        this.nombreProveedor = nombreProveedor;
-        this.telefonoProveedor = telefonoProveedor;
-        this.margenUtilidadPorcentaje = margenUtilidadPorcentaje;
-        this.valorTotalInventario = valorTotalInventario;
-        this.estadoStock = estadoStock;
     }
 
     // Getters y Setters
@@ -111,6 +104,22 @@ public class InventarioDetalladoType {
         this.precioVentaDecoracion = precioVentaDecoracion;
     }
 
+    public String getIdProveedorDecoracion() {
+        return idProveedorDecoracion;
+    }
+
+    public void setIdProveedorDecoracion(String idProveedorDecoracion) {
+        this.idProveedorDecoracion = idProveedorDecoracion;
+    }
+
+    public String getImagenDecoracion() {
+        return imagenDecoracion;
+    }
+
+    public void setImagenDecoracion(String imagenDecoracion) {
+        this.imagenDecoracion = imagenDecoracion;
+    }
+
     public boolean isEsColeccionDecoracion() {
         return esColeccionDecoracion;
     }
@@ -151,6 +160,14 @@ public class InventarioDetalladoType {
         this.descripcionDecoracion = descripcionDecoracion;
     }
 
+    public Timestamp getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Timestamp fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
     public boolean isEstadoDecoracion() {
         return estadoDecoracion;
     }
@@ -159,57 +176,9 @@ public class InventarioDetalladoType {
         this.estadoDecoracion = estadoDecoracion;
     }
 
-    public String getIdProveedor() {
-        return idProveedor;
-    }
-
-    public void setIdProveedor(String idProveedor) {
-        this.idProveedor = idProveedor;
-    }
-
-    public String getNombreProveedor() {
-        return nombreProveedor;
-    }
-
-    public void setNombreProveedor(String nombreProveedor) {
-        this.nombreProveedor = nombreProveedor;
-    }
-
-    public String getTelefonoProveedor() {
-        return telefonoProveedor;
-    }
-
-    public void setTelefonoProveedor(String telefonoProveedor) {
-        this.telefonoProveedor = telefonoProveedor;
-    }
-
-    public double getMargenUtilidadPorcentaje() {
-        return margenUtilidadPorcentaje;
-    }
-
-    public void setMargenUtilidadPorcentaje(double margenUtilidadPorcentaje) {
-        this.margenUtilidadPorcentaje = margenUtilidadPorcentaje;
-    }
-
-    public double getValorTotalInventario() {
-        return valorTotalInventario;
-    }
-
-    public void setValorTotalInventario(double valorTotalInventario) {
-        this.valorTotalInventario = valorTotalInventario;
-    }
-
-    public String getEstadoStock() {
-        return estadoStock;
-    }
-
-    public void setEstadoStock(String estadoStock) {
-        this.estadoStock = estadoStock;
-    }
-
     @Override
     public String toString() {
-        return "InventarioDetalladoType{" +
+        return "DecoracionType{" +
                 "idDecoracion='" + idDecoracion + '\'' +
                 ", nombreDecoracion='" + nombreDecoracion + '\'' +
                 ", stockDecoracion=" + stockDecoracion +
@@ -217,18 +186,15 @@ public class InventarioDetalladoType {
                 ", stockMaximoDecoracion=" + stockMaximoDecoracion +
                 ", precioCostoDecoracion=" + precioCostoDecoracion +
                 ", precioVentaDecoracion=" + precioVentaDecoracion +
+                ", idProveedorDecoracion='" + idProveedorDecoracion + '\'' +
+                ", imagenDecoracion='" + imagenDecoracion + '\'' +
                 ", esColeccionDecoracion=" + esColeccionDecoracion +
                 ", disenadorDecoracion='" + disenadorDecoracion + '\'' +
                 ", numColeccionDecoracion='" + numColeccionDecoracion + '\'' +
                 ", anioDecoracion=" + anioDecoracion +
                 ", descripcionDecoracion='" + descripcionDecoracion + '\'' +
+                ", fechaCreacion=" + fechaCreacion +
                 ", estadoDecoracion=" + estadoDecoracion +
-                ", idProveedor='" + idProveedor + '\'' +
-                ", nombreProveedor='" + nombreProveedor + '\'' +
-                ", telefonoProveedor='" + telefonoProveedor + '\'' +
-                ", margenUtilidadPorcentaje=" + margenUtilidadPorcentaje +
-                ", valorTotalInventario=" + valorTotalInventario +
-                ", estadoStock='" + estadoStock + '\'' +
                 '}';
     }
 }

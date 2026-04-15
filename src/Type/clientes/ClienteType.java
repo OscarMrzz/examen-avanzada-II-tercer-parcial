@@ -1,4 +1,4 @@
-package Type;
+package Type.clientes;
 
 import java.sql.Timestamp;
 
@@ -16,9 +16,9 @@ public class ClienteType {
     public ClienteType() {
     }
 
-    public ClienteType(String idCliente, String nombreCliente, String rtnCliente, TipoCliente tipoCliente, 
-                      String telefonoCliente, String emailCliente, String direccionCliente, 
-                      Timestamp fechaRegistro, boolean estadoCliente) {
+    public ClienteType(String idCliente, String nombreCliente, String rtnCliente, TipoCliente tipoCliente,
+            String telefonoCliente, String emailCliente, String direccionCliente,
+            Timestamp fechaRegistro, boolean estadoCliente) {
         this.idCliente = idCliente;
         this.nombreCliente = nombreCliente;
         this.rtnCliente = rtnCliente;

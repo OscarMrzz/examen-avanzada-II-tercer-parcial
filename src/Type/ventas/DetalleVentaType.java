@@ -1,4 +1,4 @@
-package Type;
+package Type.ventas;
 
 public class DetalleVentaType {
     private String idDetalleVenta;
@@ -12,9 +12,9 @@ public class DetalleVentaType {
     public DetalleVentaType() {
     }
 
-    public DetalleVentaType(String idDetalleVenta, String idVentaDetalle, String idDecoracionDetalle, 
-                           int cantidadDetalleVenta, double precioUnitarioVenta, 
-                           double subtotalDetalleVenta, double descuentoDetalle) {
+    public DetalleVentaType(String idDetalleVenta, String idVentaDetalle, String idDecoracionDetalle,
+            int cantidadDetalleVenta, double precioUnitarioVenta,
+            double subtotalDetalleVenta, double descuentoDetalle) {
         this.idDetalleVenta = idDetalleVenta;
         this.idVentaDetalle = idVentaDetalle;
         this.idDecoracionDetalle = idDecoracionDetalle;

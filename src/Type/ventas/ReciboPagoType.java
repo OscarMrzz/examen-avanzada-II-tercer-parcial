@@ -1,5 +1,6 @@
-package Type;
+package Type.ventas;
 
+import Type.generales.MetodoPago;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -17,9 +18,9 @@ public class ReciboPagoType {
     public ReciboPagoType() {
     }
 
-    public ReciboPagoType(String idReciboPago, String idFacturaCompraPago, String idProveedorPago, 
-                         double montoPago, Date fechaPago, MetodoPago metodoPago, 
-                         String referenciaPago, String observacionesPago, Timestamp createdAt) {
+    public ReciboPagoType(String idReciboPago, String idFacturaCompraPago, String idProveedorPago,
+            double montoPago, Date fechaPago, MetodoPago metodoPago,
+            String referenciaPago, String observacionesPago, Timestamp createdAt) {
         this.idReciboPago = idReciboPago;
         this.idFacturaCompraPago = idFacturaCompraPago;
         this.idProveedorPago = idProveedorPago;
